@@ -30,7 +30,8 @@ import {
 // Icons
 import {
   Home, Map, Heart, Users, MessageCircle, Bell, LogIn, LogOut,
-  Menu, Compass, Info, Wrench, HelpCircle, Mail, X
+  Menu, Compass, Info, Wrench, HelpCircle, Mail, X, Search,
+ Share2, ExternalLink
 } from 'lucide-react';
 
 const navLinks = [
@@ -80,66 +81,124 @@ function WebLayout({ children }: LayoutProps) {
   }
 
   return (
-    <div className="min-h-screen flex flex-col bg-gray-50/50">
-      <header className="sticky top-0 z-50 bg-white/80 backdrop-blur-xl border-b border-gray-100/60">
-        <div className="max-w-6xl mx-auto px-6 h-16 flex items-center justify-between">
-          <div className="flex items-center gap-8">
-            <Link href="/" className="flex items-center gap-2">
-              <Compass className="h-7 w-7 text-orange-500" />
-              <span className="text-xl font-black tracking-tight bg-gradient-to-r from-orange-500 to-amber-500 bg-clip-text text-transparent">SERGIPANIDADE</span>
+    <div className="min-h-screen flex flex-col bg-[#FDFCFB]">
+      <header className="sticky top-0 z-50 bg-white/70 backdrop-blur-md border-b border-orange-100/30">
+        <div className="max-w-7xl mx-auto px-4 md:px-8 h-20 flex items-center justify-between gap-4">
+          {/* Logo Section */}
+          <div className="flex items-center gap-10">
+            <Link href="/" className="flex items-center gap-2 group transition-transform duration-300 hover:scale-105">
+              <div className="p-2 bg-gradient-to-br from-orange-500 to-amber-500 rounded-xl shadow-lg shadow-orange-200 group-hover:rotate-12 transition-transform">
+                <Compass className="h-6 w-6 text-white" />
+              </div>
+              <div className="flex flex-col -gap-1">
+                <span className="text-xl font-black tracking-tighter bg-gradient-to-r from-orange-600 via-amber-600 to-orange-500 bg-clip-text text-transparent leading-none">
+                  SERGIPANIDADE
+                </span>
+                <span className="text-[10px] font-bold text-orange-400 tracking-[0.2em] uppercase">Turismo & Cultura</span>
+              </div>
             </Link>
-            <nav className="hidden lg:flex items-center gap-1">
+
+            {/* Main Nav Items */}
+            <nav className="hidden lg:flex items-center gap-1.5 p-1.5 bg-gray-50/50 rounded-2xl border border-gray-100">
               {navLinks.map((l) => {
                 const Icon = l.icon;
                 const active = pathname === l.href;
                 return (
-                  <Link key={l.href} href={l.href}
-                    className={`px-3 py-2 rounded-lg text-sm font-semibold transition-colors flex items-center gap-1.5
-                      ${active ? 'bg-orange-50 text-orange-600' : 'text-gray-500 hover:bg-gray-50 hover:text-gray-900'}`}>
-                    <Icon className="h-4 w-4" />{l.label}
+                  <Link 
+                    key={l.href} 
+                    href={l.href}
+                    className={`relative px-4 py-2 rounded-xl text-sm font-bold transition-all duration-300 flex items-center gap-2 overflow-hidden
+                      ${active 
+                        ? 'bg-white text-orange-600 shadow-sm ring-1 ring-gray-100' 
+                        : 'text-gray-500 hover:text-gray-900 hover:bg-gray-100/50'}`}
+                  >
+                    <Icon className={`h-4 w-4 transition-transform duration-300 ${active ? 'scale-110' : 'group-hover:scale-110'}`} />
+                    {l.label}
+                    {active && <span className="absolute bottom-0 left-0 w-full h-0.5 bg-orange-600/20" />}
                   </Link>
                 );
               })}
             </nav>
           </div>
-          <div className="flex items-center gap-2">
-            <div className="hidden md:flex items-center gap-1 mr-2">
-              {infoLinks.map((l) => (
-                <Link key={l.href} href={l.href}
-                  className={`px-2.5 py-1.5 rounded-md text-xs font-bold uppercase tracking-wide transition-colors
-                    ${pathname === l.href ? 'text-orange-600' : 'text-gray-400 hover:text-gray-700'}`}>
-                  {l.label}
-                </Link>
-              ))}
+
+          {/* Search Bar - Desktop Only */}
+          <div className="hidden xl:flex flex-1 max-w-sm">
+            <div className="relative w-full group">
+              <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-gray-400 group-focus-within:text-orange-500 transition-colors" />
+              <input 
+                type="text" 
+                placeholder="Buscar atrativos, cidades..." 
+                className="w-full bg-gray-50 border-none rounded-2xl py-2.5 pl-10 pr-4 text-sm font-medium focus:ring-2 focus:ring-orange-100 transition-all outline-none placeholder:text-gray-400"
+              />
             </div>
-            <Button variant="ghost" size="icon" className="text-gray-400 hover:text-gray-700"><Bell className="h-5 w-5" /></Button>
+          </div>
+
+          {/* Right Section: Notification & User */}
+          <div className="flex items-center gap-3">
+            <div className="hidden md:flex items-center gap-1">
+              <Button variant="ghost" size="icon" className="text-gray-400 hover:text-orange-500 hover:bg-orange-50 rounded-xl transition-colors">
+                <Bell className="h-5 w-5" />
+              </Button>
+              <Button variant="ghost" size="icon" className="text-gray-400 hover:text-orange-500 hover:bg-orange-50 rounded-xl transition-colors">
+                <Share2 className="h-5 w-5" />
+              </Button>
+            </div>
+
+            <div className="h-8 w-px bg-gray-100 mx-1 hidden md:block" />
+
             {isAuthenticated ? (
               <DropdownMenu>
-                <DropdownMenuTrigger>
-                  <button className="flex items-center gap-2 pl-2 pr-3 py-1.5 rounded-full hover:bg-gray-50 transition-colors border border-gray-100">
-                    <ShadAvatar className="h-8 w-8 ring-2 ring-orange-400">
-                      <AvatarImage src={user?.avatar || ''} />
-                      <AvatarFallback className="bg-orange-100 text-orange-600 font-bold text-sm">{user?.name?.charAt(0) || 'U'}</AvatarFallback>
-                    </ShadAvatar>
-                    <span className="text-sm font-semibold text-gray-700 hidden sm:inline">{user?.name?.split(' ')[0]}</span>
+                <DropdownMenuTrigger asChild>
+                  <button className="flex items-center gap-3 pl-1 pr-3 py-1 bg-white border border-gray-100 rounded-2xl hover:shadow-md transition-all group overflow-hidden">
+                    <div className="relative">
+                      <ShadAvatar className="h-9 w-9 border-2 border-white ring-2 ring-orange-100 group-hover:ring-orange-200 transition-all">
+                        <AvatarImage src={user?.avatar || ''} />
+                        <AvatarFallback className="bg-gradient-to-br from-orange-400 to-amber-500 text-white font-black text-xs">
+                          {user?.name?.charAt(0) || 'U'}
+                        </AvatarFallback>
+                      </ShadAvatar>
+                      <div className="absolute -bottom-0.5 -right-0.5 h-3 w-3 bg-green-500 border-2 border-white rounded-full" />
+                    </div>
+                    <div className="flex flex-col items-start leading-none hidden sm:flex">
+                      <span className="text-sm font-bold text-gray-800">{user?.name?.split(' ')[0]}</span>
+                      <span className="text-[10px] font-semibold text-gray-400">Ver Perfil</span>
+                    </div>
                   </button>
                 </DropdownMenuTrigger>
-                <DropdownMenuContent align="end" className="w-48">
-                  <DropdownMenuLabel className="font-bold">{user?.name}</DropdownMenuLabel>
-                  <DropdownMenuSeparator />
-                  <DropdownMenuItem onClick={() => dispatch(logout())} className="text-red-500 font-semibold cursor-pointer">
-                    <LogOut className="mr-2 h-4 w-4" />Sair
+                <DropdownMenuContent align="end" className="w-56 p-2 rounded-2xl border-orange-50 shadow-xl shadow-orange-100/50">
+                  <DropdownMenuLabel className="px-3 py-2">
+                    <p className="text-sm font-black text-gray-900 leading-tight">{user?.name}</p>
+                    <p className="text-[10px] font-bold text-gray-400 uppercase tracking-wider">{user?.email}</p>
+                  </DropdownMenuLabel>
+                  <DropdownMenuSeparator className="bg-gray-50" />
+                  <DropdownMenuItem className="rounded-xl px-3 py-2 cursor-pointer focus:bg-orange-50 focus:text-orange-600 transition-colors">
+                    <Users className="mr-2 h-4 w-4" /> Minha Conta
+                  </DropdownMenuItem>
+                  <DropdownMenuItem className="rounded-xl px-3 py-2 cursor-pointer focus:bg-orange-50 focus:text-orange-600 transition-colors">
+                    <Heart className="mr-2 h-4 w-4" /> Meus Favoritos
+                  </DropdownMenuItem>
+                  <DropdownMenuSeparator className="bg-gray-50" />
+                  <DropdownMenuItem onClick={() => dispatch(logout())} className="rounded-xl px-3 py-2 cursor-pointer text-red-500 font-bold focus:bg-red-50 focus:text-red-600 transition-colors">
+                    <LogOut className="mr-2 h-4 w-4" /> Encerrar Sessão
                   </DropdownMenuItem>
                 </DropdownMenuContent>
               </DropdownMenu>
             ) : (
-              <Button onClick={() => router.push('/login')} className="bg-orange-500 hover:bg-orange-600 text-white font-bold rounded-full px-5">
-                <LogIn className="mr-2 h-4 w-4" />Entrar
+              <Button 
+                onClick={() => router.push('/login')} 
+                className="bg-gradient-to-r from-orange-500 to-amber-500 hover:from-orange-600 hover:to-amber-600 text-white font-black rounded-2xl px-6 py-5 shadow-lg shadow-orange-100 active:scale-95 transition-all text-sm uppercase tracking-wide"
+              >
+                <LogIn className="mr-2 h-4 w-4" /> Entrar Agora
               </Button>
             )}
+
             <div className="lg:hidden">
               <Sheet>
-                <SheetTrigger><Button variant="ghost" size="icon"><Menu className="h-5 w-5" /></Button></SheetTrigger>
+                <SheetTrigger asChild>
+                  <Button variant="ghost" size="icon" className="bg-gray-50 rounded-xl hover:bg-orange-50 hover:text-orange-500 transition-colors">
+                    <Menu className="h-6 w-6" />
+                  </Button>
+                </SheetTrigger>
                 <SheetContent side="right" className="w-72 pt-10">
                   <nav className="flex flex-col gap-1">
                     {navLinks.map((l) => { const Icon = l.icon; return (
@@ -162,12 +221,86 @@ function WebLayout({ children }: LayoutProps) {
           </div>
         </div>
       </header>
-      <main className="flex-1 max-w-6xl mx-auto w-full px-4 md:px-6 py-8">{children}</main>
-      <footer className="border-t border-gray-100 bg-white py-8 px-6">
-        <div className="max-w-6xl mx-auto flex flex-col md:flex-row justify-between items-center gap-4">
-          <div className="flex items-center gap-2 text-gray-400"><Compass className="h-5 w-5 text-orange-400" /><span className="font-bold text-sm">SERGIPANIDADE</span></div>
-          <div className="flex gap-6">{infoLinks.map((l) => (<Link key={l.href} href={l.href} className="text-xs text-gray-400 font-semibold hover:text-orange-500 uppercase">{l.label}</Link>))}</div>
-          <p className="text-xs text-gray-300">© 2026 Sergipanidade</p>
+      <main className="flex-1 max-w-7xl mx-auto w-full px-4 md:px-8 py-10">{children}</main>
+      <footer className="bg-[#1A1A1A] text-gray-300 pt-16 pb-8 px-6 overflow-hidden relative">
+        {/* Subtle Decorative Background Element */}
+        <div className="absolute top-0 right-0 w-96 h-96 bg-orange-500/5 rounded-full blur-3xl -translate-y-1/2 translate-x-1/2" />
+        
+        <div className="max-w-7xl mx-auto">
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-12 mb-16">
+            {/* Brand Column */}
+            <div className="space-y-6">
+              <Link href="/" className="flex items-center gap-2 group">
+                <div className="p-2 bg-gradient-to-br from-orange-500 to-amber-500 rounded-xl shadow-lg ring-1 ring-white/10">
+                  <Compass className="h-5 w-5 text-white" />
+                </div>
+                <span className="text-xl font-black tracking-tighter text-white">SERGIPANIDADE</span>
+              </Link>
+              <p className="text-sm leading-relaxed text-gray-400 font-medium">
+                Sua porta de entrada para vivenciar o melhor de Sergipe. Descubra paisagens, cultura e uma gastronomia inigualável com o seu guia definitivo do estado.
+              </p>
+              
+            </div>
+
+            {/* Platform Column */}
+            <div className="space-y-6">
+              <h3 className="text-white font-bold text-sm uppercase tracking-widest px-1 border-l-2 border-orange-500">Plataforma</h3>
+              <ul className="space-y-4">
+                {navLinks.map((l) => (
+                  <li key={l.href}>
+                    <Link href={l.href} className="text-sm font-semibold hover:text-orange-400 transition-colors flex items-center gap-2 group">
+                      <div className="h-1 w-1 rounded-full bg-orange-500 scale-0 group-hover:scale-100 transition-transform" />
+                      {l.label}
+                    </Link>
+                  </li>
+                ))}
+              </ul>
+            </div>
+
+            {/* Resources Column */}
+            <div className="space-y-6">
+              <h3 className="text-white font-bold text-sm uppercase tracking-widest px-1 border-l-2 border-orange-500">Recursos</h3>
+              <ul className="space-y-4">
+                {infoLinks.map((l) => (
+                  <li key={l.href}>
+                    <Link href={l.href} className="text-sm font-semibold hover:text-orange-400 transition-colors flex items-center gap-2 group">
+                       <div className="h-1 w-1 rounded-full bg-orange-500 scale-0 group-hover:scale-100 transition-transform" />
+                      {l.label}
+                    </Link>
+                  </li>
+                ))}
+              </ul>
+            </div>
+
+            {/* Newsletter/Contact Column */}
+            <div className="space-y-6">
+              <h3 className="text-white font-bold text-sm uppercase tracking-widest px-1 border-l-2 border-orange-500">Fique por dentro</h3>
+              <p className="text-xs text-gray-400 font-medium">Receba dicas exclusivas sobre Sergipe diretamente no seu e-mail.</p>
+              <div className="flex gap-2">
+                <input 
+                  type="email" 
+                  placeholder="Seu e-mail" 
+                  className="bg-white/5 border border-white/10 rounded-xl px-4 py-2 text-sm focus:ring-1 focus:ring-orange-500 outline-none w-full transition-all"
+                />
+                <Button size="icon" className="bg-orange-500 hover:bg-orange-600 rounded-xl shrink-0"><Mail className="h-4 w-4" /></Button>
+              </div>
+            </div>
+          </div>
+
+          <div className="pt-8 border-t border-white/5 flex flex-col md:flex-row justify-between items-center gap-6">
+            <div className="flex flex-wrap justify-center gap-8 text-[11px] font-bold text-gray-500 uppercase tracking-widest">
+              <Link href="#" className="hover:text-white transition-colors">Termos de Uso</Link>
+              <Link href="#" className="hover:text-white transition-colors">Privacidade</Link>
+              <Link href="#" className="hover:text-white transition-colors">Cookies</Link>
+            </div>
+            <p className="text-xs font-semibold text-gray-400 flex items-center gap-1.5 order-first md:order-last">
+              Made with <Heart className="h-3 w-3 text-red-500 fill-red-500 animate-pulse" /> for Sergipe
+            </p>
+          </div>
+          
+          <div className="mt-8 text-center text-[10px] text-gray-600 font-bold uppercase tracking-[0.3em]">
+            © 2026 Sergipanidade • Desenvolvido pela Equipe Sergipana
+          </div>
         </div>
       </footer>
     </div>
