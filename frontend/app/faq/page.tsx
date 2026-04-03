@@ -24,7 +24,7 @@ function WebFAQ() {
         <p className="text-xl text-gray-400">Tudo que precisa saber sobre sua viagem.</p>
       </div>
       <div className="max-w-3xl mx-auto">
-        <Accordion type="single" collapsible className="space-y-3">
+        <Accordion className="space-y-3">
           {faqs.map((f, i) => { const Icon = f.icon; return (
             <AccordionItem key={i} value={`item-${i}`} className="border border-gray-100 rounded-2xl px-6 data-[state=open]:shadow-lg transition-shadow overflow-hidden bg-white">
               <AccordionTrigger className="hover:no-underline py-5">
