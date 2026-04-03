@@ -150,7 +150,7 @@ function WebLayout({ children }: LayoutProps) {
 
             {isAuthenticated ? (
               <DropdownMenu>
-                <DropdownMenuTrigger asChild>
+                <DropdownMenuTrigger>
                   <button className="flex items-center gap-3 pl-1 pr-3 py-1 bg-white dark:bg-slate-900 border border-gray-100 dark:border-slate-800 rounded-2xl hover:shadow-md transition-all group overflow-hidden">
                     <div className="relative">
                       <ShadAvatar className="h-9 w-9 border-2 border-white dark:border-slate-800 ring-2 ring-orange-100 dark:ring-orange-900/30 group-hover:ring-orange-200 transition-all">
@@ -202,7 +202,7 @@ function WebLayout({ children }: LayoutProps) {
 
             <div className="lg:hidden">
               <Sheet>
-                <SheetTrigger asChild>
+                <SheetTrigger>
                   <Button variant="ghost" size="icon" className="bg-gray-50 rounded-xl hover:bg-orange-50 hover:text-orange-500 transition-colors">
                     <Menu className="h-6 w-6" />
                   </Button>
@@ -421,7 +421,7 @@ function MobileLayout({ children }: LayoutProps) {
             ) : (
               <Box sx={{ ml: 0.5 }}>
                 <DropdownMenu>
-                  <DropdownMenuTrigger asChild>
+                  <DropdownMenuTrigger>
                     <IconButton size="small" sx={{ p: 0 }}>
                       <MuiAvatar
                         src={user?.avatar || ''}
