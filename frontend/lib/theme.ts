@@ -11,17 +11,17 @@ export const getTheme = (mode: 'light' | 'dark') => {
         contrastText: '#fff',
       },
       secondary: {
-        main: isDark ? '#EDF2F7' : '#2C3E50', // Brighter in dark mode, darker in light mode
+        main: isDark ? '#F1F5F9' : '#1E293B',
       },
       background: {
-        default: isDark ? '#0F172A' : '#F8FAFC',
+        default: isDark ? '#0F172A' : '#FDFCFB',
         paper: isDark ? '#1E293B' : '#FFFFFF',
       },
       text: {
-        primary: isDark ? '#F1F5F9' : '#1E293B',
+        primary: isDark ? '#F8FAFC' : '#0F172A',
         secondary: isDark ? '#94A3B8' : '#64748B',
       },
-      divider: isDark ? 'rgba(255, 255, 255, 0.08)' : 'rgba(0, 0, 0, 0.08)',
+      divider: isDark ? 'rgba(255, 255, 255, 0.06)' : 'rgba(0, 0, 0, 0.06)',
     },
     typography: {
       fontFamily: '"Outfit", "Inter", "Roboto", sans-serif',

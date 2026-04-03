@@ -1,5 +1,6 @@
 'use client';
 
+import { useState, useEffect } from 'react';
 import { 
   Box, 
   Typography, 
@@ -26,13 +27,15 @@ import {
 } from 'lucide-react';
 import { useRouter } from 'next/navigation';
 import { motion } from 'framer-motion';
+import { useTheme } from 'next-themes';
 
 interface SettingItem {
   icon: React.ReactNode;
   text: string;
   route?: string;
   toggle?: boolean;
-  defaultChecked?: boolean;
+  checked?: boolean;
+  onToggle?: (val: boolean) => void;
   value?: string;
   color?: string;
 }
@@ -44,13 +47,26 @@ interface SettingGroup {
 
 export default function SettingsPage() {
   const router = useRouter();
+  const { theme, setTheme } = useTheme();
+  const [mounted, setMounted] = useState(false);
+
+  // Avoid hydration mismatch
+  useEffect(() => {
+    setMounted(true);
+  }, []);
 
   const settingsGroups: SettingGroup[] = [
     {
       title: 'Preferências',
       items: [
-        { icon: <Bell size={20} />, text: 'Notificações Push', toggle: true, defaultChecked: true },
-        { icon: <Eye size={20} />, text: 'Modo Escuro', toggle: true, defaultChecked: false },
+        { icon: <Bell size={20} />, text: 'Notificações Push', toggle: true, checked: true },
+        { 
+          icon: <Eye size={20} />, 
+          text: 'Modo Escuro', 
+          toggle: true, 
+          checked: theme === 'dark',
+          onToggle: (val) => setTheme(val ? 'dark' : 'light')
+        },
         { icon: <Languages size={20} />, text: 'Idioma do App', value: 'Português (BR)' },
       ]
     },
@@ -69,6 +85,8 @@ export default function SettingsPage() {
       ]
     }
   ];
+
+  if (!mounted) return null;
 
   return (
     <Box sx={{ py: 4, maxWidth: 650, mx: 'auto', px: 2 }}>
@@ -93,7 +111,13 @@ export default function SettingsPage() {
                   <Box key={item.text}>
                     <ListItem disablePadding>
                       <ListItemButton 
-                        onClick={() => item.route && router.push(item.route)}
+                        onClick={() => {
+                          if (item.toggle && item.onToggle) {
+                            item.onToggle(!item.checked);
+                          } else if (item.route) {
+                            router.push(item.route);
+                          }
+                        }}
                         sx={{ py: 2, px: 3, '&:hover': { bgcolor: 'action.hover' } }}
                       >
                         <ListItemIcon sx={{ minWidth: 44, color: item.color || '#E67E22' }}>{item.icon}</ListItemIcon>
@@ -103,7 +127,18 @@ export default function SettingsPage() {
                           secondary={item.value}
                           secondaryTypographyProps={{ fontWeight: 600, color: 'text.secondary' }}
                         />
-                        {item.toggle && <Switch defaultChecked={item.defaultChecked} size="small" />}
+                        {item.toggle && (
+                          <Switch 
+                            checked={item.checked} 
+                            onChange={(e) => item.onToggle && item.onToggle(e.target.checked)}
+                            onClick={(e) => e.stopPropagation()}
+                            size="small" 
+                            sx={{
+                              '& .MuiSwitch-switchBase.Mui-checked': { color: '#E67E22' },
+                              '& .MuiSwitch-switchBase.Mui-checked + .MuiSwitch-track': { bgcolor: '#E67E22' }
+                            }}
+                          />
+                        )}
                       </ListItemButton>
                     </ListItem>
                     {idx < group.items.length - 1 && <Divider sx={{ opacity: 0.5 }} />}

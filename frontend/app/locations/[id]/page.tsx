@@ -22,32 +22,53 @@ function WebDetail() {
   const dispatch = useDispatch();
   const loc = locations.find(l => l.id === id);
   const favs = useSelector((s: RootState) => s.favorites.items || []);
-  if (!loc) return <p className="text-center py-20 text-gray-400">Local não encontrado.</p>;
+  if (!loc) return <p className="text-center py-20 text-muted-foreground">Local não encontrado.</p>;
   const isFav = favs.includes(id as string);
 
   return (
-    <div className="max-w-4xl mx-auto space-y-8 animate-in fade-in duration-500">
-      <button onClick={() => router.back()} className="flex items-center gap-2 text-sm font-bold text-gray-400 hover:text-gray-700"><ArrowLeft className="h-4 w-4" /> Voltar</button>
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
-        <div className="relative rounded-3xl overflow-hidden h-80 md:h-full min-h-[350px]">
+    <div className="max-w-4xl mx-auto space-y-8 animate-in fade-in duration-500 pb-20">
+      <button onClick={() => router.back()} className="flex items-center gap-2 text-sm font-black text-muted-foreground hover:text-foreground transition-colors uppercase tracking-widest"><ArrowLeft className="h-4 w-4" /> Voltar</button>
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-12">
+        <div className="relative rounded-[3rem] overflow-hidden h-80 md:h-full min-h-[450px] shadow-2xl">
           <img src={loc.image} alt={loc.name} className="w-full h-full object-cover" />
-          <button onClick={() => dispatch(toggleFavorite(loc.id))} className="absolute top-4 right-4 p-3 rounded-full bg-white/80 backdrop-blur-sm hover:bg-white transition-colors">
-            <Heart className={`h-5 w-5 ${isFav ? 'fill-orange-500 text-orange-500' : 'text-gray-600'}`} />
+          <button onClick={() => dispatch(toggleFavorite(loc.id))} className="absolute top-6 right-6 p-4 rounded-full bg-background/80 backdrop-blur-md hover:bg-background transition-all shadow-xl active:scale-90">
+            <Heart className={`h-6 w-6 ${isFav ? 'fill-primary text-primary' : 'text-muted-foreground'}`} />
           </button>
         </div>
-        <div className="space-y-6">
-          <div>
-            <Badge className="bg-orange-50 text-orange-600 border-orange-200 font-bold mb-3">{loc.category}</Badge>
-            <h1 className="text-4xl font-black text-gray-900 mb-1">{loc.name}</h1>
-            <div className="flex items-center gap-2"><Star className="h-5 w-5 fill-amber-400 text-amber-400" /><span className="font-black text-lg text-gray-700">{loc.rating}</span></div>
+        <div className="space-y-10">
+          <div className="space-y-4">
+            <Badge className="bg-primary/10 text-primary border-none font-black px-4 py-1.5 rounded-full uppercase tracking-widest text-[10px]">{loc.category}</Badge>
+            <h1 className="text-5xl font-black text-foreground uppercase italic tracking-tighter leading-none">{loc.name}</h1>
+            <div className="flex items-center gap-2"><Star className="h-6 w-6 fill-amber-400 text-amber-400" /><span className="font-black text-2xl text-foreground">{loc.rating}</span></div>
           </div>
-          <div><h3 className="font-bold text-gray-900 mb-2">Sobre este lugar</h3><p className="text-gray-500 leading-relaxed">{loc.description}</p></div>
-          <div className="grid grid-cols-2 gap-3">
-            <Card className="border-gray-100"><CardContent className="pt-4"><div className="flex items-center gap-2 mb-1"><MapPin className="h-4 w-4 text-orange-500" /><span className="text-xs text-gray-400 font-bold">Distância</span></div><p className="font-black text-gray-900 text-lg ml-6">{loc.distance}</p></CardContent></Card>
-            <Card className="border-gray-100"><CardContent className="pt-4"><div className="flex items-center gap-2 mb-1"><Clock className="h-4 w-4 text-orange-500" /><span className="text-xs text-gray-400 font-bold">Tempo</span></div><p className="font-black text-gray-900 text-lg ml-6">{loc.time}</p></CardContent></Card>
+          <div className="space-y-4">
+            <h3 className="font-black text-foreground uppercase italic tracking-tighter text-xl">Sobre este lugar</h3>
+            <p className="text-muted-foreground leading-relaxed font-medium text-lg">{loc.description}</p>
           </div>
-          <div><h3 className="font-bold text-gray-900 mb-3">Como chegar</h3><div className="space-y-3">{loc.directions.map((s,i)=>(<div key={i} className="flex items-start gap-3"><div className="h-7 w-7 rounded-full bg-blue-50 text-blue-500 flex items-center justify-center text-xs font-black shrink-0">{String.fromCharCode(65+i)}</div><p className="text-sm text-gray-500 mt-0.5">{s}</p></div>))}</div></div>
-          <Button className="w-full h-12 rounded-xl bg-orange-500 hover:bg-orange-600 text-white font-bold"><Compass className="mr-2 h-5 w-5" /> INICIAR NAVEGAÇÃO</Button>
+          <div className="grid grid-cols-2 gap-6">
+            <div className="bg-card p-6 rounded-[2rem] border border-border shadow-xl shadow-black/5">
+              <div className="flex items-center gap-2 mb-2"><MapPin className="h-5 w-5 text-primary" /><span className="text-[10px] text-muted-foreground font-black uppercase tracking-widest">Distância</span></div>
+              <p className="font-black text-foreground text-2xl ml-7">{loc.distance}</p>
+            </div>
+            <div className="bg-card p-6 rounded-[2rem] border border-border shadow-xl shadow-black/5">
+              <div className="flex items-center gap-2 mb-2"><Clock className="h-5 w-5 text-primary" /><span className="text-[10px] text-muted-foreground font-black uppercase tracking-widest">Tempo</span></div>
+              <p className="font-black text-foreground text-2xl ml-7">{loc.time}</p>
+            </div>
+          </div>
+          <div className="space-y-5">
+            <h3 className="font-black text-foreground uppercase italic tracking-tighter text-xl">Como chegar</h3>
+            <div className="space-y-4">
+              {loc.directions.map((s,i)=>(
+                <div key={i} className="flex items-start gap-4">
+                  <div className="h-8 w-8 rounded-xl bg-primary/10 text-primary flex items-center justify-center text-xs font-black shrink-0 shadow-sm">{String.fromCharCode(65+i)}</div>
+                  <p className="text-base text-muted-foreground font-bold mt-1 leading-snug">{s}</p>
+                </div>
+              ))}
+            </div>
+          </div>
+          <Button className="w-full h-16 rounded-[2rem] bg-primary hover:bg-primary/90 text-primary-foreground font-black text-lg shadow-xl shadow-primary/20 active:scale-95 transition-all uppercase tracking-tight">
+            <Compass className="mr-3 h-6 w-6" /> INICIAR NAVEGAÇÃO
+          </Button>
         </div>
       </div>
     </div>
@@ -62,191 +83,99 @@ function MobileDetail() {
   const favs = useSelector((s: RootState) => s.favorites.items || []);
 
   if (!loc) return (
-    <Box sx={{ p: 6, textAlign: 'center', mt: 10 }}>
-      <Typography variant="h5" sx={{ fontWeight: 900, mb: 2 }}>Local não encontrado.</Typography>
-      <MuiButton 
-        variant="contained" 
-        onClick={() => router.push('/')}
-        sx={{ borderRadius: 4, bgcolor: '#E67E22' }}
-      >
-        Voltar para Home
-      </MuiButton>
-    </Box>
+    <div className="p-10 text-center space-y-4">
+      <h2 className="text-2xl font-black text-foreground">Local não encontrado.</h2>
+      <Button onClick={() => router.push('/')} className="bg-primary text-primary-foreground font-black px-8 h-14 rounded-2xl">Voltar para Home</Button>
+    </div>
   );
 
   const isFav = favs.includes(id as string);
 
   return (
-    <Box sx={{ pb: 12, mx: -2, mt: -2.5 }}>
-      {/* Hero Image Section with Enhanced Presentation */}
-      <Box sx={{ position: 'relative', height: 420, overflow: 'hidden' }}>
-        <CardMedia
-          component="img"
-          image={loc.image}
-          sx={{ width: '100%', height: '100%', objectFit: 'cover' }}
-        />
+    <div className="pb-20 -mx-4 -mt-10 min-h-screen bg-background">
+      {/* Hero Image Section */}
+      <div className="relative h-[450px] overflow-hidden">
+        <img src={loc.image} alt={loc.name} className="w-full h-full object-cover" />
         
-        {/* Animated Glass Controls */}
-        <Box sx={{
-          position: 'absolute', top: 20, left: 20, right: 20,
-          display: 'flex', justifyContent: 'space-between', zIndex: 20
-        }}>
-          <IconButton
+        {/* Controls */}
+        <div className="absolute top-6 left-6 right-6 flex justify-between z-20">
+          <button
             onClick={() => router.back()}
-            sx={{
-              bgcolor: 'rgba(255,255,255,0.7)',
-              backdropFilter: 'blur(12px)',
-              boxShadow: '0 4px 15px rgba(0,0,0,0.1)',
-              border: '1px solid rgba(255,255,255,0.2)',
-              '&:hover': { bgcolor: 'white' }
-            }}
+            className="h-12 w-12 rounded-2xl bg-black/30 backdrop-blur-md border border-white/20 flex items-center justify-center text-white active:scale-90 transition-all"
           >
-            <ArrowLeft size={22} color="#1A202C" />
-          </IconButton>
-          <IconButton
+            <ArrowLeft size={24} />
+          </button>
+          <button
             onClick={() => dispatch(toggleFavorite(loc.id))}
-            sx={{
-              bgcolor: 'rgba(255,255,255,0.8)',
-              backdropFilter: 'blur(12px)',
-              boxShadow: '0 4px 15px rgba(0,0,0,0.1)',
-              border: '1px solid rgba(255,255,255,0.2)',
-              '&:hover': { bgcolor: 'white' }
-            }}
+            className="h-12 w-12 rounded-2xl bg-black/30 backdrop-blur-md border border-white/20 flex items-center justify-center text-white active:scale-90 transition-all"
           >
-            <Heart size={22} fill={isFav ? '#E67E22' : 'none'} color={isFav ? '#E67E22' : '#1A202C'} />
-          </IconButton>
-        </Box>
+            <Heart size={24} className={isFav ? 'fill-primary text-primary' : ''} />
+          </button>
+        </div>
 
-        {/* Improved Overlay Gradient */}
-        <Box sx={{
-          position: 'absolute', bottom: 0, left: 0, right: 0, height: 200,
-          background: 'linear-gradient(to top, rgba(0,0,0,0.9) 0%, rgba(0,0,0,0.4) 40%, transparent 100%)',
-          zIndex: 5
-        }} />
+        {/* Gradient Overlay */}
+        <div className="absolute inset-x-0 bottom-0 h-48 bg-linear-to-t from-background via-background/40 to-transparent z-5" />
 
-        {/* Immersive Title Overlay */}
-        <Box sx={{ position: 'absolute', bottom: 60, left: 24, right: 24, zIndex: 10 }}>
-          <Box sx={{ display: 'flex', gap: 1, mb: 1.5 }}>
-             <Chip
-               label={loc.category.toUpperCase()}
-               sx={{
-                 bgcolor: '#E67E22', color: 'white', fontWeight: 950,
-                 fontSize: '0.6rem', height: 24, letterSpacing: 1.5,
-                 boxShadow: '0 4px 12px rgba(230,126,34,0.4)', border: 'none'
-               }}
-             />
-             <Box sx={{ px: 1.5, py: 0.2, bgcolor: 'rgba(255,255,255,0.2)', backdropFilter: 'blur(8px)', borderRadius: 4, display: 'flex', alignItems: 'center', gap: 0.5 }}>
+        {/* Title Overlay */}
+        <div className="absolute bottom-12 left-6 right-6 z-10 space-y-3">
+          <div className="flex gap-2">
+             <span className="px-3 py-1 bg-primary text-primary-foreground font-black text-[10px] uppercase tracking-widest rounded-lg shadow-lg shadow-primary/30">{loc.category}</span>
+             <div className="px-3 py-1 bg-black/30 backdrop-blur-md text-white rounded-lg font-black text-[10px] flex items-center gap-1">
                 <Star size={10} fill="#FFD700" color="#FFD700" />
-                <Typography sx={{ color: 'white', fontWeight: 900, fontSize: '0.7rem' }}>{loc.rating}</Typography>
-             </Box>
-          </Box>
-          <Typography variant="h3" sx={{ fontWeight: 950, color: 'white', textShadow: '0 4px 20px rgba(0,0,0,0.5)', mb: 0.5, letterSpacing: -1.5 }}>
-            {loc.name}
-          </Typography>
-          <Stack direction="row" spacing={1} alignItems="center">
-            <MapPin size={14} color="#E67E22" />
-            <Typography sx={{ color: 'white', fontWeight: 700, fontSize: '0.9rem', opacity: 0.9 }}>
-              {loc.city}, Sergipe
-            </Typography>
-          </Stack>
-        </Box>
-      </Box>
+                {loc.rating}
+             </div>
+          </div>
+          <h1 className="text-4xl font-black text-foreground uppercase italic tracking-tighter leading-none">{loc.name}</h1>
+          <div className="flex items-center gap-1.5 text-muted-foreground">
+            <MapPin size={14} className="text-primary" />
+            <span className="text-[10px] font-black uppercase tracking-widest leading-none">{loc.city}, Sergipe</span>
+          </div>
+        </div>
+      </div>
 
-      {/* Modern Floating Content Sheet */}
-      <Paper elevation={0} sx={{
-        position: 'relative', zIndex: 15,
-        borderRadius: '40px 40px 0 0',
-        p: 4, pt: 4, mt: -5,
-        bgcolor: 'white',
-        minHeight: '60vh',
-        boxShadow: '0 -15px 50px rgba(0,0,0,0.1)'
-      }}>
-        {/* Handle for the sheet */}
-        <Box sx={{ width: 48, height: 5, bgcolor: '#E2E8F0', borderRadius: 10, mx: 'auto', mb: 4 }} />
+      {/* Content Sheet */}
+      <div className="relative z-15 bg-background rounded-t-[3rem] px-6 pt-8 -mt-8 space-y-10 min-h-[50vh]">
+        <div className="w-12 h-1.5 bg-muted rounded-full mx-auto" />
 
-        <Box sx={{ mb: 4 }}>
-           <Typography sx={{ fontWeight: 950, fontSize: '1.4rem', color: '#1A202C', mb: 1.5, letterSpacing: -0.5 }}>
-             Sobre
-           </Typography>
-           <Typography variant="body1" sx={{ color: '#4A5568', lineHeight: 1.8, fontSize: '1rem', fontWeight: 500 }}>
-             {loc.description}
-           </Typography>
-        </Box>
+        <div className="space-y-4">
+           <h3 className="text-xl font-black text-foreground uppercase italic tracking-tighter">Sobre</h3>
+           <p className="text-muted-foreground font-bold text-sm leading-relaxed">{loc.description}</p>
+        </div>
 
-        {/* High-Fidelity Stats Grid */}
-        <Grid container spacing={2.5} sx={{ mb: 5 }}>
-          <Grid size={{ xs: 6 }}>
-            <Paper elevation={0} sx={{
-              p: 2.5, borderRadius: 4, bgcolor: '#FFF5EB', border: '1px solid rgba(230,126,34,0.05)',
-              display: 'flex', flexDirection: 'column', alignItems: 'center', textAlign: 'center'
-            }}>
-              <Box sx={{ bgcolor: 'white', p: 1.5, borderRadius: 4, mb: 1.5, boxShadow: '0 4px 12px rgba(0,0,0,0.04)' }}>
-                <Navigation size={22} color="#E67E22" />
-              </Box>
-              <Typography variant="caption" sx={{ color: '#E67E22', fontWeight: 900, mb: 0.5, letterSpacing: 1 }}>DISTÂNCIA</Typography>
-              <Typography sx={{ fontWeight: 950, color: '#1A202C', fontSize: '1.1rem' }}>{loc.distance}</Typography>
-            </Paper>
-          </Grid>
-          <Grid size={{ xs: 6 }}>
-            <Paper elevation={0} sx={{
-              p: 2.5, borderRadius: 4, bgcolor: '#F0FFF4', border: '1px solid rgba(46,204,113,0.05)',
-              display: 'flex', flexDirection: 'column', alignItems: 'center', textAlign: 'center'
-            }}>
-              <Box sx={{ bgcolor: 'white', p: 1.5, borderRadius: 4, mb: 1.5, boxShadow: '0 4px 12px rgba(0,0,0,0.04)' }}>
-                <Clock size={22} color="#2ECC71" />
-              </Box>
-              <Typography variant="caption" sx={{ color: '#2ECC71', fontWeight: 900, mb: 0.5, letterSpacing: 1 }}>TEMPO</Typography>
-              <Typography sx={{ fontWeight: 950, color: '#1A202C', fontSize: '1.1rem' }}>{loc.time}</Typography>
-            </Paper>
-          </Grid>
-        </Grid>
+        {/* Stats Grid */}
+        <div className="grid grid-cols-2 gap-4">
+          <div className="p-5 rounded-[2rem] bg-primary/5 border border-primary/5 flex flex-col items-center text-center space-y-2 group active:scale-95 transition-all">
+            <div className="p-3 bg-card rounded-2xl shadow-xl shadow-black/5 text-primary group-hover:scale-110 transition-transform"><Navigation size={22} /></div>
+            <p className="text-[9px] font-black tracking-widest uppercase text-primary/70">DISTÂNCIA</p>
+            <p className="text-lg font-black text-foreground uppercase tracking-tighter italic">{loc.distance}</p>
+          </div>
+          <div className="p-5 rounded-[2rem] bg-primary/5 border border-primary/5 flex flex-col items-center text-center space-y-2 group active:scale-95 transition-all">
+            <div className="p-3 bg-card rounded-2xl shadow-xl shadow-black/5 text-primary group-hover:scale-110 transition-transform"><Clock size={22} /></div>
+            <p className="text-[9px] font-black tracking-widest uppercase text-primary/70">TEMPO</p>
+            <p className="text-lg font-black text-foreground uppercase tracking-tighter italic">{loc.time}</p>
+          </div>
+        </div>
 
-        {/* Detailed Directions section */}
-        <Box sx={{ mb: 5 }}>
-           <Typography sx={{ fontWeight: 950, fontSize: '1.3rem', color: '#1A202C', mb: 3 }}>
-             Ponto de Chegada
-           </Typography>
-           <Stack spacing={3.5}>
+        {/* Directions */}
+        <div className="space-y-6 pb-10">
+           <h3 className="text-xl font-black text-foreground uppercase italic tracking-tighter">Ponto de Chegada</h3>
+           <div className="space-y-6">
              {loc.directions.map((s, i) => (
-               <Box key={i} sx={{ display: 'flex', gap: 3 }}>
-                 <Box sx={{
-                   minWidth: 36, height: 36, borderRadius: '14px',
-                   bgcolor: i === 0 ? '#E67E22' : 'white',
-                   color: i === 0 ? 'white' : '#1A202C',
-                   border: i === 0 ? 'none' : '2px solid #F7FAFC',
-                   display: 'flex', alignItems: 'center',
-                   justifyContent: 'center', fontWeight: 950,
-                   fontSize: '0.9rem', mt: 0.5,
-                   boxShadow: i === 0 ? '0 8px 20px rgba(230,126,34,0.3)' : 'none'
-                 }}>
+               <div key={i} className="flex gap-4 items-start">
+                 <div className={`h-10 w-10 min-w-[40px] rounded-2xl flex items-center justify-center font-black text-sm shadow-lg ${i === 0 ? 'bg-primary text-primary-foreground shadow-primary/20' : 'bg-card text-foreground border border-border'}`}>
                    {i + 1}
-                 </Box>
-                 <Box>
-                    <Typography variant="body2" sx={{ color: '#4A5568', lineHeight: 1.7, fontSize: '0.95rem', fontWeight: 600 }}>
-                      {s}
-                    </Typography>
-                 </Box>
-               </Box>
+                 </div>
+                 <p className="text-xs font-bold text-muted-foreground leading-relaxed pt-1">{s}</p>
+               </div>
              ))}
-           </Stack>
-        </Box>
+           </div>
+        </div>
 
-        <MuiButton
-          fullWidth
-          variant="contained"
-          startIcon={<Compass size={22} />}
-          sx={{
-            py: 2.2, borderRadius: 5, fontWeight: 950, fontSize: '1.05rem',
-            bgcolor: '#E67E22', boxShadow: '0 12px 30px rgba(230,126,34,0.4)',
-            textTransform: 'none', letterSpacing: -0.2,
-            mb: 2,
-            '&:hover': { bgcolor: '#D35400' }
-          }}
-        >
-          Iniciar Viagem
-        </MuiButton>
-      </Paper>
-    </Box>
+        <Button className="w-full h-16 bg-primary text-primary-foreground font-black text-lg rounded-[2rem] shadow-2xl shadow-primary/30 active:scale-95 transition-all uppercase tracking-tight">
+          <Compass className="mr-3 h-6 w-6" /> Iniciar Viagem
+        </Button>
+      </div>
+    </div>
   );
 }
 

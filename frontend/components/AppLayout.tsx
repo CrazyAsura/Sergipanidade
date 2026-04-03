@@ -1,6 +1,6 @@
 'use client';
 
-import { ReactNode, useState } from 'react';
+import { ReactNode, useState, useEffect } from 'react';
 import { usePathname, useRouter } from 'next/navigation';
 import { useSelector, useDispatch } from 'react-redux';
 import { RootState } from '@/lib/store';
@@ -32,32 +32,99 @@ import {
 import {
   Home, Map, Heart, Users, MessageCircle, Bell, LogIn, LogOut,
   Menu, Compass, Info, Wrench, HelpCircle, Mail, X, Search,
-  Share2, ExternalLink, User, Settings
+  Share2, ExternalLink, User, Settings, ChevronRight
 } from 'lucide-react';
 import { ThemeToggle } from './ThemeToggle';
 
-const navLinks = [
+const publicLinks = [
   { label: 'Início', href: '/', icon: Home },
-  { label: 'Mapa', href: '/map', icon: Map },
-  { label: 'Guia IA', href: '/guide', icon: MessageCircle },
-  { label: 'Favoritos', href: '/favorites', icon: Heart },
-  { label: 'Discussões', href: '/discussions', icon: Users },
-];
-
-const infoLinks = [
   { label: 'Sobre', href: '/about', icon: Info },
   { label: 'Serviços', href: '/services', icon: Wrench },
   { label: 'FAQ', href: '/faq', icon: HelpCircle },
   { label: 'Contato', href: '/contact', icon: Mail },
 ];
 
-// Pages where layout chrome should be hidden
+const appLinks = [
+  { label: 'Explorar', href: '/locations', icon: Compass },
+  { label: 'Mapa', href: '/map', icon: Map },
+  { label: 'IA Guia', href: '/guide', icon: MessageCircle },
+  { label: 'Favoritos', href: '/favorites', icon: Heart },
+  { label: 'Fórum', href: '/discussions', icon: Users },
+];
+
 const authPages = ['/auth/login', '/auth/register', '/auth/reset-password'];
 
 interface LayoutProps { children: ReactNode }
 
 // ═══════════════════════════════════════════
-// WEB LAYOUT — Shadcn/Tailwind
+// FOOTER COMPONENT
+// ═══════════════════════════════════════════
+function Footer() {
+  return (
+    <footer className="bg-card text-card-foreground border-t border-border pt-16 pb-8 mt-auto">
+      <div className="max-w-7xl mx-auto px-6 grid grid-cols-1 md:grid-cols-4 gap-12 mb-12">
+        <div className="col-span-1 md:col-span-1">
+          <div className="flex items-center gap-2 mb-6">
+            <Compass className="h-8 w-8 text-primary" />
+            <span className="text-xl font-black text-foreground tracking-tighter">SERGIPANIDADE</span>
+          </div>
+          <p className="text-muted-foreground text-sm leading-relaxed mb-6 font-medium">
+            Descubra as riquezas naturais, históricas e culturais do estado de Sergipe com a nossa guia inteligente.
+          </p>
+          <div className="flex gap-4">
+             {['facebook', 'instagram', 'twitter', 'youtube'].map(s => (
+               <div key={s} className="h-9 w-9 rounded-xl bg-gray-50 dark:bg-slate-800 flex items-center justify-center text-gray-400 dark:text-slate-500 hover:text-orange-500 hover:bg-orange-50 transition-all cursor-pointer border border-gray-100 dark:border-slate-800">
+                 <Share2 size={16} />
+               </div>
+             ))}
+          </div>
+        </div>
+        
+        <div>
+          <h4 className="font-black text-gray-900 dark:text-white mb-6 uppercase text-xs tracking-widest">Navegação</h4>
+          <ul className="space-y-4">
+            {publicLinks.map(l => (
+              <li key={l.href}><Link href={l.href} className="text-sm font-bold text-gray-500 dark:text-slate-400 hover:text-orange-500 transition-colors">{l.label}</Link></li>
+            ))}
+          </ul>
+        </div>
+
+        <div>
+          <h4 className="font-black text-gray-900 dark:text-white mb-6 uppercase text-xs tracking-widest">Plataforma</h4>
+          <ul className="space-y-4">
+            {appLinks.slice(0, 4).map(l => (
+              <li key={l.href}><Link href={l.href} className="text-sm font-bold text-gray-500 dark:text-slate-400 hover:text-orange-500 transition-colors">{l.label}</Link></li>
+            ))}
+          </ul>
+        </div>
+
+        <div>
+          <h4 className="font-black text-gray-900 dark:text-white mb-6 uppercase text-xs tracking-widest">Contato</h4>
+          <p className="text-sm text-gray-500 dark:text-slate-400 font-bold mb-2">contato@sergipanidade.com.br</p>
+          <p className="text-sm text-gray-500 dark:text-slate-400 font-bold">(79) 99999-9999</p>
+          <div className="mt-8 p-4 bg-orange-50 dark:bg-orange-950/20 rounded-2xl border border-orange-100 dark:border-orange-900/30">
+            <p className="text-[10px] font-black text-orange-600 dark:text-orange-400 uppercase tracking-widest mb-1">Newsletter</p>
+            <div className="flex gap-2">
+              <input type="text" placeholder="Seu email" className="bg-white dark:bg-slate-900 text-[10px] rounded-lg px-3 py-2 w-full border-none outline-none focus:ring-1 focus:ring-orange-200" />
+              <Button size="icon" className="h-8 w-8 bg-orange-600 hover:bg-orange-700 shrink-0"><ChevronRight size={14} /></Button>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div className="max-w-7xl mx-auto px-6 pt-8 border-t border-border flex flex-col md:flex-row justify-between items-center gap-4">
+        <p className="text-xs font-bold text-muted-foreground">© 2024 Sergipanidade Turismo. Todos os direitos reservados.</p>
+        <div className="flex gap-6">
+           <a href="#" className="text-xs font-bold text-muted-foreground hover:text-foreground transition-colors">Termos de Uso</a>
+           <a href="#" className="text-xs font-bold text-muted-foreground hover:text-foreground transition-colors">Privacidade</a>
+        </div>
+      </div>
+    </footer>
+  );
+}
+
+// ═══════════════════════════════════════════
+// WEB LAYOUT
 // ═══════════════════════════════════════════
 function WebLayout({ children }: LayoutProps) {
   const pathname = usePathname();
@@ -65,6 +132,23 @@ function WebLayout({ children }: LayoutProps) {
   const dispatch = useDispatch();
   const { isAuthenticated, user } = useSelector((s: RootState) => s.auth);
   const isAuthPage = authPages.includes(pathname);
+  const isPrivatePath = appLinks.some(link => pathname.startsWith(link.href)) || pathname === '/favorites';
+
+  useEffect(() => {
+    if (!isAuthenticated && isPrivatePath) {
+      router.push('/auth/login');
+    }
+  }, [isAuthenticated, isPrivatePath, router]);
+
+  useEffect(() => {
+    if (isAuthenticated && pathname === '/') {
+      router.push('/locations');
+    }
+  }, [isAuthenticated, pathname, router]);
+
+  if (!isAuthenticated && isPrivatePath) return null;
+
+  const currentLinks = isAuthenticated ? appLinks : publicLinks;
 
   if (isAuthPage) {
     return (
@@ -73,27 +157,26 @@ function WebLayout({ children }: LayoutProps) {
           <div className="max-w-6xl mx-auto px-6 h-14 flex items-center">
             <Link href="/" className="flex items-center gap-2">
               <Compass className="h-6 w-6 text-orange-500" />
-              <span className="text-lg font-black bg-linear-to-r from-orange-500 to-amber-500 bg-clip-text text-transparent">SERGIPANIDADE</span>
+              <span className="text-lg font-black bg-linear-to-r from-orange-500 to-amber-500 bg-clip-text text-transparent uppercase">Sergipanidade</span>
             </Link>
           </div>
         </header>
-        <main className="max-w-6xl mx-auto w-full px-4 md:px-6 py-8">{children}</main>
+        <main className="max-w-6xl mx-auto w-full px-6 py-12">{children}</main>
       </div>
     );
   }
 
   return (
-    <div className="min-h-screen flex flex-col bg-[#FDFCFB] dark:bg-slate-950 transition-colors duration-300">
-      <header className="sticky top-0 z-50 bg-white/70 dark:bg-slate-900/70 backdrop-blur-md border-b border-orange-100/30 dark:border-slate-800/50">
+    <div className="min-h-screen flex flex-col bg-background text-foreground transition-colors duration-300">
+      <header className="sticky top-0 z-50 bg-background/70 backdrop-blur-md border-b border-border/50">
         <div className="max-w-7xl mx-auto px-4 md:px-8 h-20 flex items-center justify-between gap-4">
-          {/* Logo Section */}
           <div className="flex items-center gap-10">
-            <Link href="/" className="flex items-center gap-2 group transition-transform duration-300 hover:scale-105">
-              <div className="aspect-square rounded-2xl bg-linear-to-br from-orange-500 to-amber-500 flex items-center justify-center text-white shadow-lg shadow-orange-200/50 dark:shadow-none group-hover:rotate-12 transition-transform">
+            <Link href={isAuthenticated ? "/locations" : "/"} className="flex items-center gap-2 group transition-transform duration-300 hover:scale-105">
+              <div className="aspect-square rounded-2xl bg-linear-to-br from-orange-500 to-amber-500 flex items-center justify-center text-white shadow-lg shadow-orange-200/50 dark:shadow-none group-hover:rotate-12 transition-transform h-10 w-10">
                 <Compass className="h-6 w-6 text-white" />
               </div>
               <div className="flex flex-col -gap-1">
-                <span className="text-xl font-black tracking-tighter bg-linear-to-r from-orange-600 via-amber-600 to-orange-500 bg-clip-text text-transparent leading-none">
+                <span className="text-xl font-black tracking-tighter bg-linear-to-r from-orange-600 via-amber-600 to-orange-500 bg-clip-text text-transparent leading-none uppercase">
                   SERGIPANIDADE
                 </span>
                 <span className="text-[10px] font-bold text-orange-400 dark:text-orange-500/80 tracking-[0.2em] uppercase">Turismo & Cultura</span>
@@ -103,9 +186,8 @@ function WebLayout({ children }: LayoutProps) {
               <ThemeToggle />
             </div>
             
-            {/* Main Nav Items */}
             <nav className="hidden lg:flex items-center gap-1.5 p-1.5 bg-gray-50/50 dark:bg-slate-800/30 rounded-2xl border border-gray-100 dark:border-slate-800">
-              {navLinks.map((l) => {
+              {currentLinks.map((l) => {
                 const Icon = l.icon;
                 const active = pathname === l.href;
                 return (
@@ -119,43 +201,31 @@ function WebLayout({ children }: LayoutProps) {
                   >
                     <Icon className={`h-4 w-4 transition-transform duration-300 ${active ? 'scale-110' : 'group-hover:scale-110'}`} />
                     {l.label}
-                    {active && <span className="absolute bottom-0 left-0 w-full h-0.5 bg-orange-600/20" />}
                   </Link>
                 );
               })}
             </nav>
           </div>
 
-          {/* Search Bar - Desktop Only */}
-          <div className="hidden xl:flex flex-1 max-w-sm">
-            <div className="relative w-full group">
-              <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-gray-400 dark:text-slate-500 group-focus-within:text-orange-500 transition-colors" />
-              <input 
-                type="text" 
-                placeholder="Buscar atrativos, cidades..." 
-                className="w-full bg-gray-50 dark:bg-slate-800/50 border-none rounded-2xl py-2.5 pl-10 pr-4 text-sm font-medium focus:ring-2 focus:ring-orange-100 dark:focus:ring-orange-900/30 transition-all outline-none placeholder:text-gray-400 dark:placeholder:text-slate-500 dark:text-slate-200"
-              />
-            </div>
-          </div>
-
-          {/* Right Section: Notification & User */}
           <div className="flex items-center gap-3">
-            <div className="hidden md:flex items-center gap-1">
-              <Button variant="ghost" size="icon" className="text-gray-400 dark:text-slate-400 hover:text-orange-500 hover:bg-orange-50 dark:hover:bg-orange-950/30 rounded-xl transition-colors">
-                <Bell className="h-5 w-5" />
-              </Button>
-            </div>
+            {isAuthenticated && (
+              <div className="hidden md:flex items-center gap-1">
+                <Button variant="ghost" size="icon" className="text-gray-400 dark:text-slate-400 hover:text-orange-500 hover:bg-orange-50 dark:hover:bg-orange-950/30 rounded-xl transition-colors">
+                  <Bell className="h-5 w-5" />
+                </Button>
+              </div>
+            )}
 
             <div className="h-8 w-px bg-gray-100 dark:bg-slate-800 mx-1 hidden md:block" />
 
             {isAuthenticated ? (
               <DropdownMenu>
                 <DropdownMenuTrigger>
-                  <button className="flex items-center gap-3 pl-1 pr-3 py-1 bg-white dark:bg-slate-900 border border-gray-100 dark:border-slate-800 rounded-2xl hover:shadow-md transition-all group overflow-hidden">
+                  <button className="flex items-center gap-3 pl-1 pr-3 py-1 bg-white dark:bg-slate-900 border border-gray-100 dark:border-slate-800 rounded-2xl hover:shadow-md transition-all group overflow-hidden outline-none">
                     <div className="relative">
                       <ShadAvatar className="h-9 w-9 border-2 border-white dark:border-slate-800 ring-2 ring-orange-100 dark:ring-orange-900/30 group-hover:ring-orange-200 transition-all">
                         <AvatarImage src={user?.avatar || ''} />
-                        <AvatarFallback className="bg-linear-to-br from-orange-400 to-amber-500 text-white font-black text-xs">
+                        <AvatarFallback className="bg-linear-to-br from-orange-400 to-amber-500 text-white font-black text-xs uppercase">
                           {user?.name?.charAt(0) || 'U'}
                         </AvatarFallback>
                       </ShadAvatar>
@@ -163,68 +233,65 @@ function WebLayout({ children }: LayoutProps) {
                     </div>
                     <div className="hidden sm:flex flex-col items-start leading-none">
                       <span className="text-sm font-bold text-gray-800 dark:text-slate-200">{user?.name?.split(' ')[0]}</span>
-                      <span className="text-[10px] font-semibold text-gray-400 dark:text-slate-500">Ver Perfil</span>
+                      <span className="text-[10px] font-semibold text-gray-400 dark:text-slate-500">Perfil</span>
                     </div>
                   </button>
                 </DropdownMenuTrigger>
-                    <DropdownMenuContent align="end" className="w-56 p-2 rounded-2xl border-orange-50 dark:border-slate-800 shadow-xl shadow-orange-100/50 dark:shadow-slate-950/70 bg-white dark:bg-slate-900 transition-all duration-300">
-                      <DropdownMenuGroup>
-                        <DropdownMenuLabel className="px-3 py-2">
-                          <p className="text-sm font-black text-gray-900 dark:text-slate-100 leading-tight">{user?.name}</p>
-                          <p className="text-[10px] font-bold text-gray-400 dark:text-slate-500 uppercase tracking-wider">{user?.email}</p>
-                        </DropdownMenuLabel>
-                      </DropdownMenuGroup>
-                      <DropdownMenuSeparator className="bg-gray-50 dark:bg-slate-800" />
-                      <DropdownMenuGroup>
-                        <DropdownMenuItem onSelect={() => router.push('/auth/profile')} className="rounded-xl px-3 py-2.5 cursor-pointer text-gray-700 dark:text-slate-300 font-bold focus:bg-orange-50 dark:focus:bg-slate-800 focus:text-orange-600 transition-colors flex items-center">
-                          <User className="mr-3 h-4.5 w-4.5 opacity-70" /> Meu Perfil
-                        </DropdownMenuItem>
-                        <DropdownMenuItem onSelect={() => router.push('/auth/settings')} className="rounded-xl px-3 py-2.5 cursor-pointer text-gray-700 dark:text-slate-300 font-bold focus:bg-orange-50 dark:focus:bg-slate-800 focus:text-orange-600 transition-colors flex items-center">
-                          <Settings className="mr-3 h-4.5 w-4.5 opacity-70" /> Configurações
-                        </DropdownMenuItem>
-                      </DropdownMenuGroup>
-                      <DropdownMenuSeparator className="bg-gray-50 dark:bg-slate-800" />
-                      <DropdownMenuGroup>
-                        <DropdownMenuItem onSelect={() => dispatch(logout())} className="rounded-xl px-3 py-2.5 cursor-pointer text-red-500 font-bold focus:bg-red-50 dark:focus:bg-red-950/30 focus:text-red-600 transition-colors flex items-center text-sm">
-                          <LogOut className="mr-3 h-4.5 w-4.5" /> Sair da Conta
-                        </DropdownMenuItem>
-                      </DropdownMenuGroup>
-                    </DropdownMenuContent>
+                <DropdownMenuContent align="end" className="w-56 p-2 rounded-2xl border-orange-50 dark:border-slate-800 shadow-xl bg-white dark:bg-slate-900">
+                  <DropdownMenuGroup>
+                    <DropdownMenuLabel className="px-3 py-2">
+                      <p className="text-sm font-black text-gray-900 dark:text-slate-100 leading-tight">{user?.name}</p>
+                      <p className="text-[10px] font-bold text-gray-400 dark:text-slate-500 truncate">{user?.email}</p>
+                    </DropdownMenuLabel>
+                  </DropdownMenuGroup>
+                  <DropdownMenuSeparator className="bg-gray-50 dark:bg-slate-800" />
+                  <DropdownMenuGroup>
+                    <DropdownMenuItem onClick={() => router.push('/auth/profile')} className="rounded-xl px-3 py-2.5 cursor-pointer text-gray-700 dark:text-slate-300 font-bold focus:bg-orange-50 dark:focus:bg-slate-800 focus:text-orange-600 transition-colors flex items-center">
+                      <User className="mr-3 h-4.5 w-4.5 opacity-70" /> Meu Perfil
+                    </DropdownMenuItem>
+                    <DropdownMenuItem onClick={() => router.push('/auth/settings')} className="rounded-xl px-3 py-2.5 cursor-pointer text-gray-700 dark:text-slate-300 font-bold focus:bg-orange-50 dark:focus:bg-slate-800 focus:text-orange-600 transition-colors flex items-center">
+                      <Settings className="mr-3 h-4.5 w-4.5 opacity-70" /> Configurações
+                    </DropdownMenuItem>
+                  </DropdownMenuGroup>
+                  <DropdownMenuSeparator className="bg-gray-50 dark:bg-slate-800" />
+                  <DropdownMenuGroup>
+                    <DropdownMenuItem onClick={() => dispatch(logout())} className="rounded-xl px-3 py-2.5 cursor-pointer text-red-500 font-bold focus:bg-red-50 dark:focus:bg-red-950/30 focus:text-red-600 transition-colors flex items-center">
+                      <LogOut className="mr-3 h-4.5 w-4.5" /> Sair da Conta
+                    </DropdownMenuItem>
+                  </DropdownMenuGroup>
+                </DropdownMenuContent>
               </DropdownMenu>
             ) : (
               <Button 
                 onClick={() => router.push('/auth/login')} 
-                className="bg-linear-to-r from-orange-500 to-amber-500 hover:from-orange-600 hover:to-amber-600 text-white font-black rounded-2xl px-6 py-5 shadow-lg shadow-orange-100 active:scale-95 transition-all text-sm uppercase tracking-wide"
+                className="bg-orange-500 hover:bg-orange-600 text-white font-black rounded-2xl px-6 py-2 transition-all active:scale-95"
               >
-                <LogIn className="mr-2 h-4 w-4" /> Entrar Agora
+                ENTRAR
               </Button>
             )}
-
+            
             <div className="lg:hidden">
               <Sheet>
                 <SheetTrigger>
-                  <Button variant="ghost" size="icon" className="bg-gray-50 rounded-xl hover:bg-orange-50 hover:text-orange-500 transition-colors">
+                  <Button variant="ghost" size="icon" className="bg-gray-50 dark:bg-slate-800 rounded-xl">
                     <Menu className="h-6 w-6" />
                   </Button>
                 </SheetTrigger>
-                <SheetContent side="right" className="w-72 pt-10">
-                  <div className="flex flex-col gap-1.5 dark-text-contrast">
-                    {navLinks.map((l) => {
+                <SheetContent side="right" className="w-72">
+                  <div className="flex flex-col gap-2 mt-8">
+                    {currentLinks.map((l) => {
                       const Icon = l.icon;
                       const active = pathname === l.href;
                       return (
-                        <Link key={l.href} href={l.href} className={`flex items-center gap-2 px-4 py-2 rounded-xl text-sm font-bold transition-all duration-300 ${active ? 'bg-orange-500 text-white shadow-lg shadow-orange-500/20' : 'text-gray-600 dark:text-slate-400 hover:bg-orange-50 dark:hover:bg-orange-950/30 hover:text-orange-500'}`}>
-                          <Icon className={`h-4 w-4 ${active ? 'animate-pulse' : ''}`} />
+                        <Link key={l.href} href={l.href} className={`flex items-center gap-3 px-4 py-3 rounded-xl text-sm font-bold transition-all ${active ? 'bg-orange-500 text-white' : 'text-gray-600 dark:text-slate-400 hover:bg-orange-50 dark:hover:bg-slate-800'}`}>
+                          <Icon size={18} />
                           {l.label}
                         </Link>
                       );
                     })}
-                    <div className="my-2 h-px bg-gray-100" />
-                    {infoLinks.map((l) => { const Icon = l.icon; return (
-                      <Link key={l.href} href={l.href} className="px-4 py-2.5 rounded-xl text-sm text-gray-400 dark:text-slate-500 hover:text-gray-700 dark:hover:text-slate-200 flex items-center gap-3 transition-colors">
-                        <Icon className="h-4 w-4" />{l.label}
-                      </Link>
-                    ); })}
+                    {!isAuthenticated && (
+                       <Button onClick={() => router.push('/auth/login')} className="mt-4 w-full bg-orange-600 text-white font-black rounded-xl h-12">ENTRAR AGORA</Button>
+                    )}
                   </div>
                 </SheetContent>
               </Sheet>
@@ -232,303 +299,140 @@ function WebLayout({ children }: LayoutProps) {
           </div>
         </div>
       </header>
-      <main className="flex-1 max-w-7xl mx-auto w-full px-4 md:px-8 py-10">{children}</main>
-      <footer className="bg-[#1A1A1A] text-gray-300 pt-16 pb-8 px-6 overflow-hidden relative">
-        {/* Subtle Decorative Background Element */}
-        <div className="absolute top-0 right-0 w-[50%] h-full bg-linear-to-l from-orange-500/10 to-transparent skew-x-12 transform translate-x-20" />
-        
-        <div className="max-w-7xl mx-auto">
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-12 mb-16">
-            {/* Brand Column */}
-            <div className="space-y-6">
-              <Link href="/" className="flex items-center gap-2 group">
-                <div className="p-2 bg-linear-to-br from-orange-500 to-amber-500 rounded-xl shadow-lg ring-1 ring-white/10">
-                  <Compass className="h-5 w-5 text-white" />
-                </div>
-                <span className="text-xl font-black tracking-tighter text-white">SERGIPANIDADE</span>
-              </Link>
-              <p className="text-sm leading-relaxed text-gray-400 font-medium">
-                Sua porta de entrada para vivenciar o melhor de Sergipe. Descubra paisagens, cultura e uma gastronomia inigualável com o seu guia definitivo do estado.
-              </p>
-              
-            </div>
-
-            {/* Platform Column */}
-            <div className="space-y-6">
-              <h3 className="text-white font-bold text-sm uppercase tracking-widest px-1 border-l-2 border-orange-500">Plataforma</h3>
-              <ul className="space-y-4">
-                {navLinks.map((l) => (
-                  <li key={l.href}>
-                    <Link href={l.href} className="text-sm font-semibold hover:text-orange-400 transition-colors flex items-center gap-2 group">
-                      <div className="h-1 w-1 rounded-full bg-orange-500 scale-0 group-hover:scale-100 transition-transform" />
-                      {l.label}
-                    </Link>
-                  </li>
-                ))}
-              </ul>
-            </div>
-
-            {/* Resources Column */}
-            <div className="space-y-6">
-              <h3 className="text-white font-bold text-sm uppercase tracking-widest px-1 border-l-2 border-orange-500">Recursos</h3>
-              <ul className="space-y-4">
-                {infoLinks.map((l) => (
-                  <li key={l.href}>
-                    <Link href={l.href} className="text-sm font-semibold hover:text-orange-400 transition-colors flex items-center gap-2 group">
-                       <div className="h-1 w-1 rounded-full bg-orange-500 scale-0 group-hover:scale-100 transition-transform" />
-                      {l.label}
-                    </Link>
-                  </li>
-                ))}
-              </ul>
-            </div>
-
-            {/* Newsletter/Contact Column */}
-            <div className="space-y-6">
-              <h3 className="text-white font-bold text-sm uppercase tracking-widest px-1 border-l-2 border-orange-500">Fique por dentro</h3>
-              <p className="text-xs text-gray-400 font-medium">Receba dicas exclusivas sobre Sergipe diretamente no seu e-mail.</p>
-              <div className="flex gap-2">
-                <input 
-                  type="email" 
-                  placeholder="Seu e-mail" 
-                  className="bg-white/5 border border-white/10 rounded-xl px-4 py-2 text-sm focus:ring-1 focus:ring-orange-500 outline-none w-full transition-all"
-                />
-                <Button size="icon" className="bg-orange-500 hover:bg-orange-600 rounded-xl shrink-0"><Mail className="h-4 w-4" /></Button>
-              </div>
-            </div>
-          </div>
-
-          <div className="pt-8 border-t border-white/5 flex flex-col md:flex-row justify-between items-center gap-6">
-            <div className="flex flex-wrap justify-center gap-8 text-[11px] font-bold text-gray-500 uppercase tracking-widest">
-              <Link href="#" className="hover:text-white transition-colors">Termos de Uso</Link>
-              <Link href="#" className="hover:text-white transition-colors">Privacidade</Link>
-              <Link href="#" className="hover:text-white transition-colors">Cookies</Link>
-            </div>
-            <p className="text-xs font-semibold text-gray-400 flex items-center gap-1.5 order-first md:order-last">
-              Made with <Heart className="h-3 w-3 text-red-500 fill-red-500 animate-pulse" /> for Sergipe
-            </p>
-          </div>
-          
-          <div className="mt-8 text-center text-[10px] text-gray-600 font-bold uppercase tracking-[0.3em]">
-            © 2026 Sergipanidade • Desenvolvido pela Equipe Sergipana
-          </div>
-        </div>
-      </footer>
+      <main className="flex-1 max-w-7xl mx-auto w-full px-4 md:px-8 py-10">
+        {children}
+      </main>
+      {!isAuthenticated && <Footer />}
     </div>
   );
 }
 
 // ═══════════════════════════════════════════
-// MOBILE LAYOUT — MUI (Refined)
+// MOBILE LAYOUT
 // ═══════════════════════════════════════════
 function MobileLayout({ children }: LayoutProps) {
   const pathname = usePathname();
   const router = useRouter();
   const dispatch = useDispatch();
   const { isAuthenticated, user } = useSelector((s: RootState) => s.auth);
+  const isPrivatePath = appLinks.some(link => pathname.startsWith(link.href)) || pathname === '/favorites';
   const isAuthPage = authPages.includes(pathname);
 
+  useEffect(() => {
+    if (!isAuthenticated && isPrivatePath) {
+      router.push('/auth/login');
+    }
+  }, [isAuthenticated, isPrivatePath, router]);
+
+  useEffect(() => {
+    if (isAuthenticated && pathname === '/') {
+      router.push('/locations');
+    }
+  }, [isAuthenticated, pathname, router]);
+
+  if (!isAuthenticated && isPrivatePath) return null;
+
+  const currentLinks = isAuthenticated ? appLinks : publicLinks;
+
   const getNavValue = (p: string) => {
-    if (p.includes('/map')) return 1;
-    if (p.includes('/guide')) return 2;
-    if (p.includes('/favorites')) return 3;
-    if (p.includes('/discussions')) return 4;
-    if (p === '/') return 0;
+    if (p.startsWith('/locations')) return 0;
+    if (p.startsWith('/map')) return 1;
+    if (p.startsWith('/guide')) return 2;
+    if (p.startsWith('/favorites')) return 3;
+    if (p.startsWith('/discussions')) return 4;
     return -1;
   };
 
   const navValue = getNavValue(pathname);
 
-  // Auth pages: minimal chrome — just a thin branded bar
   if (isAuthPage) {
     return (
-      <Box sx={{ bgcolor: '#FAFAFA', minHeight: '100vh' }}>
-        <AppBar position="sticky" elevation={0} sx={{ 
-        bgcolor: 'background.paper', 
-        borderBottom: '1px solid', 
-        borderColor: 'divider',
-        backdropFilter: 'blur(30px)',
-        zIndex: 1100,
-        '&:before': {
-          content: '""',
-          position: 'absolute',
-          top: 0, left: 0, right: 0, height: '3px',
-          background: 'linear-gradient(90deg, #E67E22, #F39C12, #E67E22)',
-          opacity: 0.9,
-          boxShadow: '0 2px 10px rgba(230,126,34,0.4)'
-        }
-      }}>
-        <Toolbar sx={{ justifyContent: 'space-between', height: 72, px: 2.5 }}>
-            <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }} onClick={() => router.push('/')}>
-              <Typography sx={{
-                fontSize: '1rem', fontWeight: 800, cursor: 'pointer',
-                background: 'linear-gradient(45deg, #E67E22, #F39C12)',
-                WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent',
-              }}>SERGIPANIDADE</Typography>
-            </Box>
-        </Toolbar>
-      </AppBar>
-        <Box sx={{ px: 2, py: 1 }}>{children}</Box>
-      </Box>
+      <div className="min-h-screen bg-background text-foreground flex flex-col">
+        <header className="sticky top-0 z-50 bg-background/70 backdrop-blur-md border-b border-border py-4 px-4 flex items-center justify-between">
+          <div className="flex items-center gap-2">
+            <Compass size={22} className="text-primary" />
+            <span className="font-black text-primary tracking-tighter uppercase">SERGIPANIDADE</span>
+          </div>
+          <ThemeToggle />
+        </header>
+        <main className="flex-1 p-4">{children}</main>
+      </div>
     );
   }
 
   return (
-    <Box sx={{ pb: isAuthenticated ? '72px' : 0, bgcolor: '#FAFAFA', minHeight: '100vh' }}>
-      {/* Compact Top Bar */}
-      <AppBar position="sticky" elevation={0} sx={{
-        bgcolor: 'rgba(255, 255, 255, 0.75)',
-        backdropFilter: 'blur(15px)',
-        borderBottom: '1px solid',
-        borderColor: 'rgba(0,0,0,0.05)',
-        zIndex: 1100,
-      }}>
-        <Toolbar sx={{ minHeight: '64px !important', px: 2, justifyContent: 'space-between' }}>
-          {/* Left: Logo/Brand */}
-          <Box sx={{ display: 'flex', alignItems: 'center', gap: 1.5 }} onClick={() => router.push('/')}>
-            <Box sx={{
-              p: 0.8,
-              background: 'linear-gradient(135deg, #E67E22, #F39C12)',
-              borderRadius: '12px',
-              display: 'flex', alignItems: 'center', justifyContent: 'center',
-              boxShadow: '0 4px 12px rgba(230,126,34,0.4)'
-            }}>
-              <Compass size={20} color="white" />
-            </Box>
-            <Typography
-              sx={{
-                fontSize: '1rem', fontWeight: 950, letterSpacing: '-0.8px',
-                background: 'linear-gradient(45deg, #E67E22, #F39C12)',
-                WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent',
-              }}>SERGIPANIDADE</Typography>
-          </Box>
+    <div className={`min-h-screen flex flex-col bg-background text-foreground ${isAuthenticated ? 'pb-20' : ''}`}>
+      <header className="sticky top-0 z-50 bg-background/80 backdrop-blur-md border-b border-border px-4 py-3 flex items-center justify-between">
+        <div className="flex items-center gap-2" onClick={() => router.push(isAuthenticated ? '/locations' : '/')}>
+          <div className="bg-primary p-1.5 rounded-xl flex items-center justify-center shadow-lg shadow-primary/20">
+            <Compass size={18} className="text-primary-foreground" />
+          </div>
+          <span className="font-black text-sm tracking-tighter text-foreground uppercase">SERGIPANIDADE</span>
+        </div>
 
-          {/* Right: Actions */}
-          <Stack direction="row" spacing={0.5} alignItems="center">
-            <IconButton size="small" sx={{ color: 'text.secondary', bgcolor: 'rgba(0,0,0,0.03)', mr: 0.5 }}>
-              <Bell size={20} />
-            </IconButton>
-            {!isAuthenticated ? (
-              <MuiButton
-                size="small" onClick={() => router.push('/auth/login')}
-                sx={{
-                  borderRadius: 6, fontWeight: 900, textTransform: 'none',
-                  bgcolor: '#E67E22', color: 'white', px: 2.5, py: 0.75,
-                  fontSize: '0.75rem', minWidth: 0,
-                  '&:hover': { bgcolor: '#D35400' },
-                  boxShadow: '0 6px 20px rgba(230,126,34,0.4)',
-                }}>Entrar</MuiButton>
-            ) : (
-              <Box sx={{ ml: 0.5 }}>
-                <DropdownMenu>
-                  <DropdownMenuTrigger>
-                    <IconButton size="small" sx={{ p: 0 }}>
-                      <MuiAvatar
-                        src={user?.avatar || ''}
-                        sx={{ 
-                          width: 36, height: 36, 
-                          border: '2px solid #E67E22',
-                          boxShadow: '0 4px 10px rgba(230,126,34,0.2)'
-                        }}
-                      >{user?.name?.charAt(0) || 'U'}</MuiAvatar>
-                    </IconButton>
-                  </DropdownMenuTrigger>
-                  <DropdownMenuContent align="end" className="w-60 p-2 rounded-2xl border-orange-50 dark:border-slate-800 shadow-2xl shadow-orange-200/50 dark:shadow-slate-950 bg-white dark:bg-slate-900 animate-in slide-in-from-top-2 duration-300">
-                    <DropdownMenuGroup>
-                      <DropdownMenuLabel className="px-4 py-3">
-                        <p className="text-base font-black text-gray-900 dark:text-white leading-tight">{user?.name}</p>
-                        <p className="text-[10px] font-bold text-gray-400 dark:text-slate-500 uppercase tracking-widest mt-0.5">{user?.email}</p>
-                      </DropdownMenuLabel>
-                    </DropdownMenuGroup>
-                    <DropdownMenuSeparator className="bg-gray-100 dark:bg-slate-800" />
-                    <DropdownMenuGroup>
-                      <DropdownMenuItem onSelect={() => router.push('/auth/profile')} className="rounded-xl px-4 py-3 cursor-pointer text-gray-700 dark:text-slate-300 font-bold focus:bg-orange-50 dark:focus:bg-orange-950/30 focus:text-orange-600 transition-colors flex items-center">
-                        <User className="mr-3 h-5 w-5 opacity-80" /> <span className="flex-1">Meu Perfil</span>
-                      </DropdownMenuItem>
-                      <DropdownMenuItem onSelect={() => router.push('/auth/settings')} className="rounded-xl px-4 py-3 cursor-pointer text-gray-700 dark:text-slate-300 font-bold focus:bg-orange-50 dark:focus:bg-orange-950/30 focus:text-orange-600 transition-colors flex items-center">
-                        <Settings className="mr-3 h-5 w-5 opacity-80" /> <span className="flex-1">Configurações</span>
-                      </DropdownMenuItem>
-                    </DropdownMenuGroup>
-                    <DropdownMenuSeparator className="bg-gray-100 dark:bg-slate-800" />
-                    <DropdownMenuGroup>
-                      <DropdownMenuItem onSelect={() => dispatch(logout())} className="rounded-xl px-4 py-3 cursor-pointer text-red-500 font-black focus:bg-red-50 dark:focus:bg-red-900/20 focus:text-red-600 transition-colors flex items-center">
-                        <LogOut className="mr-3 h-5 w-5" /> Sair
-                      </DropdownMenuItem>
-                    </DropdownMenuGroup>
-                  </DropdownMenuContent>
-                </DropdownMenu>
-              </Box>
-            )}
-          </Stack>
-        </Toolbar>
-      </AppBar>
+        <div className="flex items-center gap-3">
+          <ThemeToggle />
+          {isAuthenticated ? (
+             <DropdownMenu>
+                <DropdownMenuTrigger className="outline-none">
+                  <div className="h-8 w-8 rounded-full border-2 border-primary ring-2 ring-primary/20 overflow-hidden">
+                    {user?.avatar ? (
+                      <img src={user.avatar} alt={user.name} className="h-full w-full object-cover" />
+                    ) : (
+                      <div className="h-full w-full bg-primary flex items-center justify-center text-primary-foreground text-xs font-black">
+                        {user?.name?.charAt(0)}
+                      </div>
+                    )}
+                  </div>
+                </DropdownMenuTrigger>
+                 <DropdownMenuContent align="end" className="w-56 p-2 rounded-2xl bg-popover text-popover-foreground shadow-2xl border-border">
+                    <DropdownMenuItem onClick={() => router.push('/auth/profile')} className="rounded-xl px-4 py-3 font-bold focus:bg-accent">Perfil</DropdownMenuItem>
+                    <DropdownMenuItem onClick={() => router.push('/auth/settings')} className="rounded-xl px-4 py-3 font-bold focus:bg-accent">Configurações</DropdownMenuItem>
+                    <DropdownMenuSeparator className="bg-border" />
+                    <DropdownMenuItem onClick={() => dispatch(logout())} className="rounded-xl px-4 py-3 text-destructive font-bold focus:bg-destructive/10">Sair</DropdownMenuItem>
+                 </DropdownMenuContent>
+             </DropdownMenu>
+          ) : (
+             <button 
+               onClick={() => router.push('/auth/login')} 
+               className="bg-primary text-primary-foreground font-black rounded-xl text-xs px-4 py-2 shadow-lg shadow-primary/20 active:scale-95 transition-all"
+             >
+               ENTRAR
+             </button>
+          )}
+        </div>
+      </header>
 
-      {/* Content — edge to edge, no extra container wrapper */}
-      <Box sx={{ px: 3, py: 2.5, pb: 14 }}>
+      <main className="flex-1 p-4">
         {children}
-      </Box>
+      </main>
 
-      {/* Bottom Nav */}
-      <Paper sx={{
-        position: 'fixed', bottom: 0, left: 0, right: 0, zIndex: 1200,
-        borderRadius: '32px 32px 0 0', overflow: 'hidden',
-        boxShadow: '0 -10px 40px rgba(0,0,0,0.12)',
-        bgcolor: 'transparent',
-      }} elevation={0}>
-        <Box sx={{
-          height: 2, background: 'linear-gradient(90deg, transparent, rgba(230,126,34,0.5), transparent)',
-        }} />
-        <BottomNavigation
-          value={navValue}
-          onChange={(_, v) => {
-            const routes = ['/', '/map', '/guide', '/favorites', '/discussions'];
-            router.push(routes[v]);
-          }}
-          showLabels
-          sx={{
-            height: 96, 
-            bgcolor: 'rgba(255, 255, 255, 0.9)',
-            backdropFilter: 'blur(20px)',
-            borderTop: '1px solid', borderColor: 'rgba(0,0,0,0.05)',
-            pb: 2,
-            pt: 1,
-            '& .MuiBottomNavigationAction-root': {
-              minWidth: 0, py: 1,
-              color: 'text.secondary',
-              '&.Mui-selected': { 
-                color: 'primary.main',
-                '& .MuiSvgIcon-root, & svg': {
-                  transform: 'translateY(-4px) scale(1.2)',
-                  filter: 'drop-shadow(0 4px 8px rgba(230,126,34,0.3))'
-                }
-              },
-              transition: 'all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275)',
-            },
-            '& .MuiBottomNavigationAction-label': {
-              fontSize: '0.65rem', fontWeight: 700, mt: 0.5,
-              opacity: 0.7,
-              '&.Mui-selected': { 
-                fontSize: '0.7rem', fontWeight: 900, transform: 'scale(1.05)',
-                opacity: 1
-              },
-              transition: 'all 0.3s ease',
-            },
-          }}
-        >
-          <BottomNavigationAction label="Início" icon={<Home size={22} />} />
-          <BottomNavigationAction label="Mapa" icon={<Map size={22} />} />
-          <BottomNavigationAction label="Guia IA" icon={<Box sx={{ position: 'relative' }}><MessageCircle size={22} /><Box sx={{ position: 'absolute', top: -4, right: -4, width: 8, height: 8, bgcolor: '#2ECC71', borderRadius: '50%', border: '2px solid white' }} /></Box>} />
-          <BottomNavigationAction label="Favoritos" icon={<Heart size={22} />} />
-          <BottomNavigationAction label="Fórum" icon={<Users size={22} />} />
-        </BottomNavigation>
-      </Paper>
-    </Box>
+      {!isAuthenticated && <Footer />}
+
+      {isAuthenticated && (
+        <nav className="fixed bottom-0 left-0 right-0 bg-background/90 backdrop-blur-xl border-t border-border px-4 pt-3 pb-6 flex items-center justify-between z-50">
+          {appLinks.map((l, idx) => {
+            const Icon = l.icon;
+            const active = pathname.startsWith(l.href);
+            return (
+              <Link 
+                key={l.href} 
+                href={l.href}
+                className={`flex flex-col items-center gap-1 transition-all duration-300 ${active ? 'text-primary' : 'text-muted-foreground'}`}
+              >
+                <div className={`p-2 rounded-xl transition-all ${active ? 'bg-primary/10' : ''}`}>
+                  <Icon size={active ? 22 : 20} className={active ? 'stroke-[2.5px]' : ''} />
+                </div>
+                <span className={`text-[10px] font-bold ${active ? 'opacity-100' : 'opacity-70'}`}>{l.label}</span>
+              </Link>
+            );
+          })}
+        </nav>
+      )}
+    </div>
   );
 }
 
-// ═══════════════════════════════════════════
-// MAIN EXPORT
-// ═══════════════════════════════════════════
 export default function AppLayout({ children }: LayoutProps) {
   const isMobile = useIsMobile();
   return isMobile ? <MobileLayout>{children}</MobileLayout> : <WebLayout>{children}</WebLayout>;

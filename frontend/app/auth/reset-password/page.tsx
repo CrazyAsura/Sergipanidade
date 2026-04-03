@@ -2,75 +2,148 @@
 
 import { useState } from 'react';
 import { useRouter } from 'next/navigation';
+import Link from 'next/link';
 import { useIsMobile } from '@/hooks/useIsMobile';
-import { Mail, ChevronLeft, Key, CheckCircle2, AlertCircle } from 'lucide-react';
-import { motion, AnimatePresence } from 'framer-motion';
+import { Mail, CheckCircle2, ChevronLeft, ArrowRight, ShieldQuestion } from 'lucide-react';
+
+// Shadcn
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
-import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert';
-import { Box, Typography, TextField, Button as MuiButton, Stack, IconButton, InputAdornment, Paper } from '@mui/material';
 
-function WebReset() {
+// MUI
+import {
+  Box, Typography, TextField, Button as MuiButton, Stack,
+  IconButton, InputAdornment, Alert
+} from '@mui/material';
+
+function useResetLogic() {
+  const [email, setEmail] = useState('');
   const [sent, setSent] = useState(false);
   const router = useRouter();
+
+  const handleReset = () => {
+    if (!email) return;
+    setSent(true);
+  };
+
+  return { email, setEmail, sent, handleReset, router };
+}
+
+// ═══ WEB ═══
+function WebReset() {
+  const { email, setEmail, sent, handleReset, router } = useResetLogic();
+
   return (
-    <div className="min-h-[70vh] flex items-center justify-center">
-      <Card className="w-full max-w-md border-gray-100 shadow-2xl shadow-gray-200/50">
-        <CardHeader className="text-center">
-          <div className="mx-auto mb-4 h-16 w-16 rounded-full bg-orange-50 flex items-center justify-center">
-            {sent ? <CheckCircle2 className="h-8 w-8 text-green-500" /> : <Key className="h-8 w-8 text-orange-500" />}
+    <div className="min-h-[70vh] flex items-center justify-center animate-in fade-in slide-in-from-bottom-5 duration-500">
+      <Card className="w-full max-w-lg border-gray-100 shadow-2xl shadow-orange-100/30 p-12 rounded-[3.5rem] relative overflow-hidden bg-white">
+        {!sent ? (
+          <div className="space-y-10 relative z-10">
+            <div className="text-center space-y-4">
+              <div className="h-16 w-16 bg-orange-50 text-orange-600 rounded-2xl flex items-center justify-center mx-auto mb-6">
+                <ShieldQuestion size={32} />
+              </div>
+              <h2 className="text-4xl font-black text-gray-900 leading-tight uppercase italic tracking-tighter">Esqueceu a senha?</h2>
+              <p className="text-gray-500 font-medium max-w-sm mx-auto">Relaxe, acontece com os melhores exploradores. Informe seu e-mail e enviaremos um link de recuperação.</p>
+            </div>
+            
+            <div className="space-y-6">
+               <div className="space-y-2">
+                 <Label className="text-[10px] font-black uppercase tracking-widest text-gray-400">Seu E-mail</Label>
+                 <div className="relative">
+                   <Mail className="absolute left-4 top-1/2 -translate-y-1/2 h-5 w-5 text-orange-500" />
+                   <Input 
+                     placeholder="seu@email.com" 
+                     value={email} 
+                     onChange={(e) => setEmail(e.target.value)} 
+                     className="pl-12 h-14 rounded-2xl text-lg font-bold border-gray-100 bg-gray-50/30" 
+                   />
+                 </div>
+               </div>
+               <Button 
+                 onClick={handleReset} 
+                 className="w-full h-16 bg-orange-600 hover:bg-orange-700 text-white font-black rounded-2xl transition-all shadow-xl shadow-orange-200 text-lg uppercase italic group"
+               >
+                 ENVIAR LINK <ArrowRight size={20} className="ml-2 group-hover:translate-x-1 transition-transform" />
+               </Button>
+            </div>
+
+            <p className="text-center text-sm font-bold text-gray-400 pt-4 flex items-center justify-center gap-2 cursor-pointer hover:text-orange-500 transition-colors" onClick={() => router.push('/auth/login')}>
+               <ChevronLeft size={16} /> Voltar para o Login
+            </p>
           </div>
-          <CardTitle className="text-2xl font-black">{sent ? 'E-mail Enviado!' : 'Recuperar Senha'}</CardTitle>
-          <CardDescription>{sent ? 'Verifique sua caixa de entrada.' : 'Insira o e-mail da sua conta.'}</CardDescription>
-        </CardHeader>
-        <CardContent className="space-y-4">
-          {!sent ? (
-            <>
-              <div className="space-y-2"><Label className="font-semibold">E-mail</Label><div className="relative"><Mail className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-gray-400" /><Input type="email" placeholder="seu@email.com" className="pl-10 h-12 rounded-xl" /></div></div>
-              <Button onClick={() => setSent(true)} className="w-full h-12 rounded-xl bg-orange-500 hover:bg-orange-600 text-white font-bold">ENVIAR LINK</Button>
-            </>
-          ) : (
-            <Button variant="outline" onClick={() => router.push('/auth/login')} className="w-full h-12 rounded-xl font-bold">VOLTAR AO LOGIN</Button>
-          )}
-          <Alert className="mt-6"><AlertCircle className="h-4 w-4" /><AlertTitle className="font-bold">Dica</AlertTitle><AlertDescription>Verifique a pasta de spam.</AlertDescription></Alert>
-        </CardContent>
+        ) : (
+          <div className="text-center space-y-8 relative z-10 py-10">
+             <div className="h-20 w-20 bg-green-50 text-green-600 rounded-3xl flex items-center justify-center mx-auto mb-8 animate-bounce">
+                <CheckCircle2 size={40} />
+             </div>
+             <h2 className="text-4xl font-black text-gray-900 uppercase italic">E-mail Enviado!</h2>
+             <p className="text-gray-500 font-medium">Verifique sua caixa de entrada em <br /><span className="text-gray-900 font-black">{email}</span> para redefinir sua senha.</p>
+             <Button 
+               variant="outline" 
+               onClick={() => router.push('/auth/login')}
+               className="w-full h-14 border-2 border-gray-100 rounded-2xl font-black text-lg transition-all hover:bg-orange-50 hover:text-orange-600 hover:border-orange-200"
+             >
+                VOLTAR AO LOGIN
+             </Button>
+          </div>
+        )}
+        {/* Background elements */}
+        <div className="absolute top-0 right-0 w-32 h-32 bg-orange-500/5 rounded-full -mr-16 -mt-16 blur-3xl" />
+        <div className="absolute bottom-0 left-0 w-32 h-32 bg-orange-500/5 rounded-full -ml-16 -mb-16 blur-3xl" />
       </Card>
     </div>
   );
 }
 
+// ═══ MOBILE ═══
 function MobileReset() {
-  const [sent, setSent] = useState(false);
-  const router = useRouter();
+  const { email, setEmail, sent, handleReset, router } = useResetLogic();
+
   return (
     <Box sx={{ py: 3 }}>
-      <IconButton onClick={() => router.back()} sx={{ mb: 2, bgcolor: '#f5f5f5' }}><ChevronLeft size={20} /></IconButton>
-      <AnimatePresence mode="wait">
-        {!sent ? (
-          <motion.div key="form" initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}>
-            <Box sx={{ mx: 'auto', mb: 3, width: 64, height: 64, bgcolor: '#FFF5EB', borderRadius: '50%', display: 'flex', alignItems: 'center', justifyContent: 'center' }}><Key size={28} color="#E67E22" /></Box>
-            <Typography sx={{ fontSize: '1.5rem', fontWeight: 900, color: '#2C3E50', textAlign: 'center', mb: 0.5 }}>Recuperar Senha</Typography>
-            <Typography variant="body2" color="text.secondary" sx={{ textAlign: 'center', mb: 4 }}>Insira o e-mail da sua conta.</Typography>
-            <Stack spacing={3}>
-              <TextField fullWidth label="E-mail" InputProps={{ startAdornment: <InputAdornment position="start"><Mail size={18} color="#999" /></InputAdornment> }} sx={{ '& .MuiOutlinedInput-root': { borderRadius: 3 } }} />
-              <MuiButton fullWidth variant="contained" onClick={() => setSent(true)} sx={{ py: 1.75, borderRadius: 3, fontWeight: 800, bgcolor: '#E67E22', '&:hover': { bgcolor: '#D35400' } }}>ENVIAR LINK</MuiButton>
-            </Stack>
-          </motion.div>
-        ) : (
-          <motion.div key="done" initial={{ opacity: 0, scale: 0.9 }} animate={{ opacity: 1, scale: 1 }}>
-            <Box sx={{ mx: 'auto', mb: 3, width: 64, height: 64, bgcolor: '#EBF4FF', borderRadius: '50%', display: 'flex', alignItems: 'center', justifyContent: 'center' }}><CheckCircle2 size={28} color="#3182CE" /></Box>
-            <Typography sx={{ fontSize: '1.5rem', fontWeight: 900, color: '#2C3E50', textAlign: 'center', mb: 0.5 }}>E-mail Enviado!</Typography>
-            <Typography variant="body2" color="text.secondary" sx={{ textAlign: 'center', mb: 4 }}>Verifique sua caixa de entrada.</Typography>
-            <MuiButton fullWidth variant="outlined" onClick={() => router.push('/auth/login')} sx={{ py: 1.75, borderRadius: 3, fontWeight: 800, borderColor: '#eee' }}>VOLTAR AO LOGIN</MuiButton>
-          </motion.div>
-        )}
-      </AnimatePresence>
-      <Paper elevation={0} sx={{ mt: 6, p: 2, borderRadius: 3, bgcolor: '#fdfdfd', border: '1px solid #eee', display: 'flex', gap: 2, alignItems: 'center' }}>
-        <AlertCircle size={18} color="#999" />
-        <Typography variant="caption" color="text.secondary" sx={{ fontWeight: 600 }}>Dica: Verifique a pasta de spam.</Typography>
-      </Paper>
+      <IconButton onClick={() => router.back()} sx={{ mb: 2, bgcolor: 'white', border: '1px solid #eee' }}><ChevronLeft size={20} /></IconButton>
+      
+      {!sent ? (
+        <Box sx={{ mt: 2 }}>
+          <Typography sx={{ fontSize: '2rem', fontWeight: 950, color: '#1A202C', mb: 1.5, letterSpacing: -1 }}>Recuperar <span style={{ color: '#E67E22' }}>Senha.</span></Typography>
+          <Typography variant="body2" sx={{ color: 'text.secondary', fontWeight: 600, mb: 5 }}>Problemas com a senha? Digite seu e-mail e vamos te ajudar a voltar.</Typography>
+
+          <Stack spacing={4}>
+            <TextField 
+              fullWidth label="E-mail de Cadastro" 
+              value={email} 
+              onChange={(e) => setEmail(e.target.value)}
+              InputProps={{ startAdornment: <InputAdornment position="start"><Mail size={22} color="#E67E22" /></InputAdornment> }}
+              sx={{ '& .MuiOutlinedInput-root': { borderRadius: 4, bgcolor: 'white', height: 64, fontWeight: 700 } }} 
+            />
+            
+            <MuiButton 
+              fullWidth variant="contained" 
+              onClick={handleReset} 
+              sx={{ py: 2, borderRadius: 4, fontWeight: 950, bgcolor: '#E67E22', shadow: '0 10px 20px rgba(230,126,34,0.2)' }}
+            >
+              ENVIAR RECUPERAÇÃO
+            </MuiButton>
+          </Stack>
+        </Box>
+      ) : (
+        <Box sx={{ mt: 5, textAlign: 'center' }}>
+           <Box sx={{ width: 80, height: 80, bgcolor: 'rgba(39,174,96,0.1)', color: '#27ae60', borderRadius: '50%', display: 'flex', alignItems: 'center', justifyContent: 'center', mx: 'auto', mb: 4 }}>
+              <CheckCircle2 size={40} />
+           </Box>
+           <Typography sx={{ fontSize: '1.75rem', fontWeight: 950, mb: 1 }}>Verifique seu E-mail!</Typography>
+           <Typography sx={{ color: 'text.secondary', fontWeight: 600, mb: 5 }}>Enviamos o link para {email}. </Typography>
+           <MuiButton 
+             fullWidth 
+             onClick={() => router.push('/auth/login')}
+             sx={{ fontWeight: 900, color: '#E67E22', py: 2, border: '2px solid #E67E22', borderRadius: 4 }}
+           >
+              VOLTAR AO LOGIN
+           </MuiButton>
+        </Box>
+      )}
     </Box>
   );
 }

@@ -131,7 +131,7 @@ function MobileFavoritos() {
           <Typography variant="body2" sx={{ color: '#94A3B8', fontWeight: 600, maxWidth: 200, mx: 'auto' }}>Favorite os lugares que você deseja visitar em Sergipe.</Typography>
           <MuiButton 
             variant="contained" 
-            onClick={() => router.push('/')}
+            onClick={() => router.push('/locations')}
             sx={{ 
               mt: 4, borderRadius: 4, bgcolor: '#1A202C', 
               textTransform: 'none', fontWeight: 900, px: 4, py: 1.2,

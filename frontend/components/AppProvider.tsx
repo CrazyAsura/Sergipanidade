@@ -44,14 +44,14 @@ function MuiThemeWrapper({ children }: { children: ReactNode }) {
 
 export function AppProvider({ children }: AppProviderProps) {
   return (
-    <Provider store={store}>
-      <PersistGate loading={null} persistor={persistor}>
-        <NextThemesProvider attribute="class" defaultTheme="light" enableSystem={false}>
+    <NextThemesProvider attribute="class" defaultTheme="light" enableSystem={false}>
+      <Provider store={store}>
+        <PersistGate loading={null} persistor={persistor}>
           <MuiThemeWrapper>
             {children}
           </MuiThemeWrapper>
-        </NextThemesProvider>
-      </PersistGate>
-    </Provider>
+        </PersistGate>
+      </Provider>
+    </NextThemesProvider>
   );
 }
