@@ -1,3 +1,9 @@
+export interface MenuItem {
+  name: string;
+  price: string;
+  image: string;
+}
+
 export interface Location {
   id: string;
   name: string;
@@ -10,6 +16,9 @@ export interface Location {
   distance: string;
   time: string;
   directions: string[];
+  lat: number;
+  lng: number;
+  menu?: MenuItem[];
   isFavorite?: boolean;
 }
 
@@ -29,7 +38,9 @@ export const locations: Location[] = [
       'Siga pela Av. Beira Mar em direção ao sul.',
       'A Orla estará à sua esquerda próxima aos Arcos da Orla.',
       'Diversos bolsões de estacionamento estão disponíveis ao longo da via.'
-    ]
+    ],
+    lat: -10.9856,
+    lng: -37.0425
   },
   {
     id: '2',
@@ -46,7 +57,9 @@ export const locations: Location[] = [
       'Siga pela Rodovia SE-230 partindo de Aracaju sentido Canindé.',
       'Existem opções de ônibus diários saindo do Terminal Rodoviário José Rollemberg Leite.',
       'O passeio de catamarã deve ser agendado com antecedência no restaurante Karranca\'s.'
-    ]
+    ],
+    lat: -9.6358,
+    lng: -37.8488
   },
   {
     id: '3',
@@ -63,6 +76,12 @@ export const locations: Location[] = [
       'Localizado no Centro de Aracaju, próximo à Praça General Valadão.',
       'Para quem vem da zona sul, seguir pela Av. Beira Mar sentido Centro.',
       'Muitas linhas de ônibus param no terminal do centro ao lado do mercado.'
+    ],
+    lat: -10.9126,
+    lng: -37.0435,
+    menu: [
+      { name: 'Arroz Doce de Castanha', price: 'R$ 15,00', image: 'https://images.unsplash.com/photo-1590080875515-8a518923c939?q=80&w=400' },
+      { name: 'Tapioca de Carne de Sol', price: 'R$ 22,00', image: 'https://images.unsplash.com/photo-1513104890138-7c749659a591?q=80&w=400' }
     ]
   },
   {
@@ -80,6 +99,27 @@ export const locations: Location[] = [
       'Situa-se no antigo prédio do Colégio Atheneuzinho, na Av. Ivo do Prado.',
       'Entrada gratuita para todos os públicos.',
       'Recomendado reservar ao menos 2 horas para o passeio.'
+    ],
+    lat: -10.9155,
+    lng: -37.0494
+  },
+  {
+    id: '5',
+    name: 'Restaurante Karranca\'s',
+    city: 'Canindé de São Francisco, SE',
+    category: 'Gastronomia',
+    type: 'gastronomy',
+    rating: 4.7,
+    image: 'https://images.unsplash.com/photo-1517248135467-4c7edcad34c4?q=80&w=1200&auto=format&fit=crop',
+    description: 'Localizado às margens do Rio São Francisco, é o ponto de partida para os passeios de catamarã pelos Canyons do Xingó. Oferece buffet completo de comida regional.',
+    distance: '213 km',
+    time: '3h 25min',
+    directions: ['Localizado na recepção dos passeios de Xingó em Canindé.'],
+    lat: -9.6415,
+    lng: -37.8540,
+    menu: [
+      { name: 'Peixe do Velho Chico', price: 'R$ 85,00', image: 'https://images.unsplash.com/photo-1519708227418-c8fd9a32b7a2?q=80&w=400' },
+      { name: 'Moqueca Sergipana', price: 'R$ 120,00', image: 'https://images.unsplash.com/photo-1599481238640-4c1288750d7a?q=80&w=400' }
     ]
   }
 ];

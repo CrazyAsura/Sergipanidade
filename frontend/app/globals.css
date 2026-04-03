@@ -122,9 +122,23 @@
     @apply border-border outline-ring/50;
   }
   body {
-    @apply bg-background text-foreground;
+    @apply bg-background text-foreground transition-colors duration-300;
   }
   html {
-    @apply font-sans;
+    @apply font-sans antialiased;
+  }
+}
+
+@layer components {
+  .premium-img {
+    @apply rounded-3xl object-cover shadow-xl border border-white/10 transition-transform duration-300 hover:scale-[1.02];
+  }
+  
+  .dark-text-contrast {
+    @apply text-slate-900 dark:text-slate-50;
+  }
+  
+  .mobile-card-img {
+    @apply w-full aspect-video rounded-3xl object-cover shadow-2xl;
   }
 }

@@ -26,7 +26,7 @@ export default function POICard({ location, isWide = false }: POICardProps) {
   };
 
   const handleCardClick = () => {
-    router.push(`/local/${location.id}`);
+    router.push(`/locations/${location.id}`);
   };
 
   return (

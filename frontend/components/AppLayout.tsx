@@ -25,32 +25,34 @@ import { Sheet, SheetContent, SheetTrigger } from '@/components/ui/sheet';
 import {
   DropdownMenu, DropdownMenuContent, DropdownMenuItem,
   DropdownMenuLabel, DropdownMenuSeparator, DropdownMenuTrigger,
+  DropdownMenuGroup
 } from '@/components/ui/dropdown-menu';
 
 // Icons
 import {
   Home, Map, Heart, Users, MessageCircle, Bell, LogIn, LogOut,
   Menu, Compass, Info, Wrench, HelpCircle, Mail, X, Search,
- Share2, ExternalLink
+  Share2, ExternalLink, User, Settings
 } from 'lucide-react';
+import { ThemeToggle } from './ThemeToggle';
 
 const navLinks = [
-  { label: 'Home', href: '/', icon: Home },
-  { label: 'Mapa', href: '/mapa', icon: Map },
-  { label: 'Guia IA', href: '/guia', icon: MessageCircle },
-  { label: 'Favoritos', href: '/favoritos', icon: Heart },
-  { label: 'Discussão', href: '/discussao', icon: Users },
+  { label: 'Início', href: '/', icon: Home },
+  { label: 'Mapa', href: '/map', icon: Map },
+  { label: 'Guia IA', href: '/guide', icon: MessageCircle },
+  { label: 'Favoritos', href: '/favorites', icon: Heart },
+  { label: 'Discussões', href: '/discussions', icon: Users },
 ];
 
 const infoLinks = [
-  { label: 'Sobre', href: '/sobre', icon: Info },
-  { label: 'Serviços', href: '/servicos', icon: Wrench },
+  { label: 'Sobre', href: '/about', icon: Info },
+  { label: 'Serviços', href: '/services', icon: Wrench },
   { label: 'FAQ', href: '/faq', icon: HelpCircle },
-  { label: 'Contato', href: '/contato', icon: Mail },
+  { label: 'Contato', href: '/contact', icon: Mail },
 ];
 
 // Pages where layout chrome should be hidden
-const authPages = ['/login', '/register', '/reset-password'];
+const authPages = ['/auth/login', '/auth/register', '/auth/reset-password'];
 
 interface LayoutProps { children: ReactNode }
 
@@ -66,12 +68,12 @@ function WebLayout({ children }: LayoutProps) {
 
   if (isAuthPage) {
     return (
-      <div className="min-h-screen bg-gradient-to-br from-gray-50 to-orange-50/30">
+      <div className="min-h-screen bg-linear-to-br from-gray-50 to-orange-50/30">
         <header className="sticky top-0 z-50 bg-white/70 backdrop-blur-lg border-b border-gray-100/50">
           <div className="max-w-6xl mx-auto px-6 h-14 flex items-center">
             <Link href="/" className="flex items-center gap-2">
               <Compass className="h-6 w-6 text-orange-500" />
-              <span className="text-lg font-black bg-gradient-to-r from-orange-500 to-amber-500 bg-clip-text text-transparent">SERGIPANIDADE</span>
+              <span className="text-lg font-black bg-linear-to-r from-orange-500 to-amber-500 bg-clip-text text-transparent">SERGIPANIDADE</span>
             </Link>
           </div>
         </header>
@@ -81,25 +83,28 @@ function WebLayout({ children }: LayoutProps) {
   }
 
   return (
-    <div className="min-h-screen flex flex-col bg-[#FDFCFB]">
-      <header className="sticky top-0 z-50 bg-white/70 backdrop-blur-md border-b border-orange-100/30">
+    <div className="min-h-screen flex flex-col bg-[#FDFCFB] dark:bg-slate-950 transition-colors duration-300">
+      <header className="sticky top-0 z-50 bg-white/70 dark:bg-slate-900/70 backdrop-blur-md border-b border-orange-100/30 dark:border-slate-800/50">
         <div className="max-w-7xl mx-auto px-4 md:px-8 h-20 flex items-center justify-between gap-4">
           {/* Logo Section */}
           <div className="flex items-center gap-10">
             <Link href="/" className="flex items-center gap-2 group transition-transform duration-300 hover:scale-105">
-              <div className="p-2 bg-gradient-to-br from-orange-500 to-amber-500 rounded-xl shadow-lg shadow-orange-200 group-hover:rotate-12 transition-transform">
+              <div className="aspect-square rounded-2xl bg-linear-to-br from-orange-500 to-amber-500 flex items-center justify-center text-white shadow-lg shadow-orange-200/50 dark:shadow-none group-hover:rotate-12 transition-transform">
                 <Compass className="h-6 w-6 text-white" />
               </div>
               <div className="flex flex-col -gap-1">
-                <span className="text-xl font-black tracking-tighter bg-gradient-to-r from-orange-600 via-amber-600 to-orange-500 bg-clip-text text-transparent leading-none">
+                <span className="text-xl font-black tracking-tighter bg-linear-to-r from-orange-600 via-amber-600 to-orange-500 bg-clip-text text-transparent leading-none">
                   SERGIPANIDADE
                 </span>
-                <span className="text-[10px] font-bold text-orange-400 tracking-[0.2em] uppercase">Turismo & Cultura</span>
+                <span className="text-[10px] font-bold text-orange-400 dark:text-orange-500/80 tracking-[0.2em] uppercase">Turismo & Cultura</span>
               </div>
             </Link>
-
+            <div className="ml-2">
+              <ThemeToggle />
+            </div>
+            
             {/* Main Nav Items */}
-            <nav className="hidden lg:flex items-center gap-1.5 p-1.5 bg-gray-50/50 rounded-2xl border border-gray-100">
+            <nav className="hidden lg:flex items-center gap-1.5 p-1.5 bg-gray-50/50 dark:bg-slate-800/30 rounded-2xl border border-gray-100 dark:border-slate-800">
               {navLinks.map((l) => {
                 const Icon = l.icon;
                 const active = pathname === l.href;
@@ -109,8 +114,8 @@ function WebLayout({ children }: LayoutProps) {
                     href={l.href}
                     className={`relative px-4 py-2 rounded-xl text-sm font-bold transition-all duration-300 flex items-center gap-2 overflow-hidden
                       ${active 
-                        ? 'bg-white text-orange-600 shadow-sm ring-1 ring-gray-100' 
-                        : 'text-gray-500 hover:text-gray-900 hover:bg-gray-100/50'}`}
+                        ? 'bg-white dark:bg-slate-800 text-orange-600 dark:text-orange-500 shadow-sm ring-1 ring-gray-100 dark:ring-slate-700' 
+                        : 'text-gray-500 dark:text-slate-400 hover:text-gray-900 dark:hover:text-slate-200 hover:bg-gray-100/50 dark:hover:bg-slate-800/50'}`}
                   >
                     <Icon className={`h-4 w-4 transition-transform duration-300 ${active ? 'scale-110' : 'group-hover:scale-110'}`} />
                     {l.label}
@@ -124,11 +129,11 @@ function WebLayout({ children }: LayoutProps) {
           {/* Search Bar - Desktop Only */}
           <div className="hidden xl:flex flex-1 max-w-sm">
             <div className="relative w-full group">
-              <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-gray-400 group-focus-within:text-orange-500 transition-colors" />
+              <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-gray-400 dark:text-slate-500 group-focus-within:text-orange-500 transition-colors" />
               <input 
                 type="text" 
                 placeholder="Buscar atrativos, cidades..." 
-                className="w-full bg-gray-50 border-none rounded-2xl py-2.5 pl-10 pr-4 text-sm font-medium focus:ring-2 focus:ring-orange-100 transition-all outline-none placeholder:text-gray-400"
+                className="w-full bg-gray-50 dark:bg-slate-800/50 border-none rounded-2xl py-2.5 pl-10 pr-4 text-sm font-medium focus:ring-2 focus:ring-orange-100 dark:focus:ring-orange-900/30 transition-all outline-none placeholder:text-gray-400 dark:placeholder:text-slate-500 dark:text-slate-200"
               />
             </div>
           </div>
@@ -136,57 +141,60 @@ function WebLayout({ children }: LayoutProps) {
           {/* Right Section: Notification & User */}
           <div className="flex items-center gap-3">
             <div className="hidden md:flex items-center gap-1">
-              <Button variant="ghost" size="icon" className="text-gray-400 hover:text-orange-500 hover:bg-orange-50 rounded-xl transition-colors">
+              <Button variant="ghost" size="icon" className="text-gray-400 dark:text-slate-400 hover:text-orange-500 hover:bg-orange-50 dark:hover:bg-orange-950/30 rounded-xl transition-colors">
                 <Bell className="h-5 w-5" />
-              </Button>
-              <Button variant="ghost" size="icon" className="text-gray-400 hover:text-orange-500 hover:bg-orange-50 rounded-xl transition-colors">
-                <Share2 className="h-5 w-5" />
               </Button>
             </div>
 
-            <div className="h-8 w-px bg-gray-100 mx-1 hidden md:block" />
+            <div className="h-8 w-px bg-gray-100 dark:bg-slate-800 mx-1 hidden md:block" />
 
             {isAuthenticated ? (
               <DropdownMenu>
                 <DropdownMenuTrigger asChild>
-                  <button className="flex items-center gap-3 pl-1 pr-3 py-1 bg-white border border-gray-100 rounded-2xl hover:shadow-md transition-all group overflow-hidden">
+                  <button className="flex items-center gap-3 pl-1 pr-3 py-1 bg-white dark:bg-slate-900 border border-gray-100 dark:border-slate-800 rounded-2xl hover:shadow-md transition-all group overflow-hidden">
                     <div className="relative">
-                      <ShadAvatar className="h-9 w-9 border-2 border-white ring-2 ring-orange-100 group-hover:ring-orange-200 transition-all">
+                      <ShadAvatar className="h-9 w-9 border-2 border-white dark:border-slate-800 ring-2 ring-orange-100 dark:ring-orange-900/30 group-hover:ring-orange-200 transition-all">
                         <AvatarImage src={user?.avatar || ''} />
-                        <AvatarFallback className="bg-gradient-to-br from-orange-400 to-amber-500 text-white font-black text-xs">
+                        <AvatarFallback className="bg-linear-to-br from-orange-400 to-amber-500 text-white font-black text-xs">
                           {user?.name?.charAt(0) || 'U'}
                         </AvatarFallback>
                       </ShadAvatar>
-                      <div className="absolute -bottom-0.5 -right-0.5 h-3 w-3 bg-green-500 border-2 border-white rounded-full" />
+                      <div className="absolute -bottom-0.5 -right-0.5 h-3 w-3 bg-green-500 border-2 border-white dark:border-slate-800 rounded-full" />
                     </div>
-                    <div className="flex flex-col items-start leading-none hidden sm:flex">
-                      <span className="text-sm font-bold text-gray-800">{user?.name?.split(' ')[0]}</span>
-                      <span className="text-[10px] font-semibold text-gray-400">Ver Perfil</span>
+                    <div className="hidden sm:flex flex-col items-start leading-none">
+                      <span className="text-sm font-bold text-gray-800 dark:text-slate-200">{user?.name?.split(' ')[0]}</span>
+                      <span className="text-[10px] font-semibold text-gray-400 dark:text-slate-500">Ver Perfil</span>
                     </div>
                   </button>
                 </DropdownMenuTrigger>
-                <DropdownMenuContent align="end" className="w-56 p-2 rounded-2xl border-orange-50 shadow-xl shadow-orange-100/50">
-                  <DropdownMenuLabel className="px-3 py-2">
-                    <p className="text-sm font-black text-gray-900 leading-tight">{user?.name}</p>
-                    <p className="text-[10px] font-bold text-gray-400 uppercase tracking-wider">{user?.email}</p>
-                  </DropdownMenuLabel>
-                  <DropdownMenuSeparator className="bg-gray-50" />
-                  <DropdownMenuItem className="rounded-xl px-3 py-2 cursor-pointer focus:bg-orange-50 focus:text-orange-600 transition-colors">
-                    <Users className="mr-2 h-4 w-4" /> Minha Conta
-                  </DropdownMenuItem>
-                  <DropdownMenuItem className="rounded-xl px-3 py-2 cursor-pointer focus:bg-orange-50 focus:text-orange-600 transition-colors">
-                    <Heart className="mr-2 h-4 w-4" /> Meus Favoritos
-                  </DropdownMenuItem>
-                  <DropdownMenuSeparator className="bg-gray-50" />
-                  <DropdownMenuItem onClick={() => dispatch(logout())} className="rounded-xl px-3 py-2 cursor-pointer text-red-500 font-bold focus:bg-red-50 focus:text-red-600 transition-colors">
-                    <LogOut className="mr-2 h-4 w-4" /> Encerrar Sessão
-                  </DropdownMenuItem>
-                </DropdownMenuContent>
+                    <DropdownMenuContent align="end" className="w-56 p-2 rounded-2xl border-orange-50 dark:border-slate-800 shadow-xl shadow-orange-100/50 dark:shadow-slate-950/70 bg-white dark:bg-slate-900 transition-all duration-300">
+                      <DropdownMenuGroup>
+                        <DropdownMenuLabel className="px-3 py-2">
+                          <p className="text-sm font-black text-gray-900 dark:text-slate-100 leading-tight">{user?.name}</p>
+                          <p className="text-[10px] font-bold text-gray-400 dark:text-slate-500 uppercase tracking-wider">{user?.email}</p>
+                        </DropdownMenuLabel>
+                      </DropdownMenuGroup>
+                      <DropdownMenuSeparator className="bg-gray-50 dark:bg-slate-800" />
+                      <DropdownMenuGroup>
+                        <DropdownMenuItem onSelect={() => router.push('/auth/profile')} className="rounded-xl px-3 py-2.5 cursor-pointer text-gray-700 dark:text-slate-300 font-bold focus:bg-orange-50 dark:focus:bg-slate-800 focus:text-orange-600 transition-colors flex items-center">
+                          <User className="mr-3 h-4.5 w-4.5 opacity-70" /> Meu Perfil
+                        </DropdownMenuItem>
+                        <DropdownMenuItem onSelect={() => router.push('/auth/settings')} className="rounded-xl px-3 py-2.5 cursor-pointer text-gray-700 dark:text-slate-300 font-bold focus:bg-orange-50 dark:focus:bg-slate-800 focus:text-orange-600 transition-colors flex items-center">
+                          <Settings className="mr-3 h-4.5 w-4.5 opacity-70" /> Configurações
+                        </DropdownMenuItem>
+                      </DropdownMenuGroup>
+                      <DropdownMenuSeparator className="bg-gray-50 dark:bg-slate-800" />
+                      <DropdownMenuGroup>
+                        <DropdownMenuItem onSelect={() => dispatch(logout())} className="rounded-xl px-3 py-2.5 cursor-pointer text-red-500 font-bold focus:bg-red-50 dark:focus:bg-red-950/30 focus:text-red-600 transition-colors flex items-center text-sm">
+                          <LogOut className="mr-3 h-4.5 w-4.5" /> Sair da Conta
+                        </DropdownMenuItem>
+                      </DropdownMenuGroup>
+                    </DropdownMenuContent>
               </DropdownMenu>
             ) : (
               <Button 
-                onClick={() => router.push('/login')} 
-                className="bg-gradient-to-r from-orange-500 to-amber-500 hover:from-orange-600 hover:to-amber-600 text-white font-black rounded-2xl px-6 py-5 shadow-lg shadow-orange-100 active:scale-95 transition-all text-sm uppercase tracking-wide"
+                onClick={() => router.push('/auth/login')} 
+                className="bg-linear-to-r from-orange-500 to-amber-500 hover:from-orange-600 hover:to-amber-600 text-white font-black rounded-2xl px-6 py-5 shadow-lg shadow-orange-100 active:scale-95 transition-all text-sm uppercase tracking-wide"
               >
                 <LogIn className="mr-2 h-4 w-4" /> Entrar Agora
               </Button>
@@ -200,21 +208,24 @@ function WebLayout({ children }: LayoutProps) {
                   </Button>
                 </SheetTrigger>
                 <SheetContent side="right" className="w-72 pt-10">
-                  <nav className="flex flex-col gap-1">
-                    {navLinks.map((l) => { const Icon = l.icon; return (
-                      <Link key={l.href} href={l.href}
-                        className={`px-4 py-3 rounded-xl font-semibold flex items-center gap-3 transition-colors
-                          ${pathname === l.href ? 'bg-orange-50 text-orange-600' : 'text-gray-500 hover:bg-gray-50'}`}>
-                        <Icon className="h-5 w-5" />{l.label}
-                      </Link>
-                    ); })}
+                  <div className="flex flex-col gap-1.5 dark-text-contrast">
+                    {navLinks.map((l) => {
+                      const Icon = l.icon;
+                      const active = pathname === l.href;
+                      return (
+                        <Link key={l.href} href={l.href} className={`flex items-center gap-2 px-4 py-2 rounded-xl text-sm font-bold transition-all duration-300 ${active ? 'bg-orange-500 text-white shadow-lg shadow-orange-500/20' : 'text-gray-600 dark:text-slate-400 hover:bg-orange-50 dark:hover:bg-orange-950/30 hover:text-orange-500'}`}>
+                          <Icon className={`h-4 w-4 ${active ? 'animate-pulse' : ''}`} />
+                          {l.label}
+                        </Link>
+                      );
+                    })}
                     <div className="my-2 h-px bg-gray-100" />
                     {infoLinks.map((l) => { const Icon = l.icon; return (
-                      <Link key={l.href} href={l.href} className="px-4 py-2.5 rounded-xl text-sm text-gray-400 hover:text-gray-700 flex items-center gap-3">
+                      <Link key={l.href} href={l.href} className="px-4 py-2.5 rounded-xl text-sm text-gray-400 dark:text-slate-500 hover:text-gray-700 dark:hover:text-slate-200 flex items-center gap-3 transition-colors">
                         <Icon className="h-4 w-4" />{l.label}
                       </Link>
                     ); })}
-                  </nav>
+                  </div>
                 </SheetContent>
               </Sheet>
             </div>
@@ -224,14 +235,14 @@ function WebLayout({ children }: LayoutProps) {
       <main className="flex-1 max-w-7xl mx-auto w-full px-4 md:px-8 py-10">{children}</main>
       <footer className="bg-[#1A1A1A] text-gray-300 pt-16 pb-8 px-6 overflow-hidden relative">
         {/* Subtle Decorative Background Element */}
-        <div className="absolute top-0 right-0 w-96 h-96 bg-orange-500/5 rounded-full blur-3xl -translate-y-1/2 translate-x-1/2" />
+        <div className="absolute top-0 right-0 w-[50%] h-full bg-linear-to-l from-orange-500/10 to-transparent skew-x-12 transform translate-x-20" />
         
         <div className="max-w-7xl mx-auto">
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-12 mb-16">
             {/* Brand Column */}
             <div className="space-y-6">
               <Link href="/" className="flex items-center gap-2 group">
-                <div className="p-2 bg-gradient-to-br from-orange-500 to-amber-500 rounded-xl shadow-lg ring-1 ring-white/10">
+                <div className="p-2 bg-linear-to-br from-orange-500 to-amber-500 rounded-xl shadow-lg ring-1 ring-white/10">
                   <Compass className="h-5 w-5 text-white" />
                 </div>
                 <span className="text-xl font-black tracking-tighter text-white">SERGIPANIDADE</span>
@@ -315,14 +326,13 @@ function MobileLayout({ children }: LayoutProps) {
   const router = useRouter();
   const dispatch = useDispatch();
   const { isAuthenticated, user } = useSelector((s: RootState) => s.auth);
-  const [drawerOpen, setDrawerOpen] = useState(false);
   const isAuthPage = authPages.includes(pathname);
 
   const getNavValue = (p: string) => {
-    if (p.includes('/mapa')) return 1;
-    if (p.includes('/guia')) return 2;
-    if (p.includes('/favoritos')) return 3;
-    if (p.includes('/discussao')) return 4;
+    if (p.includes('/map')) return 1;
+    if (p.includes('/guide')) return 2;
+    if (p.includes('/favorites')) return 3;
+    if (p.includes('/discussions')) return 4;
     if (p === '/') return 0;
     return -1;
   };
@@ -333,8 +343,22 @@ function MobileLayout({ children }: LayoutProps) {
   if (isAuthPage) {
     return (
       <Box sx={{ bgcolor: '#FAFAFA', minHeight: '100vh' }}>
-        <AppBar position="sticky" elevation={0} sx={{ bgcolor: 'white', borderBottom: '1px solid #f0f0f0' }}>
-          <Toolbar sx={{ minHeight: '48px !important', px: 2 }}>
+        <AppBar position="sticky" elevation={0} sx={{ 
+        bgcolor: 'background.paper', 
+        borderBottom: '1px solid', 
+        borderColor: 'divider',
+        backdropFilter: 'blur(30px)',
+        zIndex: 1100,
+        '&:before': {
+          content: '""',
+          position: 'absolute',
+          top: 0, left: 0, right: 0, height: '3px',
+          background: 'linear-gradient(90deg, #E67E22, #F39C12, #E67E22)',
+          opacity: 0.9,
+          boxShadow: '0 2px 10px rgba(230,126,34,0.4)'
+        }
+      }}>
+        <Toolbar sx={{ justifyContent: 'space-between', height: 72, px: 2.5 }}>
             <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }} onClick={() => router.push('/')}>
               <Typography sx={{
                 fontSize: '1rem', fontWeight: 800, cursor: 'pointer',
@@ -342,8 +366,8 @@ function MobileLayout({ children }: LayoutProps) {
                 WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent',
               }}>SERGIPANIDADE</Typography>
             </Box>
-          </Toolbar>
-        </AppBar>
+        </Toolbar>
+      </AppBar>
         <Box sx={{ px: 2, py: 1 }}>{children}</Box>
       </Box>
     );
@@ -353,130 +377,151 @@ function MobileLayout({ children }: LayoutProps) {
     <Box sx={{ pb: isAuthenticated ? '72px' : 0, bgcolor: '#FAFAFA', minHeight: '100vh' }}>
       {/* Compact Top Bar */}
       <AppBar position="sticky" elevation={0} sx={{
-        bgcolor: 'rgba(255,255,255,0.92)', backdropFilter: 'blur(16px)',
-        borderBottom: '1px solid rgba(0,0,0,0.04)',
+        bgcolor: 'rgba(255, 255, 255, 0.75)',
+        backdropFilter: 'blur(15px)',
+        borderBottom: '1px solid',
+        borderColor: 'rgba(0,0,0,0.05)',
+        zIndex: 1100,
       }}>
-        <Toolbar sx={{ minHeight: '52px !important', px: 1.5, justifyContent: 'space-between' }}>
-          {/* Left: Avatar + Brand */}
-          <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
-            {isAuthenticated && (
-              <MuiAvatar
-                src={user?.avatar || ''}
-                sx={{ width: 32, height: 32, border: '2px solid #E67E22', fontSize: '0.8rem' }}
-              >{user?.name?.charAt(0) || 'U'}</MuiAvatar>
-            )}
+        <Toolbar sx={{ minHeight: '64px !important', px: 2, justifyContent: 'space-between' }}>
+          {/* Left: Logo/Brand */}
+          <Box sx={{ display: 'flex', alignItems: 'center', gap: 1.5 }} onClick={() => router.push('/')}>
+            <Box sx={{
+              p: 0.8,
+              background: 'linear-gradient(135deg, #E67E22, #F39C12)',
+              borderRadius: '12px',
+              display: 'flex', alignItems: 'center', justifyContent: 'center',
+              boxShadow: '0 4px 12px rgba(230,126,34,0.4)'
+            }}>
+              <Compass size={20} color="white" />
+            </Box>
             <Typography
-              onClick={() => router.push('/')}
               sx={{
-                fontSize: '1.05rem', fontWeight: 800, cursor: 'pointer', letterSpacing: '-0.3px',
+                fontSize: '1rem', fontWeight: 950, letterSpacing: '-0.8px',
                 background: 'linear-gradient(45deg, #E67E22, #F39C12)',
                 WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent',
               }}>SERGIPANIDADE</Typography>
           </Box>
 
           {/* Right: Actions */}
-          <Stack direction="row" spacing={0} alignItems="center">
+          <Stack direction="row" spacing={0.5} alignItems="center">
+            <IconButton size="small" sx={{ color: 'text.secondary', bgcolor: 'rgba(0,0,0,0.03)', mr: 0.5 }}>
+              <Bell size={20} />
+            </IconButton>
             {!isAuthenticated ? (
               <MuiButton
-                size="small" onClick={() => router.push('/login')}
+                size="small" onClick={() => router.push('/auth/login')}
                 sx={{
-                  borderRadius: 5, fontWeight: 800, textTransform: 'none',
-                  bgcolor: '#E67E22', color: 'white', px: 2, py: 0.5,
-                  fontSize: '0.7rem', minWidth: 0,
+                  borderRadius: 6, fontWeight: 900, textTransform: 'none',
+                  bgcolor: '#E67E22', color: 'white', px: 2.5, py: 0.75,
+                  fontSize: '0.75rem', minWidth: 0,
                   '&:hover': { bgcolor: '#D35400' },
-                  boxShadow: '0 2px 8px rgba(230,126,34,0.3)',
+                  boxShadow: '0 6px 20px rgba(230,126,34,0.4)',
                 }}>Entrar</MuiButton>
             ) : (
-              <IconButton size="small" onClick={() => dispatch(logout())} sx={{ color: '#999' }}>
-                <LogOut size={18} />
-              </IconButton>
+              <Box sx={{ ml: 0.5 }}>
+                <DropdownMenu>
+                  <DropdownMenuTrigger asChild>
+                    <IconButton size="small" sx={{ p: 0 }}>
+                      <MuiAvatar
+                        src={user?.avatar || ''}
+                        sx={{ 
+                          width: 36, height: 36, 
+                          border: '2px solid #E67E22',
+                          boxShadow: '0 4px 10px rgba(230,126,34,0.2)'
+                        }}
+                      >{user?.name?.charAt(0) || 'U'}</MuiAvatar>
+                    </IconButton>
+                  </DropdownMenuTrigger>
+                  <DropdownMenuContent align="end" className="w-60 p-2 rounded-2xl border-orange-50 dark:border-slate-800 shadow-2xl shadow-orange-200/50 dark:shadow-slate-950 bg-white dark:bg-slate-900 animate-in slide-in-from-top-2 duration-300">
+                    <DropdownMenuGroup>
+                      <DropdownMenuLabel className="px-4 py-3">
+                        <p className="text-base font-black text-gray-900 dark:text-white leading-tight">{user?.name}</p>
+                        <p className="text-[10px] font-bold text-gray-400 dark:text-slate-500 uppercase tracking-widest mt-0.5">{user?.email}</p>
+                      </DropdownMenuLabel>
+                    </DropdownMenuGroup>
+                    <DropdownMenuSeparator className="bg-gray-100 dark:bg-slate-800" />
+                    <DropdownMenuGroup>
+                      <DropdownMenuItem onSelect={() => router.push('/auth/profile')} className="rounded-xl px-4 py-3 cursor-pointer text-gray-700 dark:text-slate-300 font-bold focus:bg-orange-50 dark:focus:bg-orange-950/30 focus:text-orange-600 transition-colors flex items-center">
+                        <User className="mr-3 h-5 w-5 opacity-80" /> <span className="flex-1">Meu Perfil</span>
+                      </DropdownMenuItem>
+                      <DropdownMenuItem onSelect={() => router.push('/auth/settings')} className="rounded-xl px-4 py-3 cursor-pointer text-gray-700 dark:text-slate-300 font-bold focus:bg-orange-50 dark:focus:bg-orange-950/30 focus:text-orange-600 transition-colors flex items-center">
+                        <Settings className="mr-3 h-5 w-5 opacity-80" /> <span className="flex-1">Configurações</span>
+                      </DropdownMenuItem>
+                    </DropdownMenuGroup>
+                    <DropdownMenuSeparator className="bg-gray-100 dark:bg-slate-800" />
+                    <DropdownMenuGroup>
+                      <DropdownMenuItem onSelect={() => dispatch(logout())} className="rounded-xl px-4 py-3 cursor-pointer text-red-500 font-black focus:bg-red-50 dark:focus:bg-red-900/20 focus:text-red-600 transition-colors flex items-center">
+                        <LogOut className="mr-3 h-5 w-5" /> Sair
+                      </DropdownMenuItem>
+                    </DropdownMenuGroup>
+                  </DropdownMenuContent>
+                </DropdownMenu>
+              </Box>
             )}
-            <IconButton size="small" onClick={() => setDrawerOpen(true)} sx={{ color: '#999', ml: 0.5 }}>
-              <Menu size={20} />
-            </IconButton>
           </Stack>
         </Toolbar>
       </AppBar>
 
-      {/* Side Drawer for info links */}
-      <Drawer anchor="right" open={drawerOpen} onClose={() => setDrawerOpen(false)}
-        PaperProps={{ sx: { width: 260, borderRadius: '24px 0 0 24px', pt: 1 } }}>
-        <Box sx={{ px: 2, py: 2, display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-          <Typography sx={{ fontWeight: 800, fontSize: '1rem', color: '#2C3E50' }}>Menu</Typography>
-          <IconButton size="small" onClick={() => setDrawerOpen(false)}><X size={18} /></IconButton>
-        </Box>
-        <Divider />
-        <List sx={{ px: 1 }}>
-          {infoLinks.map((l) => {
-            const Icon = l.icon;
-            const active = pathname === l.href;
-            return (
-              <ListItemButton key={l.href} onClick={() => { router.push(l.href); setDrawerOpen(false); }}
-                sx={{ borderRadius: 3, mb: 0.5, bgcolor: active ? '#FFF5EB' : 'transparent' }}>
-                <ListItemIcon sx={{ minWidth: 36 }}><Icon size={18} color={active ? '#E67E22' : '#999'} /></ListItemIcon>
-                <ListItemText primary={l.label} primaryTypographyProps={{ fontWeight: active ? 800 : 600, fontSize: '0.9rem', color: active ? '#E67E22' : '#555' }} />
-              </ListItemButton>
-            );
-          })}
-        </List>
-        <Divider sx={{ my: 1 }} />
-        <List sx={{ px: 1 }}>
-          {navLinks.map((l) => {
-            const Icon = l.icon;
-            const active = pathname === l.href;
-            return (
-              <ListItemButton key={l.href} onClick={() => { router.push(l.href); setDrawerOpen(false); }}
-                sx={{ borderRadius: 3, mb: 0.5, bgcolor: active ? '#FFF5EB' : 'transparent' }}>
-                <ListItemIcon sx={{ minWidth: 36 }}><Icon size={18} color={active ? '#E67E22' : '#999'} /></ListItemIcon>
-                <ListItemText primary={l.label} primaryTypographyProps={{ fontWeight: active ? 800 : 600, fontSize: '0.9rem', color: active ? '#E67E22' : '#555' }} />
-              </ListItemButton>
-            );
-          })}
-        </List>
-      </Drawer>
-
       {/* Content — edge to edge, no extra container wrapper */}
-      <Box sx={{ px: 2, py: 1.5 }}>
+      <Box sx={{ px: 3, py: 2.5, pb: 14 }}>
         {children}
       </Box>
 
-      {/* Bottom Nav — only when logged in */}
-      {isAuthenticated && (
-        <Paper sx={{
-          position: 'fixed', bottom: 0, left: 0, right: 0, zIndex: 1200,
-          borderRadius: '20px 20px 0 0', overflow: 'hidden',
-        }} elevation={0}>
-          <Box sx={{
-            height: 1, background: 'linear-gradient(90deg, transparent, rgba(230,126,34,0.2), transparent)',
-          }} />
-          <BottomNavigation
-            value={navValue}
-            onChange={(_, v) => {
-              const routes = ['/', '/mapa', '/guia', '/favoritos', '/discussao'];
-              router.push(routes[v]);
-            }}
-            showLabels
-            sx={{
-              height: 68, bgcolor: 'white',
-              '& .MuiBottomNavigationAction-root': {
-                minWidth: 0, py: 1,
-                color: '#CBD5E0',
-                '&.Mui-selected': { color: '#E67E22' },
+      {/* Bottom Nav */}
+      <Paper sx={{
+        position: 'fixed', bottom: 0, left: 0, right: 0, zIndex: 1200,
+        borderRadius: '32px 32px 0 0', overflow: 'hidden',
+        boxShadow: '0 -10px 40px rgba(0,0,0,0.12)',
+        bgcolor: 'transparent',
+      }} elevation={0}>
+        <Box sx={{
+          height: 2, background: 'linear-gradient(90deg, transparent, rgba(230,126,34,0.5), transparent)',
+        }} />
+        <BottomNavigation
+          value={navValue}
+          onChange={(_, v) => {
+            const routes = ['/', '/map', '/guide', '/favorites', '/discussions'];
+            router.push(routes[v]);
+          }}
+          showLabels
+          sx={{
+            height: 96, 
+            bgcolor: 'rgba(255, 255, 255, 0.9)',
+            backdropFilter: 'blur(20px)',
+            borderTop: '1px solid', borderColor: 'rgba(0,0,0,0.05)',
+            pb: 2,
+            pt: 1,
+            '& .MuiBottomNavigationAction-root': {
+              minWidth: 0, py: 1,
+              color: 'text.secondary',
+              '&.Mui-selected': { 
+                color: 'primary.main',
+                '& .MuiSvgIcon-root, & svg': {
+                  transform: 'translateY(-4px) scale(1.2)',
+                  filter: 'drop-shadow(0 4px 8px rgba(230,126,34,0.3))'
+                }
               },
-              '& .MuiBottomNavigationAction-label': {
-                fontSize: '0.6rem', fontWeight: 700, mt: 0.25,
-                '&.Mui-selected': { fontSize: '0.6rem', fontWeight: 800 },
+              transition: 'all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275)',
+            },
+            '& .MuiBottomNavigationAction-label': {
+              fontSize: '0.65rem', fontWeight: 700, mt: 0.5,
+              opacity: 0.7,
+              '&.Mui-selected': { 
+                fontSize: '0.7rem', fontWeight: 900, transform: 'scale(1.05)',
+                opacity: 1
               },
-            }}
-          >
-            <BottomNavigationAction label="Home" icon={<Home size={20} />} />
-            <BottomNavigationAction label="Mapa" icon={<Map size={20} />} />
-            <BottomNavigationAction label="Guia" icon={<MessageCircle size={20} />} />
-            <BottomNavigationAction label="Favoritos" icon={<Heart size={20} />} />
-            <BottomNavigationAction label="Discussão" icon={<Users size={20} />} />
-          </BottomNavigation>
-        </Paper>
-      )}
+              transition: 'all 0.3s ease',
+            },
+          }}
+        >
+          <BottomNavigationAction label="Início" icon={<Home size={22} />} />
+          <BottomNavigationAction label="Mapa" icon={<Map size={22} />} />
+          <BottomNavigationAction label="Guia IA" icon={<Box sx={{ position: 'relative' }}><MessageCircle size={22} /><Box sx={{ position: 'absolute', top: -4, right: -4, width: 8, height: 8, bgcolor: '#2ECC71', borderRadius: '50%', border: '2px solid white' }} /></Box>} />
+          <BottomNavigationAction label="Favoritos" icon={<Heart size={22} />} />
+          <BottomNavigationAction label="Fórum" icon={<Users size={22} />} />
+        </BottomNavigation>
+      </Paper>
     </Box>
   );
 }

@@ -32,7 +32,7 @@ function WebReset() {
               <Button onClick={() => setSent(true)} className="w-full h-12 rounded-xl bg-orange-500 hover:bg-orange-600 text-white font-bold">ENVIAR LINK</Button>
             </>
           ) : (
-            <Button variant="outline" onClick={() => router.push('/login')} className="w-full h-12 rounded-xl font-bold">VOLTAR AO LOGIN</Button>
+            <Button variant="outline" onClick={() => router.push('/auth/login')} className="w-full h-12 rounded-xl font-bold">VOLTAR AO LOGIN</Button>
           )}
           <Alert className="mt-6"><AlertCircle className="h-4 w-4" /><AlertTitle className="font-bold">Dica</AlertTitle><AlertDescription>Verifique a pasta de spam.</AlertDescription></Alert>
         </CardContent>
@@ -63,7 +63,7 @@ function MobileReset() {
             <Box sx={{ mx: 'auto', mb: 3, width: 64, height: 64, bgcolor: '#EBF4FF', borderRadius: '50%', display: 'flex', alignItems: 'center', justifyContent: 'center' }}><CheckCircle2 size={28} color="#3182CE" /></Box>
             <Typography sx={{ fontSize: '1.5rem', fontWeight: 900, color: '#2C3E50', textAlign: 'center', mb: 0.5 }}>E-mail Enviado!</Typography>
             <Typography variant="body2" color="text.secondary" sx={{ textAlign: 'center', mb: 4 }}>Verifique sua caixa de entrada.</Typography>
-            <MuiButton fullWidth variant="outlined" onClick={() => router.push('/login')} sx={{ py: 1.75, borderRadius: 3, fontWeight: 800, borderColor: '#eee' }}>VOLTAR AO LOGIN</MuiButton>
+            <MuiButton fullWidth variant="outlined" onClick={() => router.push('/auth/login')} sx={{ py: 1.75, borderRadius: 3, fontWeight: 800, borderColor: '#eee' }}>VOLTAR AO LOGIN</MuiButton>
           </motion.div>
         )}
       </AnimatePresence>
