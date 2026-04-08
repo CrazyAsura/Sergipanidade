@@ -13,7 +13,7 @@ import { Badge } from '@/components/ui/badge';
 import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
 import { Box, Typography, Paper, TextField, InputAdornment, IconButton, Chip, Stack, CardMedia, Card as MuiCard, CardContent as MuiCardContent, Fab, Divider, useTheme } from '@mui/material';
-import { GoogleMap, useJsApiLoader, Marker, InfoWindow, Autocomplete, Polyline } from '@react-google-maps/api';
+import { GoogleMap, useJsApiLoader, Marker, InfoWindow, Autocomplete } from '@react-google-maps/api';
 import { useSearchParams } from 'next/navigation';
 
 const GOOGLE_MAPS_API_KEY = "AIzaSyCR5ufBKKAVWYAovmT9-TG9F7gg66cgXDg";
@@ -345,24 +345,6 @@ function MapInterface({ isMobile }: { isMobile: boolean }) {
           />
         ))}
 
-        {isNavigating && routePath.length > 0 && (
-          <>
-            <Polyline
-              path={routePath}
-              options={{
-                strokeColor: '#ED2100',
-                strokeOpacity: 0.8,
-                strokeWeight: 6,
-                icons: [{
-                  icon: { path: google.maps.SymbolPath.FORWARD_CLOSED_ARROW },
-                  offset: '100%'
-                }]
-              }}
-            />
-            <Marker position={center} label="S" />
-            {sel && <Marker position={{ lat: sel.lat, lng: sel.lng }} label="D" />}
-          </>
-        )}
       </GoogleMap>
 
       {/* Navigation Overlay */}
@@ -385,21 +367,18 @@ function MapInterface({ isMobile }: { isMobile: boolean }) {
                      <h4 className="text-xl font-black uppercase italic tracking-tighter leading-none">{sel?.name}</h4>
                    </div>
                  </div>
-                <IconButton onClick={() => { setIsNavigating(false); setRouteInfo(null); setRoutePath([]); }} sx={{ color: 'white' }}>
+                <IconButton onClick={clearRoute} sx={{ color: 'white' }}>
                   <X size={20} />
                 </IconButton>
               </Stack>
             </div>
             
             <div className="max-h-80 overflow-y-auto p-4 space-y-4 bg-gray-50/50 dark:bg-slate-900/50">
-               {routeInfo.steps.map((step, i) => (
+                   {routeInfo.steps.map((step, i) => (
                  <div key={i} className="flex gap-4 items-start p-3 bg-white dark:bg-slate-800 rounded-2xl shadow-sm border border-black/5 dark:border-white/5">
                     <div className="h-8 w-8 bg-gray-100 dark:bg-slate-700 rounded-lg flex items-center justify-center text-primary font-black text-xs shrink-0">{i + 1}</div>
                     <div className="space-y-1">
-                      <div className="text-sm font-bold text-gray-800 dark:text-slate-200">Seguir em frente</div>
-                      <div className="flex gap-3 text-[10px] font-black text-gray-400 uppercase tracking-widest">
-                         <span>Passo {i + 1}</span>
-                      </div>
+                      <div className="text-sm font-bold text-gray-800 dark:text-slate-200">{step.instruction || step.instructions || `Passo ${i + 1}`}</div>
                     </div>
                  </div>
                ))}
@@ -416,7 +395,7 @@ function MapInterface({ isMobile }: { isMobile: boolean }) {
                    <p className="text-lg font-black text-gray-900 dark:text-white uppercase italic tracking-tighter">{routeInfo.distance}</p>
                  </div>
                </Stack>
-               <Button onClick={() => { setIsNavigating(false); setRouteInfo(null); setRoutePath([]); }} className="w-full mt-4 h-12 bg-gray-100 dark:bg-slate-800 text-gray-500 font-black rounded-xl hover:bg-red-50 hover:text-red-500 transition-all uppercase tracking-widest text-[10px]">Encerrar Viagem</Button>
+               <Button onClick={clearRoute} className="w-full mt-4 h-12 bg-gray-100 dark:bg-slate-800 text-gray-500 font-black rounded-xl hover:bg-red-50 hover:text-red-500 transition-all uppercase tracking-widest text-[10px]">Encerrar Viagem</Button>
             </div>
           </motion.div>
         )}
