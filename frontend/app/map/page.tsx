@@ -19,7 +19,7 @@ import { useSearchParams } from 'next/navigation';
 const GOOGLE_MAPS_API_KEY = "AIzaSyCR5ufBKKAVWYAovmT9-TG9F7gg66cgXDg";
 const mapContainerStyle = { width: '100%', height: '100%' };
 const center = { lat: -10.9472, lng: -37.0731 }; // Aracaju center
-const libraries: ("places" | "drawing" | "geometry" | "localContext" | "visualization" | "routes")[] = ['places', 'routes'];
+const libraries: ("places" | "drawing" | "geometry" | "visualization" | "routes")[] = ['places', 'routes'];
 
 const categories = [
   { label: 'Tudo', type: 'Tudo', icon: MapPin },

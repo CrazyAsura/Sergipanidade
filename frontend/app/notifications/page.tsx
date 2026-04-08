@@ -104,7 +104,7 @@ export default function NotificationsPage() {
             Notificações
           </Typography>
         </Breadcrumbs>
-        <Typography variant="h2" sx={{ fontWeight: 900, textTransform: 'uppercase', italic: true, letterSpacing: -1, fontSize: { xs: '2.5rem', md: '3.5rem' }, lineHeight: 1 }}>
+        <Typography variant="h2" sx={{ fontWeight: 900, textTransform: 'uppercase', fontStyle: 'italic', letterSpacing: -1, fontSize: { xs: '2.5rem', md: '3.5rem' }, lineHeight: 1 }}>
           Suas <span className="text-primary italic">Notificações</span>
         </Typography>
       </Box>

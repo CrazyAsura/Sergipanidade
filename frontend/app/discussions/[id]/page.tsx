@@ -136,7 +136,7 @@ export default function DiscussionDetailPage() {
 
       {/* Comments Section */}
       <Box sx={{ px: 2 }}>
-        <Typography variant="h5" sx={{ fontWeight: 900, textTransform: 'uppercase', italic: true, mb: 4, color: 'text.primary', letterSpacing: -1 }}>
+        <Typography variant="h5" sx={{ fontWeight: 900, textTransform: 'uppercase', fontStyle: 'italic', mb: 4, color: 'text.primary', letterSpacing: -1 }}>
           Comentários <span className="text-primary">({comments.length})</span>
         </Typography>
 

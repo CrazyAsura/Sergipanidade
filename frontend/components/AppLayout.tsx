@@ -13,7 +13,7 @@ import {
   Paper, Box, AppBar, Toolbar, Typography,
   IconButton, Avatar as MuiAvatar, Stack, Button as MuiButton,
   BottomNavigation, BottomNavigationAction, Drawer, List, ListItemButton,
-  ListItemIcon, ListItemText, Divider
+  ListItemIcon, ListItemText, Divider, useTheme
 } from '@mui/material';
 
 // Shadcn imports (web)
@@ -66,7 +66,8 @@ function Footer() {
       <div className="max-w-7xl mx-auto px-6 grid grid-cols-1 md:grid-cols-4 gap-12 mb-12">
         <div className="col-span-1 md:col-span-1">
           <div className="flex items-center gap-2 mb-6">
-            <Compass className="h-8 w-8 text-primary" />
+            <img src="/logo-light.png" alt="Sergipanidade" className="h-10 w-10 object-contain dark:hidden" />
+            <img src="/logo-dark.png" alt="Sergipanidade" className="h-10 w-10 object-contain hidden dark:block" />
             <span className="text-xl font-black text-foreground tracking-tighter">SERGIPANIDADE</span>
           </div>
           <p className="text-muted-foreground text-sm leading-relaxed mb-6 font-medium">
@@ -189,9 +190,8 @@ function WebLayout({ children }: LayoutProps) {
         <div className="max-w-7xl mx-auto px-4 md:px-8 h-20 flex items-center justify-between gap-4">
           <div className="flex items-center gap-10">
             <Link href={isAuthenticated ? "/locations" : "/"} className="flex items-center gap-2 group transition-transform duration-300 hover:scale-105">
-              <div className="aspect-square rounded-2xl bg-linear-to-br from-primary to-accent flex items-center justify-center text-primary-foreground shadow-lg shadow-primary/20 dark:shadow-none group-hover:rotate-12 transition-transform h-10 w-10">
-                <Compass className="h-6 w-6 text-primary-foreground" />
-              </div>
+              <img src="/logo-light.png" alt="Sergipanidade" className="h-11 w-11 object-contain dark:hidden" />
+              <img src="/logo-dark.png" alt="Sergipanidade" className="h-11 w-11 object-contain hidden dark:block" />
               <div className="flex flex-col -gap-1">
                 <span className="text-xl font-black tracking-tighter bg-linear-to-r from-primary via-accent to-primary bg-clip-text text-transparent leading-none uppercase">
                   SERGIPANIDADE
@@ -396,10 +396,9 @@ function MobileLayout({ children }: LayoutProps) {
   return (
     <div className={`min-h-screen flex flex-col bg-background text-foreground ${isAuthenticated ? 'pb-20' : ''}`}>
       <header className="sticky top-0 z-50 bg-background/80 backdrop-blur-md border-b border-border px-4 py-3 flex items-center justify-between">
-        <div className="flex items-center gap-2" onClick={() => router.push(isAuthenticated ? '/locations' : '/')}>
-          <div className="bg-primary p-1.5 rounded-xl flex items-center justify-center shadow-lg shadow-primary/20">
-            <Compass size={18} className="text-primary-foreground" />
-          </div>
+        <div className="flex items-center gap-2 cursor-pointer" onClick={() => router.push(isAuthenticated ? '/locations' : '/')}>
+          <img src="/logo-light.png" alt="Sergipanidade" className="h-9 w-9 object-contain dark:hidden" />
+          <img src="/logo-dark.png" alt="Sergipanidade" className="h-9 w-9 object-contain hidden dark:block" />
           <span className="font-black text-sm tracking-tighter text-foreground uppercase">SERGIPANIDADE</span>
         </div>
 
