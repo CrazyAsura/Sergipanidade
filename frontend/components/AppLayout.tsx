@@ -7,6 +7,7 @@ import { RootState } from '@/lib/store';
 import { logout } from '@/lib/store/features/auth/authSlice';
 import { useIsMobile } from '@/hooks/useIsMobile';
 import Link from 'next/link';
+import { motion, AnimatePresence } from 'framer-motion';
 
 // MUI imports (mobile)
 import {
@@ -67,30 +68,30 @@ function Footer() {
         <div className="col-span-1 md:col-span-1">
           <div className="flex items-center gap-2 mb-6">
             <img src="/logo-light.png" alt="Sergipanidade" className="h-10 w-10 object-contain dark:hidden" />
-            <img src="/logo-dark.png" alt="Sergipanidade" className="h-10 w-10 object-contain hidden dark:block" />
+            <img src="/logo-dark.png" alt="Sergipanidade" className="h-10 w-10 object-contain hidden dark:block dark:invert" />
             <span className="text-xl font-black text-foreground tracking-tighter">SERGIPANIDADE</span>
           </div>
           <p className="text-muted-foreground text-sm leading-relaxed mb-6 font-medium">
             Descubra as riquezas naturais, históricas e culturais do estado de Sergipe com a nossa guia inteligente.
           </p>
           <div className="flex gap-4">
-             {[
-               { id: 'facebook', icon: Share2, label: 'Facebook' },
-               { id: 'instagram', icon: Share2, label: 'Instagram' },
-               { id: 'twitter', icon: Share2, label: 'Twitter' },
-               { id: 'youtube', icon: Share2, label: 'YouTube' }
-             ].map(s => (
-               <div 
-                 key={s.id} 
-                 onClick={() => alert(`Conectando ao ${s.label}...`)}
-                 className="h-9 w-9 rounded-xl bg-gray-50 dark:bg-slate-800 flex items-center justify-center text-gray-400 dark:text-slate-500 hover:text-primary hover:bg-primary/5 transition-all cursor-pointer border border-gray-100 dark:border-slate-800"
-               >
-                 <Share2 size={16} />
-               </div>
-             ))}
+            {[
+              { id: 'facebook', icon: Share2, label: 'Facebook' },
+              { id: 'instagram', icon: Share2, label: 'Instagram' },
+              { id: 'twitter', icon: Share2, label: 'Twitter' },
+              { id: 'youtube', icon: Share2, label: 'YouTube' }
+            ].map(s => (
+              <div
+                key={s.id}
+                onClick={() => alert(`Conectando ao ${s.label}...`)}
+                className="h-9 w-9 rounded-xl bg-gray-50 dark:bg-slate-800 flex items-center justify-center text-gray-400 dark:text-slate-500 hover:text-primary hover:bg-primary/5 transition-all cursor-pointer border border-gray-100 dark:border-slate-800"
+              >
+                <Share2 size={16} />
+              </div>
+            ))}
           </div>
         </div>
-        
+
         <div>
           <h4 className="font-black text-gray-900 dark:text-white mb-6 uppercase text-xs tracking-widest">Navegação</h4>
           <ul className="space-y-4">
@@ -117,8 +118,8 @@ function Footer() {
             <p className="text-[10px] font-black text-primary uppercase tracking-widest mb-1">Newsletter</p>
             <div className="flex gap-2">
               <input type="text" placeholder="Seu email" className="bg-white dark:bg-slate-900 text-[10px] rounded-lg px-3 py-2 w-full border-none outline-none focus:ring-1 focus:ring-primary/30" />
-              <Button 
-                size="icon" 
+              <Button
+                size="icon"
                 className="h-8 w-8 bg-primary hover:bg-primary/90 shrink-0"
                 onClick={() => alert('Obrigado por assinar nossa newsletter!')}
               >
@@ -132,8 +133,8 @@ function Footer() {
       <div className="max-w-7xl mx-auto px-6 pt-8 border-t border-border flex flex-col md:flex-row justify-between items-center gap-4">
         <p className="text-xs font-bold text-muted-foreground">© 2024 Sergipanidade Turismo. Todos os direitos reservados.</p>
         <div className="flex gap-6">
-           <Link href="/faq" className="text-xs font-bold text-muted-foreground hover:text-foreground transition-colors">Termos de Uso</Link>
-           <Link href="/faq" className="text-xs font-bold text-muted-foreground hover:text-foreground transition-colors">Privacidade</Link>
+          <Link href="/faq" className="text-xs font-bold text-muted-foreground hover:text-foreground transition-colors">Termos de Uso</Link>
+          <Link href="/faq" className="text-xs font-bold text-muted-foreground hover:text-foreground transition-colors">Privacidade</Link>
         </div>
       </div>
     </footer>
@@ -185,13 +186,18 @@ function WebLayout({ children }: LayoutProps) {
   }
 
   return (
-    <div className="min-h-screen flex flex-col bg-background text-foreground transition-colors duration-300">
-      <header className="sticky top-0 z-50 bg-background/70 backdrop-blur-md border-b border-border/50">
+    <div className="min-h-screen flex flex-col bg-background text-foreground transition-colors duration-300 relative overflow-x-hidden">
+      {/* Cinematic Background Elements */}
+      <div className="cinematic-noise" />
+      <div className="glow-orb w-[600px] h-[600px] bg-primary/30 -top-48 -left-48" />
+      <div className="glow-orb w-[500px] h-[500px] bg-accent/20 bottom-0 -right-24" />
+      
+      <header className="sticky top-0 z-50 bg-background/60 backdrop-blur-2xl border-b border-border/40">
         <div className="max-w-7xl mx-auto px-4 md:px-8 h-20 flex items-center justify-between gap-4">
           <div className="flex items-center gap-10">
             <Link href={isAuthenticated ? "/locations" : "/"} className="flex items-center gap-2 group transition-transform duration-300 hover:scale-105">
               <img src="/logo-light.png" alt="Sergipanidade" className="h-11 w-11 object-contain dark:hidden" />
-              <img src="/logo-dark.png" alt="Sergipanidade" className="h-11 w-11 object-contain hidden dark:block" />
+              <img src="/logo-dark.png" alt="Sergipanidade" className="h-11 w-11 object-contain hidden dark:block dark:invert" />
               <div className="flex flex-col -gap-1">
                 <span className="text-xl font-black tracking-tighter bg-linear-to-r from-primary via-accent to-primary bg-clip-text text-transparent leading-none uppercase">
                   SERGIPANIDADE
@@ -202,21 +208,26 @@ function WebLayout({ children }: LayoutProps) {
             <div className="ml-2">
               <ThemeToggle />
             </div>
-            
-            <nav className="hidden lg:flex items-center gap-1.5 p-1.5 bg-gray-50/50 dark:bg-slate-800/30 rounded-2xl border border-gray-100 dark:border-slate-800">
+
+            <nav className="hidden lg:flex items-center gap-1 p-1 bg-white/50 dark:bg-slate-900/50 backdrop-blur-md rounded-2xl border border-white/20 dark:border-white/5">
               {currentLinks.map((l) => {
                 const Icon = l.icon;
                 const active = pathname === l.href;
                 return (
-                  <Link 
-                    key={l.href} 
+                  <Link
+                    key={l.href}
                     href={l.href}
-                    className={`relative px-4 py-2 rounded-xl text-sm font-bold transition-all duration-300 flex items-center gap-2 overflow-hidden
-                      ${active 
-                        ? 'bg-white dark:bg-slate-800 text-primary shadow-sm ring-1 ring-gray-100 dark:ring-slate-700' 
-                        : 'text-gray-500 dark:text-slate-400 hover:text-foreground dark:hover:text-slate-200 hover:bg-gray-100/50 dark:hover:bg-slate-800/50'}`}
+                    className={`relative px-5 py-2.5 rounded-xl text-sm font-bold transition-all duration-300 flex items-center gap-2.5 group
+                      ${active ? 'text-primary' : 'text-muted-foreground hover:text-foreground'}`}
                   >
-                    <Icon className={`h-4 w-4 transition-transform duration-300 ${active ? 'scale-110' : 'group-hover:scale-110'}`} />
+                    {active && (
+                      <motion.div
+                        layoutId="nav-active"
+                        className="absolute inset-0 bg-white dark:bg-slate-800 shadow-sm border border-gray-100 dark:border-slate-700 rounded-xl -z-10"
+                        transition={{ type: "spring", bounce: 0.2, duration: 0.6 }}
+                      />
+                    )}
+                    <Icon className={`h-4.5 w-4.5 transition-transform duration-300 ${active ? 'scale-110' : 'group-hover:scale-110 opacity-70 group-hover:opacity-100'}`} />
                     {l.label}
                   </Link>
                 );
@@ -227,9 +238,9 @@ function WebLayout({ children }: LayoutProps) {
           <div className="flex items-center gap-3">
             {isAuthenticated && (
               <div className="hidden md:flex items-center gap-1">
-                <Button 
-                  variant="ghost" 
-                  size="icon" 
+                <Button
+                  variant="ghost"
+                  size="icon"
                   onClick={() => setIsNotificationsOpen(true)}
                   className="text-gray-400 dark:text-slate-400 hover:text-primary hover:bg-primary/5 dark:hover:bg-primary/10 rounded-xl transition-colors relative"
                 >
@@ -288,14 +299,14 @@ function WebLayout({ children }: LayoutProps) {
                 </DropdownMenuContent>
               </DropdownMenu>
             ) : (
-              <Button 
-                onClick={() => router.push('/auth/login')} 
+              <Button
+                onClick={() => router.push('/auth/login')}
                 className="bg-primary hover:bg-primary/90 text-primary-foreground font-black rounded-2xl px-6 py-2 transition-all active:scale-95"
               >
                 ENTRAR
               </Button>
             )}
-            
+
             <div className="lg:hidden">
               <Sheet>
                 <SheetTrigger
@@ -318,7 +329,7 @@ function WebLayout({ children }: LayoutProps) {
                       );
                     })}
                     {!isAuthenticated && (
-                       <Button onClick={() => router.push('/auth/login')} className="mt-4 w-full bg-primary text-primary-foreground font-black rounded-xl h-12">ENTRAR AGORA</Button>
+                      <Button onClick={() => router.push('/auth/login')} className="mt-4 w-full bg-primary text-primary-foreground font-black rounded-xl h-12">ENTRAR AGORA</Button>
                     )}
                   </div>
                 </SheetContent>
@@ -330,9 +341,9 @@ function WebLayout({ children }: LayoutProps) {
       <main className="flex-1 max-w-7xl mx-auto w-full px-4 md:px-8 py-10">
         {children}
       </main>
-      <NotificationsModal 
-        isOpen={isNotificationsOpen} 
-        onClose={() => setIsNotificationsOpen(false)} 
+      <NotificationsModal
+        isOpen={isNotificationsOpen}
+        onClose={() => setIsNotificationsOpen(false)}
       />
       {!isAuthenticated && <Footer />}
     </div>
@@ -394,18 +405,21 @@ function MobileLayout({ children }: LayoutProps) {
   }
 
   return (
-    <div className={`min-h-screen flex flex-col bg-background text-foreground ${isAuthenticated ? 'pb-20' : ''}`}>
-      <header className="sticky top-0 z-50 bg-background/80 backdrop-blur-md border-b border-border px-4 py-3 flex items-center justify-between">
+    <div className={`min-h-screen flex flex-col bg-background text-foreground relative overflow-x-hidden ${isAuthenticated ? 'pb-20' : ''}`}>
+      <div className="cinematic-noise" />
+      <div className="glow-orb w-[300px] h-[300px] bg-primary/20 -top-24 -left-24" />
+      
+      <header className="sticky top-0 z-50 bg-background/60 backdrop-blur-2xl border-b border-border/40 px-4 py-3 flex items-center justify-between">
         <div className="flex items-center gap-2 cursor-pointer" onClick={() => router.push(isAuthenticated ? '/locations' : '/')}>
           <img src="/logo-light.png" alt="Sergipanidade" className="h-9 w-9 object-contain dark:hidden" />
-          <img src="/logo-dark.png" alt="Sergipanidade" className="h-9 w-9 object-contain hidden dark:block" />
+          <img src="/logo-dark.png" alt="Sergipanidade" className="h-9 w-9 object-contain hidden dark:block dark:invert" />
           <span className="font-black text-sm tracking-tighter text-foreground uppercase">SERGIPANIDADE</span>
         </div>
 
         <div className="flex items-center gap-3">
           {isAuthenticated && (
-            <IconButton 
-              size="small" 
+            <IconButton
+              size="small"
               onClick={() => setIsNotificationsOpen(true)}
               sx={{ color: 'text.secondary' }}
             >
@@ -414,36 +428,36 @@ function MobileLayout({ children }: LayoutProps) {
           )}
           <ThemeToggle />
           {isAuthenticated ? (
-             <DropdownMenu>
-                <DropdownMenuTrigger
-                  nativeButton={false} 
-                  className="outline-none"
-                  render={
-                    <div className="h-8 w-8 rounded-full border-2 border-primary ring-2 ring-primary/20 overflow-hidden cursor-pointer" />
-                  }
-                >
-                  {user?.avatar ? (
-                    <img src={user.avatar} alt={user.name} className="h-full w-full object-cover" />
-                  ) : (
-                    <div className="h-full w-full bg-primary flex items-center justify-center text-primary-foreground text-xs font-black">
-                      {user?.name?.charAt(0)}
-                    </div>
-                  )}
-                </DropdownMenuTrigger>
-                 <DropdownMenuContent align="end" className="w-56 p-2 rounded-2xl bg-popover text-popover-foreground shadow-2xl border-border">
-                    <DropdownMenuItem onClick={() => router.push('/auth/profile')} className="rounded-xl px-4 py-3 font-bold focus:bg-accent">Perfil</DropdownMenuItem>
-                    <DropdownMenuItem onClick={() => router.push('/auth/settings')} className="rounded-xl px-4 py-3 font-bold focus:bg-accent">Configurações</DropdownMenuItem>
-                    <DropdownMenuSeparator className="bg-border" />
-                    <DropdownMenuItem onClick={() => dispatch(logout())} className="rounded-xl px-4 py-3 text-destructive font-bold focus:bg-destructive/10">Sair</DropdownMenuItem>
-                 </DropdownMenuContent>
-             </DropdownMenu>
+            <DropdownMenu>
+              <DropdownMenuTrigger
+                nativeButton={false}
+                className="outline-none"
+                render={
+                  <div className="h-8 w-8 rounded-full border-2 border-primary ring-2 ring-primary/20 overflow-hidden cursor-pointer" />
+                }
+              >
+                {user?.avatar ? (
+                  <img src={user.avatar} alt={user.name} className="h-full w-full object-cover" />
+                ) : (
+                  <div className="h-full w-full bg-primary flex items-center justify-center text-primary-foreground text-xs font-black">
+                    {user?.name?.charAt(0)}
+                  </div>
+                )}
+              </DropdownMenuTrigger>
+              <DropdownMenuContent align="end" className="w-56 p-2 rounded-2xl bg-popover text-popover-foreground shadow-2xl border-border">
+                <DropdownMenuItem onClick={() => router.push('/auth/profile')} className="rounded-xl px-4 py-3 font-bold focus:bg-accent">Perfil</DropdownMenuItem>
+                <DropdownMenuItem onClick={() => router.push('/auth/settings')} className="rounded-xl px-4 py-3 font-bold focus:bg-accent">Configurações</DropdownMenuItem>
+                <DropdownMenuSeparator className="bg-border" />
+                <DropdownMenuItem onClick={() => dispatch(logout())} className="rounded-xl px-4 py-3 text-destructive font-bold focus:bg-destructive/10">Sair</DropdownMenuItem>
+              </DropdownMenuContent>
+            </DropdownMenu>
           ) : (
-             <button 
-               onClick={() => router.push('/auth/login')} 
-               className="bg-primary text-primary-foreground font-black rounded-xl text-xs px-4 py-2 shadow-lg shadow-primary/20 active:scale-95 transition-all"
-             >
-               ENTRAR
-             </button>
+            <button
+              onClick={() => router.push('/auth/login')}
+              className="bg-primary text-primary-foreground font-black rounded-xl text-xs px-4 py-2 shadow-lg shadow-primary/20 active:scale-95 transition-all"
+            >
+              ENTRAR
+            </button>
           )}
         </div>
       </header>
@@ -460,8 +474,8 @@ function MobileLayout({ children }: LayoutProps) {
             const Icon = l.icon;
             const active = pathname.startsWith(l.href);
             return (
-              <Link 
-                key={l.href} 
+              <Link
+                key={l.href}
                 href={l.href}
                 className={`flex flex-col items-center gap-1 transition-all duration-300 ${active ? 'text-primary' : 'text-muted-foreground'}`}
               >
@@ -474,9 +488,9 @@ function MobileLayout({ children }: LayoutProps) {
           })}
         </nav>
       )}
-      <NotificationsModal 
-        isOpen={isNotificationsOpen} 
-        onClose={() => setIsNotificationsOpen(false)} 
+      <NotificationsModal
+        isOpen={isNotificationsOpen}
+        onClose={() => setIsNotificationsOpen(false)}
       />
     </div>
   );

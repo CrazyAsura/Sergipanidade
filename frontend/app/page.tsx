@@ -62,56 +62,80 @@ function HeroCarousel() {
     return () => clearInterval(timer);
   }, []);
 
+  const containerVariants = {
+    hidden: { opacity: 0 },
+    visible: {
+      opacity: 1,
+      transition: {
+        staggerChildren: 0.1
+      }
+    }
+  };
+
+  const itemVariants = {
+    hidden: { opacity: 0, y: 30, filter: 'blur(10px)' },
+    visible: { opacity: 1, y: 0, filter: 'blur(0px)', transition: { duration: 0.8, ease: "easeOut" } }
+  };
+
   return (
-    <section className="relative h-[500px] md:h-[650px] rounded-[3rem] overflow-hidden shadow-2xl group">
+    <section className="relative h-[560px] md:h-[750px] rounded-[3rem] overflow-hidden shadow-2xl group border border-white/10">
       <AnimatePresence mode="wait">
         <motion.div
           key={index}
-          initial={{ opacity: 0, scale: 1.1 }}
+          initial={{ opacity: 0, scale: 1.15 }}
           animate={{ opacity: 1, scale: 1 }}
-          exit={{ opacity: 0 }}
-          transition={{ duration: 1 }}
+          exit={{ opacity: 0, scale: 0.95 }}
+          transition={{ duration: 1.5, ease: [0.19, 1, 0.22, 1] }}
           className="absolute inset-0"
         >
           <img src={carouselItems[index].image} className="w-full h-full object-cover" alt={carouselItems[index].title} />
-          <div className="absolute inset-0 bg-linear-to-t from-black/90 via-black/40 to-transparent" />
+          <div className="absolute inset-0 bg-linear-to-t from-black via-black/30 to-transparent opacity-80" />
         </motion.div>
       </AnimatePresence>
 
-      <div className="absolute inset-x-0 bottom-0 p-8 md:p-20 z-10">
+      <div className="absolute inset-0 flex flex-col justify-end p-8 md:p-24 z-10">
         <motion.div 
           key={index}
-          initial={{ opacity: 0, y: 30 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ delay: 0.3 }}
-          className="max-w-3xl"
+          variants={containerVariants}
+          initial="hidden"
+          animate="visible"
+          className="max-w-4xl"
         >
-          <span className="inline-block px-4 py-1 rounded-full bg-primary text-primary-foreground text-[10px] font-black tracking-widest mb-6 uppercase shadow-lg shadow-primary/20">
+          <motion.span 
+            variants={itemVariants}
+            className="inline-block px-5 py-1.5 rounded-full bg-primary/20 backdrop-blur-md border border-primary/30 text-primary-foreground text-[10px] font-black tracking-widest mb-6 uppercase shadow-lg"
+          >
             {carouselItems[index].subtitle}
-          </span>
-          <h2 className="text-3xl sm:text-4xl md:text-8xl font-black text-white leading-tight mb-4 md:mb-6 drop-shadow-2xl uppercase italic tracking-tighter">
+          </motion.span>
+          <motion.h2 
+            variants={itemVariants}
+            className="text-4xl sm:text-5xl md:text-9xl font-black text-white leading-[0.9] mb-4 md:mb-8 drop-shadow-2xl uppercase italic tracking-tighter"
+          >
             {carouselItems[index].title}
-          </h2>
-          <p className="text-gray-200 text-sm sm:text-base md:text-2xl font-medium mb-8 md:mb-10 max-w-2xl leading-relaxed opacity-90">
+          </motion.h2>
+          <motion.p 
+            variants={itemVariants}
+            className="text-gray-200 text-base sm:text-lg md:text-2xl font-medium mb-10 md:mb-14 max-w-2xl leading-relaxed opacity-80"
+          >
             {carouselItems[index].description}
-          </p>
-          <div className="flex flex-col sm:flex-row gap-6 items-start sm:items-center">
+          </motion.p>
+          <motion.div variants={itemVariants} className="flex flex-col sm:flex-row gap-8 items-start sm:items-center">
              <Button 
                 onClick={() => router.push('/locations')}
-                className="bg-primary text-primary-foreground hover:bg-primary/90 font-black px-6 md:px-10 h-14 md:h-16 rounded-2xl shadow-xl transition-all hover:scale-105 active:scale-95 text-xs md:text-sm"
+                className="bg-primary text-primary-foreground hover:bg-primary/90 font-black px-12 h-16 md:h-20 rounded-2xl shadow-2xl transition-all hover:scale-105 active:scale-95 text-sm md:text-base border border-white/20"
              >
-                COMEÇAR EXPLORAÇÃO <ChevronRight size={16} className="ml-2" />
+                COMEÇAR EXPLORAÇÃO <ChevronRight size={20} className="ml-2" />
              </Button>
-             <div className="flex gap-2 items-center">
+             <div className="flex gap-3 items-center bg-white/5 backdrop-blur-md p-3 rounded-2xl border border-white/10">
                 {carouselItems.map((_, i) => (
                   <div 
                     key={i} 
                     onClick={() => setIndex(i)}
-                    className={`h-1.5 transition-all cursor-pointer rounded-full ${index === i ? 'w-8 bg-primary' : 'w-2 bg-white/20 hover:bg-white/40'}`} 
+                    className={`h-1.5 transition-all duration-500 cursor-pointer rounded-full ${index === i ? 'w-10 bg-primary' : 'w-2 bg-white/20 hover:bg-white/40'}`} 
                   />
                 ))}
              </div>
-          </div>
+          </motion.div>
         </motion.div>
       </div>
 
@@ -141,89 +165,118 @@ function HeroCarousel() {
 // ═══════════════════════════════════════════
 function SummarySection() {
   const router = useRouter();
+  
+  const scrollVariants = {
+    hidden: { opacity: 0, y: 50 },
+    visible: { opacity: 1, y: 0, transition: { duration: 0.8, ease: "easeOut" } }
+  };
+
   return (
-    <section className="py-24 space-y-24">
+    <section className="py-32 space-y-40">
       {/* About the Site */}
-      <div className="grid grid-cols-1 lg:grid-cols-2 gap-16 items-center">
-        <div className="space-y-8">
+      <motion.div 
+        initial="hidden"
+        whileInView="visible"
+        viewport={{ once: true, margin: "-100px" }}
+        variants={scrollVariants}
+        className="grid grid-cols-1 lg:grid-cols-2 gap-24 items-center"
+      >
+        <div className="space-y-10">
           <div className="space-y-4">
-              <p className="text-primary font-black text-[10px] tracking-[0.3em] uppercase">O que é o Sergipanidade?</p>
-              <h2 className="text-4xl md:text-6xl font-black text-foreground leading-tight tracking-tighter uppercase italic">
-                Sua porta de entrada para a <span className="text-primary">essência</span> de Sergipe.
+              <p className="text-primary font-black text-[10px] tracking-[0.4em] uppercase">Mergulhe na Cultura</p>
+              <h2 className="text-5xl md:text-7xl font-black text-foreground leading-[0.95] tracking-tighter uppercase italic">
+                Sua porta de entrada para a <span className="text-gradient">essência</span> de Sergipe.
               </h2>
            </div>
-           <p className="text-lg text-muted-foreground font-medium leading-relaxed">
-             O Sergipanidade nasceu com o propósito de conectar viajantes e apaixonados pela cultura sergipana com o que há de melhor no nosso estado. Desde as praias paradisíacas até o sertão histórico, nossa plataforma é o seu guia definitivo.
+           <p className="text-xl text-muted-foreground font-medium leading-relaxed max-w-xl">
+             O Sergipanidade nasceu com o propósito de conectar viajantes e apaixonados pela cultura sergipana com o que há de melhor no nosso estado.
            </p>
-            <div className="grid grid-cols-2 gap-6">
+            <div className="grid grid-cols-2 gap-10">
               {[
                 { icon: Globe, title: "Tudo em um lugar", desc: "Destinos, cultura e dicas práticas." },
                 { icon: Compass, title: "Guia Inteligente", desc: "Nossa IA te ajuda a planejar tudo." },
                 { icon: Users, title: "Comunidade Viva", desc: "Compartilhe suas experiências e fotos." },
                 { icon: Heart, title: "Feito com Amor", desc: "Orgulho de ser sergipano." },
               ].map((item, i) => (
-                <div key={i} className="space-y-3">
-                   <div className="h-10 w-10 bg-primary/10 rounded-xl flex items-center justify-center text-primary">
-                      <item.icon size={20} />
+                <div key={i} className="space-y-4 group">
+                   <div className="h-12 w-12 bg-primary/5 rounded-2xl flex items-center justify-center text-primary group-hover:bg-primary group-hover:text-white transition-all duration-300 border border-primary/10">
+                      <item.icon size={22} />
                    </div>
-                   <h4 className="font-bold text-foreground uppercase text-xs tracking-wide">{item.title}</h4>
-                   <p className="text-[11px] text-muted-foreground font-bold">{item.desc}</p>
+                   <div className="space-y-1">
+                      <h4 className="font-bold text-foreground uppercase text-xs tracking-wider">{item.title}</h4>
+                      <p className="text-xs text-muted-foreground font-medium leading-normal">{item.desc}</p>
+                   </div>
                 </div>
               ))}
            </div>
            <Button 
              onClick={() => router.push('/about')}
-             className="bg-gray-900 text-white hover:bg-black font-black px-8 h-14 rounded-2xl transition-all"
+             className="bg-foreground text-background hover:bg-foreground/90 font-black px-10 h-16 rounded-2xl transition-all shadow-xl hover:-translate-y-1"
            >
-              SAIBA MAIS SOBRE NÓS
+              CONHEÇA NOSSA HISTÓRIA
            </Button>
         </div>
         <div className="relative">
-           <div className="aspect-square rounded-[3rem] overflow-hidden rotate-3 shadow-2xl">
-              <img src="https://images.unsplash.com/photo-1590523277543-a94d2e4eb00b?q=80&w=800&auto=format&fit=crop" className="w-full h-full object-cover" />
+           <div className="aspect-[4/5] rounded-[4rem] overflow-hidden rotate-2 shadow-2xl border border-white/10 group">
+              <img src="https://images.unsplash.com/photo-1590523277543-a94d2e4eb00b?q=80&w=800&auto=format&fit=crop" className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110" />
            </div>
-           <div className="absolute -bottom-10 -left-10 bg-card p-8 rounded-[2rem] shadow-2xl border border-border -rotate-6 hidden md:block">
-              <div className="flex items-center gap-4 mb-4">
-                 <div className="h-12 w-12 bg-primary rounded-full flex items-center justify-center text-primary-foreground scale-110 shadow-lg shadow-primary/20">
-                    <Sparkles size={24} />
+           <motion.div 
+             initial={{ opacity: 0, x: -50, rotate: -10 }}
+             whileInView={{ opacity: 1, x: 0, rotate: -6 }}
+             viewport={{ once: true }}
+             className="absolute -bottom-16 -left-12 glass-card p-10 rounded-[3rem] shadow-2xl max-w-[320px] hidden md:block"
+           >
+              <div className="flex items-center gap-5 mb-6">
+                 <div className="h-14 w-14 bg-primary rounded-2xl flex items-center justify-center text-primary-foreground scale-110 shadow-2xl shadow-primary/40">
+                    <Sparkles size={28} />
                  </div>
                  <div>
-                    <p className="text-[10px] font-black text-muted-foreground uppercase tracking-widest leading-none mb-1">Recomendação</p>
-                    <p className="font-black text-foreground uppercase italic leading-none">IA Guide Sergipano</p>
+                    <p className="text-[10px] font-black text-muted-foreground uppercase tracking-[0.2em] leading-none mb-2">Recomendação</p>
+                    <p className="font-black text-foreground uppercase italic leading-none text-lg">IA Guide</p>
                  </div>
               </div>
-              <p className="text-sm font-bold text-muted-foreground italic">"Descobri lugares que nem imaginava que existiam no meu próprio estado!"</p>
-           </div>
+              <p className="text-base font-bold text-muted-foreground italic leading-relaxed">"Descobri lugares que nem imaginava que existiam no meu estado!"</p>
+           </motion.div>
         </div>
-      </div>
+      </motion.div>
 
       {/* Why use us? */}
-      <section className="bg-accent rounded-[3rem] p-12 md:p-24 text-accent-foreground relative overflow-hidden">
-         <div className="absolute -right-20 -top-20 w-96 h-96 bg-white/10 rounded-full blur-3xl" />
-         <div className="relative z-10 max-w-4xl mx-auto text-center space-y-12">
-            <h2 className="text-4xl md:text-7xl font-black italic uppercase tracking-tighter leading-none">A maior plataforma de turismo de Sergipe.</h2>
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-12">
-               <div>
-                  <h3 className="text-6xl font-black mb-2 tracking-tighter">50+</h3>
-                  <p className="font-bold opacity-80 uppercase tracking-widest text-xs">Destinos Cadastrados</p>
+      <motion.section 
+        initial="hidden"
+        whileInView="visible"
+        viewport={{ once: true }}
+        variants={scrollVariants}
+        className="bg-accent rounded-[4rem] p-16 md:p-32 text-accent-foreground relative overflow-hidden shadow-2xl border border-white/10"
+      >
+         <div className="absolute -right-32 -top-32 w-[600px] h-[600px] bg-white/10 rounded-full blur-[120px]" />
+         <div className="absolute -left-32 -bottom-32 w-[400px] h-[400px] bg-primary/20 rounded-full blur-[100px]" />
+         
+         <div className="relative z-10 max-w-5xl mx-auto text-center space-y-20">
+            <h2 className="text-5xl md:text-8xl font-black italic uppercase tracking-tighter leading-[0.85]">
+              A maior plataforma de turismo de Sergipe.
+            </h2>
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-16">
+               <div className="space-y-2">
+                  <h3 className="text-7xl font-black tracking-tighter text-white">50+</h3>
+                  <p className="font-black opacity-60 uppercase tracking-[0.3em] text-[10px]">Destinos Unicos</p>
                </div>
-               <div>
-                  <h3 className="text-6xl font-black mb-2 tracking-tighter">10k</h3>
-                  <p className="font-bold opacity-80 uppercase tracking-widest text-xs">Usuários Mensais</p>
+               <div className="space-y-2">
+                  <h3 className="text-7xl font-black tracking-tighter text-white">10k</h3>
+                  <p className="font-black opacity-60 uppercase tracking-[0.3em] text-[10px]">Usuários Ativos</p>
                </div>
-               <div>
-                  <h3 className="text-6xl font-black mb-2 tracking-tighter">24/7</h3>
-                  <p className="font-bold opacity-80 uppercase tracking-widest text-xs">Guia IA Disponível</p>
+               <div className="space-y-2">
+                  <h3 className="text-7xl font-black tracking-tighter text-white">24h</h3>
+                  <p className="font-black opacity-60 uppercase tracking-[0.3em] text-[10px]">Suporte Realtime</p>
                </div>
             </div>
             <Button 
                onClick={() => router.push('/auth/register')}
-               className="bg-white text-accent hover:bg-accent-foreground/10 font-black px-12 h-16 rounded-2xl shadow-2xl transition-all hover:scale-110"
+               className="bg-white text-accent hover:bg-white/90 font-black px-16 h-20 rounded-3xl shadow-2xl transition-all hover:scale-110 active:scale-95 text-lg"
             >
-               Junte-se à Comunidade
+               CRIAR CONTA GRÁTIS
             </Button>
          </div>
-      </section>
+      </motion.section>
     </section>
   );
 }

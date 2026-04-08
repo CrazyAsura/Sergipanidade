@@ -21,62 +21,92 @@ const faqs = [
   { icon: Compass, q: 'Como funciona o mapa interativo?', a: 'Nosso mapa usa Google Maps com geolocalização em tempo real. Mostra restaurantes, praias, museus e pontos históricos. Você pode filtrar por categoria e ver detalhes como cardápio e avaliações.' },
 ];
 
+const fadeUp = {
+  hidden: { opacity: 0, y: 40 },
+  visible: { opacity: 1, y: 0, transition: { duration: 0.7, ease: 'easeOut' } },
+};
+
+const stagger = {
+  hidden: {},
+  visible: { transition: { staggerChildren: 0.06 } },
+};
+
 function WebFAQ() {
   const router = useRouter();
   return (
-    <div className="space-y-20 animate-in fade-in duration-700">
+    <div className="space-y-24">
       {/* Hero */}
-      <section className="text-center max-w-3xl mx-auto space-y-6">
-        <div className="h-20 w-20 bg-primary/10 rounded-3xl flex items-center justify-center mx-auto transition-transform hover:scale-110">
-          <HelpCircle size={40} className="text-primary" />
-        </div>
-        <h1 className="text-5xl md:text-7xl font-black tracking-tighter text-foreground uppercase italic leading-none">
-          Perguntas <span className="text-primary">Frequentes</span>
-        </h1>
-        <p className="text-xl text-muted-foreground font-medium max-w-xl mx-auto leading-relaxed">
+      <motion.section
+        initial="hidden"
+        animate="visible"
+        variants={stagger}
+        className="text-center max-w-4xl mx-auto space-y-8"
+      >
+        <motion.div variants={fadeUp} className="h-24 w-24 bg-primary/10 rounded-[2rem] flex items-center justify-center mx-auto border border-primary/20 shadow-xl shadow-primary/5">
+          <HelpCircle size={48} className="text-primary" />
+        </motion.div>
+        <motion.h1 variants={fadeUp} className="text-5xl md:text-8xl font-black tracking-tighter text-foreground uppercase italic leading-[0.85]">
+          Perguntas <span className="text-gradient">Frequentes</span>
+        </motion.h1>
+        <motion.p variants={fadeUp} className="text-xl text-muted-foreground font-medium max-w-xl mx-auto leading-relaxed">
           Tudo que você precisa saber antes e durante sua viagem a Sergipe.
-        </p>
-      </section>
+        </motion.p>
+      </motion.section>
 
-      <div className="max-w-3xl mx-auto px-4 md:px-0">
-        <Accordion className="space-y-4">
+      <motion.div
+        initial="hidden"
+        whileInView="visible"
+        viewport={{ once: true }}
+        variants={stagger}
+        className="max-w-3xl mx-auto px-4 md:px-0"
+      >
+        <Accordion className="space-y-5">
           {faqs.map((f, i) => {
             const Icon = f.icon;
             return (
-              <AccordionItem key={i} value={`item-${i}`} className="border border-border rounded-[2rem] px-8 data-[state=open]:shadow-2xl data-[state=open]:shadow-primary/5 data-[state=open]:border-primary/20 transition-all overflow-hidden bg-card text-card-foreground">
-                <AccordionTrigger className="hover:no-underline py-6">
-                  <div className="flex items-center gap-5">
-                    <div className="p-3 bg-primary/10 rounded-2xl shrink-0">
-                      <Icon className="h-5 w-5 text-primary" />
+              <motion.div key={i} variants={fadeUp}>
+                <AccordionItem value={`item-${i}`} className="border border-white/10 dark:border-white/5 rounded-[2.5rem] px-8 data-[state=open]:shadow-2xl data-[state=open]:shadow-primary/5 data-[state=open]:border-primary/20 transition-all overflow-hidden glass-card">
+                  <AccordionTrigger className="hover:no-underline py-7">
+                    <div className="flex items-center gap-5">
+                      <div className="p-3.5 bg-primary/10 rounded-2xl shrink-0 border border-primary/10">
+                        <Icon className="h-5 w-5 text-primary" />
+                      </div>
+                      <span className="font-black text-left text-foreground text-base md:text-lg leading-tight uppercase italic tracking-tighter">{f.q}</span>
                     </div>
-                    <span className="font-black text-left text-foreground text-base md:text-lg leading-tight uppercase italic tracking-tighter">{f.q}</span>
-                  </div>
-                </AccordionTrigger>
-                <AccordionContent className="text-muted-foreground leading-relaxed pl-16 pb-6 text-sm font-medium">
-                  {f.a}
-                </AccordionContent>
-              </AccordionItem>
+                  </AccordionTrigger>
+                  <AccordionContent className="text-muted-foreground leading-relaxed pl-[4.5rem] pb-7 text-sm font-medium">
+                    {f.a}
+                  </AccordionContent>
+                </AccordionItem>
+              </motion.div>
             );
           })}
         </Accordion>
-      </div>
+      </motion.div>
 
       {/* CTA */}
-      <section className="max-w-3xl mx-auto bg-primary rounded-[2.5rem] p-12 text-primary-foreground text-center space-y-6 relative overflow-hidden">
-        <div className="absolute -right-10 -top-10 w-40 h-40 bg-white/10 rounded-full blur-3xl" />
-        <div className="relative z-10">
-          <h2 className="text-3xl font-black uppercase italic tracking-tighter">Não encontrou sua resposta?</h2>
-          <p className="opacity-80 font-medium">Pergunte ao nosso Guia IA ou entre em contato.</p>
-          <div className="flex gap-4 justify-center mt-6">
-            <Button onClick={() => router.push('/guide')} className="bg-white text-primary hover:bg-gray-50 font-black h-14 px-8 rounded-2xl shadow-xl">
+      <motion.section
+        initial="hidden"
+        whileInView="visible"
+        viewport={{ once: true }}
+        variants={fadeUp}
+        className="max-w-3xl mx-auto bg-primary rounded-[3rem] p-16 text-primary-foreground text-center space-y-8 relative overflow-hidden border border-white/10"
+      >
+        <div className="absolute -right-20 -top-20 w-[300px] h-[300px] bg-white/10 rounded-full blur-[100px]" />
+        <div className="absolute -left-10 -bottom-10 w-[200px] h-[200px] bg-accent/20 rounded-full blur-[80px]" />
+        <div className="relative z-10 space-y-6">
+          <h2 className="text-4xl font-black uppercase italic tracking-tighter leading-none">Não encontrou sua resposta?</h2>
+          <p className="opacity-70 font-medium text-lg">Pergunte ao nosso Guia IA ou entre em contato.</p>
+          <div className="flex gap-4 justify-center mt-8">
+            <Button onClick={() => router.push('/guide')} className="bg-white text-primary hover:bg-white/90 font-black h-16 px-10 rounded-2xl shadow-2xl hover:scale-105 transition-all">
               FALAR COM IA <Bot size={18} className="ml-2" />
             </Button>
-            <Button onClick={() => router.push('/contact')} variant="outline" className="border-white/30 text-white hover:bg-white/10 font-black h-14 px-8 rounded-2xl">
+            <Button onClick={() => router.push('/contact')} variant="outline" className="border-white/30 text-white hover:bg-white/10 font-black h-16 px-10 rounded-2xl backdrop-blur-md">
               CONTATO <ArrowRight size={18} className="ml-2" />
             </Button>
           </div>
         </div>
-      </section>
+      </motion.section>
     </div>
   );
 }

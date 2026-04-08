@@ -1,6 +1,6 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useRef, useEffect, useMemo } from 'react';
 import { useIsMobile } from '@/hooks/useIsMobile';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Send, Mic, Bot, Sparkles } from 'lucide-react';
@@ -18,15 +18,52 @@ const initialMessages = [
 ];
 const suggestions = ['Onde comer caranguejo?', 'Roteiros em Aracaju', 'História do Cangaço'];
 
-import { getGeminiResponse } from '../actions/gemini';
+
 
 function useChat() {
   const [msgs, setMsgs] = useState(initialMessages);
   const [input, setInput] = useState('');
   const [loading, setLoading] = useState(false);
+  const [modelStatus, setModelStatus] = useState({ state: 'ready', progress: 0 });
+  const worker = useRef<Worker | null>(null);
+
+  useEffect(() => {
+    if (!worker.current) {
+      worker.current = new Worker(new URL('./chatbot.worker.js', import.meta.url), {
+        type: 'module'
+      });
+
+      const onMessageReceived = (e: MessageEvent) => {
+        const result = e.data;
+        if (result.status === 'initiate') {
+          setModelStatus({ state: 'loading', progress: 0 });
+        } else if (result.status === 'progress') {
+          setModelStatus({ state: 'loading', progress: result.progress });
+        } else if (result.status === 'done' || result.status === 'ready') {
+          setModelStatus({ state: 'ready', progress: 100 });
+        } else if (result.status === 'complete') {
+          const botMsg = { 
+            id: Date.now() + 1, 
+            text: result.output, 
+            sender: 'bot', 
+            time: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }) 
+          };
+          setMsgs(p => [...p, botMsg]);
+          setLoading(false);
+        }
+      };
+
+      worker.current.addEventListener('message', onMessageReceived);
+    }
+
+    return () => {
+      worker.current?.terminate();
+      worker.current = null;
+    };
+  }, []);
 
   const send = async () => {
-    if (!input.trim() || loading) return;
+    if (!input.trim() || loading || modelStatus.state !== 'ready') return;
     
     const userMsg = { 
       id: Date.now(), 
@@ -35,37 +72,37 @@ function useChat() {
       time: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }) 
     };
     
-    setMsgs(p => [...p, userMsg]);
+    const updatedMsgs = [...msgs, userMsg];
+    setMsgs(updatedMsgs);
     setInput('');
     setLoading(true);
 
-    try {
-      const response = await getGeminiResponse(input);
-      const botMsg = { 
-        id: Date.now() + 1, 
-        text: response, 
-        sender: 'bot', 
-        time: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }) 
-      };
-      setMsgs(p => [...p, botMsg]);
-    } catch (error) {
-      console.error("Chat Error:", error);
-    } finally {
-      setLoading(false);
+    if (worker.current) {
+      worker.current.postMessage({ messages: updatedMsgs });
     }
   };
-  return { msgs, input, setInput, send, loading };
+  return { msgs, input, setInput, send, loading, modelStatus };
 }
 
 function WebGuia() {
-  const { msgs, input, setInput, send, loading } = useChat();
+  const { msgs, input, setInput, send, loading, modelStatus } = useChat();
   return (
     <div className="max-w-3xl mx-auto space-y-6 animate-in fade-in duration-500">
       <div className="flex items-center gap-3 mb-6">
         <ShadAvatar className="h-12 w-12 bg-primary"><AvatarFallback className="bg-primary text-white font-bold"><Bot className="h-6 w-6" /></AvatarFallback></ShadAvatar>
-        <div><h1 className="text-2xl font-black text-gray-900 dark:text-white">Guia IA Sergipanidade</h1><div className="flex items-center gap-1.5"><div className="h-2 w-2 rounded-full bg-green-400" /><span className="text-xs text-green-500 font-bold">Online agora</span></div></div>
-        <Badge className="ml-auto bg-primary/10 text-primary border-primary/20"><Sparkles className="mr-1 h-3 w-3" /> IA</Badge>
+        <div><h1 className="text-2xl font-black text-gray-900 dark:text-white">Guia IA Local</h1><div className="flex items-center gap-1.5"><div className={`h-2 w-2 rounded-full ${modelStatus.state === 'ready' ? 'bg-green-400' : 'bg-yellow-400'}`} /><span className={`text-xs font-bold ${modelStatus.state === 'ready' ? 'text-green-500' : 'text-yellow-500'}`}>{modelStatus.state === 'ready' ? 'Online' : 'Carregando Modelo...'}</span></div></div>
+        <Badge className="ml-auto bg-primary/10 text-primary border-primary/20"><Sparkles className="mr-1 h-3 w-3" /> Transformers</Badge>
       </div>
+
+      {modelStatus.state === 'loading' && (
+        <div className="w-full h-1 bg-gray-100 rounded-full overflow-hidden">
+          <motion.div 
+            className="h-full bg-primary"
+            initial={{ width: 0 }}
+            animate={{ width: `${modelStatus.progress}%` }}
+          />
+        </div>
+      )}
 
       <ScrollArea className="h-[55vh] border border-gray-100 dark:border-slate-800 rounded-2xl p-6 bg-white dark:bg-slate-900 shadow-sm">
         <div className="space-y-6">
@@ -101,7 +138,7 @@ function WebGuia() {
 }
 
 function MobileGuia() {
-  const { msgs, input, setInput, send, loading } = useChat();
+  const { msgs, input, setInput, send, loading, modelStatus } = useChat();
   return (
     <Box sx={{ display: 'flex', flexDirection: 'column', height: 'calc(100vh - 180px)', pb: 2 }}>
       {/* Premium Header for Chat */}
@@ -115,12 +152,12 @@ function MobileGuia() {
            <Typography sx={{ fontWeight: 950, fontSize: '1.05rem', color: '#1A202C', letterSpacing: -0.5 }}>
              Guia Virtual
            </Typography>
-           <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
-              <Box sx={{ width: 8, height: 8, bgcolor: '#2ECC71', borderRadius: '50%', boxShadow: '0 0 10px rgba(46,204,113,0.5)' }} />
-              <Typography variant="caption" sx={{ color: '#2ECC71', fontWeight: 800, fontSize: '0.7rem', textTransform: 'uppercase', letterSpacing: 0.5 }}>
-                Inteligência Ativa
+            <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
+              <Box sx={{ width: 8, height: 8, bgcolor: modelStatus.state === 'ready' ? '#2ECC71' : '#F1C40F', borderRadius: '50%', boxShadow: `0 0 10px ${modelStatus.state === 'ready' ? 'rgba(46,204,113,0.5)' : 'rgba(241,196,15,0.5)'}` }} />
+              <Typography variant="caption" sx={{ color: modelStatus.state === 'ready' ? '#2ECC71' : '#F1C40F', fontWeight: 800, fontSize: '0.7rem', textTransform: 'uppercase', letterSpacing: 0.5 }}>
+                {modelStatus.state === 'ready' ? 'Inteligência Ativa' : `Carregando ${Math.round(modelStatus.progress)}%`}
               </Typography>
-           </Box>
+            </Box>
         </Box>
         <Chip label="BETA" size="small" sx={{ fontWeight: 900, fontSize: '0.6rem', bgcolor: '#F1F5F9', color: '#64748B', height: 20 }} />
       </Box>
