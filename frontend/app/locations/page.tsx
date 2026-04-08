@@ -50,29 +50,29 @@ function WebLocations() {
         <div className="relative z-10 space-y-10 max-w-4xl">
           <div className="space-y-4">
              <div className="flex items-center gap-3">
-                <div className="h-10 w-10 bg-orange-600 rounded-2xl flex items-center justify-center text-white shadow-xl shadow-orange-900/50">
+                <div className="h-10 w-10 bg-primary rounded-2xl flex items-center justify-center text-primary-foreground shadow-xl shadow-primary/40">
                    <Compass size={24} />
                 </div>
                 <div className="flex flex-col">
-                  <span className="text-[10px] font-black uppercase tracking-[0.3em] text-orange-400">Guia de Exploração</span>
+                  <span className="text-[10px] font-black uppercase tracking-[0.3em] text-accent">Guia de Exploração</span>
                   {user && (
                     <span className="text-sm font-bold text-gray-400">Bem-vindo(a), {user.name.split(' ')[0]}!</span>
                   )}
                 </div>
              </div>
              <h1 className="text-5xl md:text-7xl font-black leading-tight tracking-tighter uppercase italic">
-                Descubra o <span className="text-orange-500">Invisível</span> <br /> em Sergipe.
+                Descubra o <span className="text-primary">Invisível</span> <br /> em Sergipe.
              </h1>
           </div>
 
           <div className="flex flex-col md:flex-row gap-4">
              <div className="flex-1 relative group">
-                <Search className="absolute left-5 top-1/2 -translate-y-1/2 h-6 w-6 text-gray-400 group-focus-within:text-orange-500 transition-colors" />
+                <Search className="absolute left-5 top-1/2 -translate-y-1/2 h-6 w-6 text-gray-400 group-focus-within:text-primary transition-colors" />
                 <input 
                   value={search}
                   onChange={(e) => setSearch(e.target.value)}
                   placeholder="Buscar destinos, cidades ou experiências..." 
-                  className="w-full h-16 pl-14 pr-8 rounded-2xl bg-white/10 backdrop-blur-md border border-white/10 font-bold text-white placeholder:text-gray-500 shadow-2xl focus:ring-2 focus:ring-orange-500/50 outline-none transition-all text-lg" 
+                  className="w-full h-16 pl-14 pr-8 rounded-2xl bg-white/10 backdrop-blur-md border border-white/10 font-bold text-white placeholder:text-gray-500 shadow-2xl focus:ring-2 focus:ring-primary/50 outline-none transition-all text-lg" 
                 />
              </div>
           </div>
@@ -88,8 +88,8 @@ function WebLocations() {
              onClick={() => setCat(c)}
              className={`px-8 h-12 rounded-2xl text-[10px] font-black tracking-widest uppercase transition-all whitespace-nowrap border-2
                ${cat === c 
-                 ? 'bg-orange-600 border-orange-600 text-white shadow-xl shadow-orange-100 dark:shadow-none translate-y-[-2px]' 
-                 : 'bg-white dark:bg-slate-900 text-gray-400 border-gray-100 dark:border-slate-800 hover:border-orange-200 hover:text-orange-600'}`}
+                 ? 'bg-primary border-primary text-primary-foreground shadow-xl shadow-primary/10 dark:shadow-none translate-y-[-2px]' 
+                 : 'bg-white dark:bg-slate-900 text-gray-400 border-gray-100 dark:border-slate-800 hover:border-primary/20 hover:text-primary'}`}
            >
              {c}
            </button>
@@ -100,11 +100,11 @@ function WebLocations() {
         <div className="lg:col-span-8">
           <div className="flex items-center justify-between mb-10 pb-4 border-b border-gray-50 dark:border-slate-800">
              <h2 className="text-2xl font-black text-gray-900 dark:text-white flex items-center gap-3 uppercase italic tracking-tighter">
-                <Filter className="text-orange-500" size={24} />
+                <Filter className="text-primary" size={24} />
                 {cat} em Sergipe ({filtered.length})
              </h2>
              <div className="flex gap-2">
-                <div className="h-2 w-2 rounded-full bg-orange-500 animate-pulse" />
+                <div className="h-2 w-2 rounded-full bg-primary animate-pulse" />
                 <span className="text-[10px] font-black text-gray-400 uppercase tracking-widest">Atualizado agora</span>
              </div>
           </div>
@@ -112,8 +112,15 @@ function WebLocations() {
           <div className="grid grid-cols-1 md:grid-cols-2 gap-10">
             <AnimatePresence mode="popLayout">
               {filtered.map((loc, idx) => (
-                <motion.div key={loc.id} layout initial={{ opacity: 0, y: 30 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: idx * 0.05 }} exit={{ opacity: 0, scale: 0.9 }}>
-                  <Card className="overflow-hidden cursor-pointer group border-none bg-white dark:bg-slate-900 rounded-[3rem] shadow-xl shadow-gray-100/50 dark:shadow-none hover:shadow-2xl hover:ring-2 hover:ring-orange-100 dark:hover:ring-orange-900/30 transition-all duration-500" onClick={() => router.push(`/locations/${loc.id}`)}>
+                <motion.div 
+                  key={loc.id} 
+                  layout 
+                  initial={{ opacity: 0, y: 30 }} 
+                  animate={{ opacity: 1, y: 0 }} 
+                  transition={{ delay: idx * 0.05 }} 
+                  exit={{ opacity: 0, scale: 0.9 }}
+                >
+                  <Card className="overflow-hidden cursor-pointer group border-none bg-white dark:bg-slate-900 rounded-[3rem] shadow-xl shadow-gray-100/50 dark:shadow-none hover:shadow-2xl hover:ring-2 hover:ring-primary/10 dark:hover:ring-primary/20 transition-all duration-500" onClick={() => router.push(`/locations/${loc.id}`)}>
                     <div className="relative h-72">
                       <img src={loc.image} alt={loc.name} className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-[1.5s] ease-out" />
                       <div className="absolute top-6 right-6 z-10 flex flex-col gap-3">
@@ -122,21 +129,21 @@ function WebLocations() {
                           className="bg-white/90 backdrop-blur-md border-none shadow-xl hover:scale-110 active:scale-95 transition-all text-gray-400"
                           onClick={(e) => { e.stopPropagation(); dispatch(toggleFavorite(loc.id)); }}
                         >
-                          <Heart size={20} className={favs.includes(loc.id) ? "fill-orange-500 text-orange-500" : ""} />
+                          <Heart size={20} className={favs.includes(loc.id) ? "fill-primary text-primary" : ""} />
                         </IconButton>
-                        <div className="bg-orange-600 text-white p-2 rounded-full shadow-lg flex items-center justify-center">
+                        <div className="bg-primary text-primary-foreground p-2 rounded-full shadow-lg flex items-center justify-center">
                            <Star size={16} fill="white" />
                         </div>
                       </div>
                       <div className="absolute inset-x-0 bottom-0 p-8 bg-linear-to-t from-black/90 via-black/40 to-transparent">
-                          <Badge className="bg-orange-600/20 text-orange-400 border-none text-[10px] font-black uppercase tracking-widest mb-2 backdrop-blur-md">{loc.category}</Badge>
+                          <Badge className="bg-primary/20 text-primary-foreground border-none text-[10px] font-black uppercase tracking-widest mb-2 backdrop-blur-md">{loc.category}</Badge>
                           <h3 className="text-3xl font-black text-white leading-none uppercase italic tracking-tighter">{loc.name}</h3>
                       </div>
                     </div>
                     <CardContent className="p-8">
                        <div className="flex justify-between items-center">
                           <div className="flex items-center gap-2 text-gray-400">
-                             <MapPin size={16} className="text-orange-500" />
+                             <MapPin size={16} className="text-primary" />
                              <span className="text-xs font-black uppercase tracking-[0.2em]">{loc.city}</span>
                           </div>
                           <div className="flex items-center gap-2 px-4 py-2 bg-gray-50 dark:bg-slate-800 rounded-xl">
@@ -155,10 +162,10 @@ function WebLocations() {
 
         <div className="lg:col-span-4">
            <div className="sticky top-28 space-y-10">
-              <Paper elevation={0} sx={{ p: 5, borderRadius: 10, border: '1px solid #f0f0f0', bgcolor: 'white', shadow: '0 20px 40px rgba(0,0,0,0.02)' }}>
+              <Paper elevation={0} sx={{ p: 5, borderRadius: 10, border: '1px solid #f0f0f0', bgcolor: 'white', boxShadow: '0 20px 40px rgba(0,0,0,0.02)' }}>
                  <div className="flex items-center justify-between mb-8">
                     <h3 className="text-xl font-black text-gray-900 uppercase italic tracking-tighter flex items-center gap-3">
-                       <TrendingUp className="text-orange-500" /> Em Alta
+                       <TrendingUp className="text-primary" /> Em Alta
                     </h3>
                     <Badge variant="outline" className="text-[10px] font-black uppercase border-gray-100">Sergipe</Badge>
                  </div>
@@ -167,10 +174,10 @@ function WebLocations() {
                       <motion.div key={loc.id} initial={{ opacity: 0, x: 20 }} animate={{ opacity: 1, x: 0 }} transition={{ delay: i * 0.1 }} className="flex gap-5 cursor-pointer group" onClick={() => router.push(`/locations/${loc.id}`)}>
                          <div className="relative shrink-0">
                             <img src={loc.image} className="h-20 w-20 rounded-[1.5rem] object-cover shadow-lg group-hover:scale-105 transition-transform" />
-                            <div className="absolute -top-2 -right-2 h-6 w-6 bg-orange-600 rounded-full flex items-center justify-center text-[10px] font-black text-white shadow-lg border-2 border-white">{i + 1}</div>
+                            <div className="absolute -top-2 -right-2 h-6 w-6 bg-primary rounded-full flex items-center justify-center text-[10px] font-black text-primary-foreground shadow-lg border-2 border-white">{i + 1}</div>
                          </div>
                          <div className="flex flex-col justify-center">
-                            <h4 className="font-black text-base text-gray-900 group-hover:text-orange-500 transition-colors leading-tight uppercase italic">{loc.name}</h4>
+                            <h4 className="font-black text-base text-gray-900 group-hover:text-primary transition-colors leading-tight uppercase italic">{loc.name}</h4>
                             <p className="text-[10px] font-bold text-gray-400 uppercase tracking-widest mt-1.5 flex items-center gap-1">
                                <MapPin size={10} /> {loc.city}
                             </p>
@@ -178,18 +185,27 @@ function WebLocations() {
                       </motion.div>
                     ))}
                  </div>
-                 <MuiButton fullWidth className="mt-10 h-14 bg-gray-50 hover:bg-orange-50 text-gray-400 hover:text-orange-600 font-black rounded-2xl transition-all uppercase tracking-widest text-[10px]">
+                 <MuiButton 
+                    fullWidth 
+                    className="mt-10 h-14 bg-gray-50 hover:bg-primary/5 text-gray-400 hover:text-primary font-black rounded-2xl transition-all uppercase tracking-widest text-[10px]"
+                    onClick={() => alert('O Ranking completo está sendo preparado por nossos especialistas!')}
+                 >
                     Ver Ranking Completo
                  </MuiButton>
               </Paper>
               
-              <Card className="bg-orange-600 text-white rounded-[3rem] p-10 relative overflow-hidden group">
+              <Card className="bg-accent text-accent-foreground rounded-[3rem] p-10 relative overflow-hidden group">
                  <div className="absolute -right-20 -top-20 w-48 h-48 bg-white/10 rounded-full blur-3xl group-hover:scale-150 transition-transform duration-700" />
                  <div className="relative z-10 space-y-6">
-                    <Sun size={48} className="text-orange-200" />
+                    <Sun size={48} className="opacity-50" />
                     <h3 className="text-3xl font-black leading-none uppercase italic tracking-tighter">Planeje seu <br /> Verão 2025.</h3>
-                    <p className="text-orange-100 text-sm font-medium">As melhores praias e roteiros exclusivos para o próximo verão em Sergipe.</p>
-                    <Button className="w-full bg-white text-orange-600 font-black rounded-2xl h-14">VER ROTEIROS</Button>
+                    <p className="opacity-80 text-sm font-medium">As melhores praias e roteiros exclusivos para o próximo verão em Sergipe.</p>
+                    <Button 
+                        className="w-full bg-white text-accent font-black rounded-2xl h-14"
+                        onClick={() => router.push('/guide')}
+                     >
+                        VER ROTEIROS
+                     </Button>
                  </div>
               </Card>
            </div>
@@ -218,7 +234,7 @@ function MobileLocations() {
              <h1 className="font-black text-3xl tracking-tighter leading-none mb-1 text-foreground uppercase italic">Descubra <span className="text-primary">Sergipe</span></h1>
              <p className="text-muted-foreground font-black text-[10px] tracking-widest uppercase">Explore o invisível</p>
           </div>
-          <div className="p-3 bg-primary/10 rounded-2xl text-primary">
+          <div className="p-3 bg-primary/10 rounded-2xl text-primary" onClick={() => alert('Filtros avançados em breve!')}>
              <Filter size={20} />
           </div>
        </div>

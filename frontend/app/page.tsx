@@ -86,7 +86,7 @@ function HeroCarousel() {
           transition={{ delay: 0.3 }}
           className="max-w-3xl"
         >
-          <span className="inline-block px-4 py-1 rounded-full bg-orange-600 text-white text-[10px] font-black tracking-widest mb-6 uppercase shadow-lg shadow-orange-950/20">
+          <span className="inline-block px-4 py-1 rounded-full bg-primary text-primary-foreground text-[10px] font-black tracking-widest mb-6 uppercase shadow-lg shadow-primary/20">
             {carouselItems[index].subtitle}
           </span>
           <h2 className="text-3xl sm:text-4xl md:text-8xl font-black text-white leading-tight mb-4 md:mb-6 drop-shadow-2xl uppercase italic tracking-tighter">
@@ -98,7 +98,7 @@ function HeroCarousel() {
           <div className="flex flex-col sm:flex-row gap-6 items-start sm:items-center">
              <Button 
                 onClick={() => router.push('/locations')}
-                className="bg-orange-600 text-white hover:bg-orange-700 font-black px-6 md:px-10 h-14 md:h-16 rounded-2xl shadow-xl transition-all hover:scale-105 active:scale-95 text-xs md:text-sm"
+                className="bg-primary text-primary-foreground hover:bg-primary/90 font-black px-6 md:px-10 h-14 md:h-16 rounded-2xl shadow-xl transition-all hover:scale-105 active:scale-95 text-xs md:text-sm"
              >
                 COMEÇAR EXPLORAÇÃO <ChevronRight size={16} className="ml-2" />
              </Button>
@@ -107,7 +107,7 @@ function HeroCarousel() {
                   <div 
                     key={i} 
                     onClick={() => setIndex(i)}
-                    className={`h-1.5 transition-all cursor-pointer rounded-full ${index === i ? 'w-8 bg-orange-500' : 'w-2 bg-white/20 hover:bg-white/40'}`} 
+                    className={`h-1.5 transition-all cursor-pointer rounded-full ${index === i ? 'w-8 bg-primary' : 'w-2 bg-white/20 hover:bg-white/40'}`} 
                   />
                 ))}
              </div>
@@ -198,27 +198,27 @@ function SummarySection() {
       </div>
 
       {/* Why use us? */}
-      <section className="bg-orange-600 rounded-[3rem] p-12 md:p-24 text-white relative overflow-hidden">
+      <section className="bg-accent rounded-[3rem] p-12 md:p-24 text-accent-foreground relative overflow-hidden">
          <div className="absolute -right-20 -top-20 w-96 h-96 bg-white/10 rounded-full blur-3xl" />
          <div className="relative z-10 max-w-4xl mx-auto text-center space-y-12">
             <h2 className="text-4xl md:text-7xl font-black italic uppercase tracking-tighter leading-none">A maior plataforma de turismo de Sergipe.</h2>
             <div className="grid grid-cols-1 md:grid-cols-3 gap-12">
                <div>
                   <h3 className="text-6xl font-black mb-2 tracking-tighter">50+</h3>
-                  <p className="font-bold text-orange-200 uppercase tracking-widest text-xs">Destinos Cadastrados</p>
+                  <p className="font-bold opacity-80 uppercase tracking-widest text-xs">Destinos Cadastrados</p>
                </div>
                <div>
                   <h3 className="text-6xl font-black mb-2 tracking-tighter">10k</h3>
-                  <p className="font-bold text-orange-200 uppercase tracking-widest text-xs">Usuários Mensais</p>
+                  <p className="font-bold opacity-80 uppercase tracking-widest text-xs">Usuários Mensais</p>
                </div>
                <div>
                   <h3 className="text-6xl font-black mb-2 tracking-tighter">24/7</h3>
-                  <p className="font-bold text-orange-200 uppercase tracking-widest text-xs">Guia IA Disponível</p>
+                  <p className="font-bold opacity-80 uppercase tracking-widest text-xs">Guia IA Disponível</p>
                </div>
             </div>
             <Button 
                onClick={() => router.push('/auth/register')}
-               className="bg-white text-orange-600 hover:bg-orange-50 font-black px-12 h-16 rounded-2xl shadow-2xl transition-all hover:scale-110"
+               className="bg-white text-accent hover:bg-accent-foreground/10 font-black px-12 h-16 rounded-2xl shadow-2xl transition-all hover:scale-110"
             >
                Junte-se à Comunidade
             </Button>
@@ -259,15 +259,15 @@ export default function HomePage() {
            
            <div className="space-y-6">
               {[
-                { icon: Bot, title: "Inteligência Artificial", desc: "Um guia que te conhece e te entende." },
-                { icon: MapIcon, title: "Mapa Interativo", desc: "Localize tudo ao seu redor facilmente." },
-                { icon: ShieldCheck, title: "Segurança & Dicas", desc: "Informações verificadas por especialistas." }
+                { icon: Bot, title: "Inteligência Artificial", desc: "Um guia que te conhece e te entende.", path: '/guide' },
+                { icon: MapIcon, title: "Mapa Interativo", desc: "Localize tudo ao seu redor facilmente.", path: '/map' },
+                { icon: ShieldCheck, title: "Segurança & Dicas", desc: "Informações verificadas por especialistas.", path: '/faq' }
               ].map((item, i) => (
-                <div key={i} className="flex gap-4 items-start">
-                   <div className="h-12 w-12 bg-primary/10 rounded-2xl flex items-center justify-center text-primary shrink-0 transition-transform active:scale-90">
+                <div key={i} className="flex gap-4 items-start" onClick={() => router.push(item.path)}>
+                   <div className="h-12 w-12 bg-primary/10 rounded-2xl flex items-center justify-center text-primary shrink-0 transition-transform active:scale-90 cursor-pointer">
                       <item.icon size={22} />
                    </div>
-                   <div className="pt-1">
+                   <div className="pt-1 cursor-pointer">
                       <h4 className="font-black text-sm text-foreground uppercase tracking-tight">{item.title}</h4>
                       <p className="text-muted-foreground font-bold text-xs leading-snug">{item.desc}</p>
                    </div>

@@ -120,7 +120,7 @@ export default function SettingsPage() {
                         }}
                         sx={{ py: 2, px: 3, '&:hover': { bgcolor: 'action.hover' } }}
                       >
-                        <ListItemIcon sx={{ minWidth: 44, color: item.color || '#E67E22' }}>{item.icon}</ListItemIcon>
+                        <ListItemIcon sx={{ minWidth: 44, color: item.color || '#ED2100' }}>{item.icon}</ListItemIcon>
                         <ListItemText 
                           primary={item.text} 
                           primaryTypographyProps={{ fontWeight: 700, color: item.color || 'text.primary' }}
@@ -134,8 +134,8 @@ export default function SettingsPage() {
                             onClick={(e) => e.stopPropagation()}
                             size="small" 
                             sx={{
-                              '& .MuiSwitch-switchBase.Mui-checked': { color: '#E67E22' },
-                              '& .MuiSwitch-switchBase.Mui-checked + .MuiSwitch-track': { bgcolor: '#E67E22' }
+                              '& .MuiSwitch-switchBase.Mui-checked': { color: '#ED2100' },
+                              '& .MuiSwitch-switchBase.Mui-checked + .MuiSwitch-track': { bgcolor: '#ED2100' }
                             }}
                           />
                         )}

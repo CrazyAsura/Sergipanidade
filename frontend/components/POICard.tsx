@@ -69,8 +69,8 @@ export default function POICard({ location, isWide = false }: POICardProps) {
         >
           <Heart 
             size={18} 
-            fill={isFavorite ? '#E67E22' : 'none'} 
-            color={isFavorite ? '#E67E22' : '#2C3E50'} 
+            fill={isFavorite ? '#ED2100' : 'none'} 
+            color={isFavorite ? '#ED2100' : '#2C3E50'} 
           />
         </IconButton>
         

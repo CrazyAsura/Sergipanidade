@@ -143,9 +143,9 @@ export default function EditProfilePage() {
                   py: 2, 
                   borderRadius: 4, 
                   fontWeight: 900,
-                  boxShadow: '0 12px 24px rgba(230, 126, 34, 0.3)',
-                  bgcolor: '#E67E22',
-                  '&:hover': { bgcolor: '#D35400' }
+                  boxShadow: '0 12px 24px rgba(237, 33, 0, 0.3)',
+                  bgcolor: '#ED2100',
+                  '&:hover': { bgcolor: '#C41B00' }
                 }}
               >
                 SALVAR ALTERAÇÕES

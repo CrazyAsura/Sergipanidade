@@ -62,23 +62,23 @@ function WebGuia() {
   return (
     <div className="max-w-3xl mx-auto space-y-6 animate-in fade-in duration-500">
       <div className="flex items-center gap-3 mb-6">
-        <ShadAvatar className="h-12 w-12 bg-orange-500"><AvatarFallback className="bg-orange-500 text-white font-bold"><Bot className="h-6 w-6" /></AvatarFallback></ShadAvatar>
+        <ShadAvatar className="h-12 w-12 bg-primary"><AvatarFallback className="bg-primary text-white font-bold"><Bot className="h-6 w-6" /></AvatarFallback></ShadAvatar>
         <div><h1 className="text-2xl font-black text-gray-900 dark:text-white">Guia IA Sergipanidade</h1><div className="flex items-center gap-1.5"><div className="h-2 w-2 rounded-full bg-green-400" /><span className="text-xs text-green-500 font-bold">Online agora</span></div></div>
-        <Badge className="ml-auto bg-orange-50 text-orange-500 border-orange-200"><Sparkles className="mr-1 h-3 w-3" /> IA</Badge>
+        <Badge className="ml-auto bg-primary/10 text-primary border-primary/20"><Sparkles className="mr-1 h-3 w-3" /> IA</Badge>
       </div>
 
       <ScrollArea className="h-[55vh] border border-gray-100 dark:border-slate-800 rounded-2xl p-6 bg-white dark:bg-slate-900 shadow-sm">
         <div className="space-y-6">
           {msgs.map((m) => (
             <motion.div key={m.id} initial={{ opacity: 0, y: 8 }} animate={{ opacity: 1, y: 0 }} className={`flex flex-col ${m.sender === 'user' ? 'items-end' : 'items-start'}`}>
-              <div className={`max-w-[80%] p-4 rounded-2xl ${m.sender === 'user' ? 'bg-orange-500 text-white rounded-br-sm' : 'bg-gray-50 dark:bg-slate-800 text-gray-800 dark:text-slate-200 rounded-bl-sm border border-gray-100 dark:border-slate-700'}`}>
+              <div className={`max-w-[80%] p-4 rounded-2xl ${m.sender === 'user' ? 'bg-primary text-white rounded-br-sm' : 'bg-gray-50 dark:bg-slate-800 text-gray-800 dark:text-slate-200 rounded-bl-sm border border-gray-100 dark:border-slate-700'}`}>
                 <p className="text-sm leading-relaxed whitespace-pre-wrap">{m.text}</p>
               </div>
               <span className="text-[10px] text-gray-300 dark:text-slate-500 mt-1">{m.time}</span>
             </motion.div>
           ))}
           {loading && (
-            <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="flex items-center gap-2 text-orange-500 font-bold text-xs">
+            <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="flex items-center gap-2 text-primary font-bold text-xs">
               <div className="flex gap-1">
                 <span className="animate-bounce">.</span>
                 <span className="animate-bounce delay-100">.</span>
@@ -90,11 +90,11 @@ function WebGuia() {
         </div>
       </ScrollArea>
 
-      <div className="flex gap-2 flex-wrap">{suggestions.map((s) => (<button key={s} disabled={loading} onClick={() => setInput(s)} className="px-3 py-1.5 rounded-full bg-gray-50 dark:bg-slate-800 border border-gray-100 dark:border-slate-700 text-xs font-bold text-gray-500 dark:text-slate-400 hover:bg-orange-50 dark:hover:bg-orange-950/30 hover:text-orange-500 transition-colors disabled:opacity-50">{s}</button>))}</div>
+      <div className="flex gap-2 flex-wrap">{suggestions.map((s) => (<button key={s} disabled={loading} onClick={() => setInput(s)} className="px-3 py-1.5 rounded-full bg-gray-50 dark:bg-slate-800 border border-gray-100 dark:border-slate-700 text-xs font-bold text-gray-500 dark:text-slate-400 hover:bg-primary/5 dark:hover:bg-primary/10 hover:text-primary transition-colors disabled:opacity-50">{s}</button>))}</div>
       <div className="flex gap-2">
         <Input value={input} onChange={(e) => setInput(e.target.value)} placeholder={loading ? "Aguarde a resposta..." : "Pergunte sobre Sergipe..."}
           disabled={loading} onKeyDown={(e) => { if (e.key === 'Enter') send(); }} className="flex-1 h-12 rounded-xl dark:bg-slate-800 dark:border-slate-700 dark:text-white" />
-        <Button onClick={send} disabled={loading || !input.trim()} className="h-12 w-12 rounded-xl bg-orange-500 hover:bg-orange-600 disabled:opacity-50"><Send className="h-5 w-5 text-white" /></Button>
+        <Button onClick={send} disabled={loading || !input.trim()} className="h-12 w-12 rounded-xl bg-primary hover:bg-primary/90 disabled:opacity-50"><Send className="h-5 w-5 text-white" /></Button>
       </div>
     </div>
   );
@@ -107,9 +107,9 @@ function MobileGuia() {
       {/* Premium Header for Chat */}
       <Box sx={{ display: 'flex', alignItems: 'center', gap: 2, mb: 3, p: 2, bgcolor: 'white', borderRadius: 6, border: '1px solid rgba(0,0,0,0.03)', boxShadow: '0 4px 15px rgba(0,0,0,0.02)' }}>
         <MuiAvatar sx={{ 
-          bgcolor: '#FFF5EB', width: 44, height: 44, border: '1px solid rgba(230,126,34,0.1)'
+          bgcolor: 'rgba(237, 33, 0, 0.1)', width: 44, height: 44, border: '1px solid rgba(237, 33, 0, 0.1)'
         }}>
-          <Bot size={24} color="#E67E22" />
+          <Bot size={24} color="#ED2100" />
         </MuiAvatar>
         <Box flex={1}>
            <Typography sx={{ fontWeight: 950, fontSize: '1.05rem', color: '#1A202C', letterSpacing: -0.5 }}>
@@ -153,7 +153,7 @@ function MobileGuia() {
           {loading && (
             <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }}>
                <Box sx={{ display: 'flex', gap: 1, alignItems: 'center', p: 1.5, px: 2.5, bgcolor: '#F1F5F9', borderRadius: 4, width: 'fit-content' }}>
-                  <Typography variant="caption" sx={{ color: '#E67E22', fontWeight: 900, display: 'flex', alignItems: 'center', gap: 0.5 }}>
+                  <Typography variant="caption" sx={{ color: '#ED2100', fontWeight: 900, display: 'flex', alignItems: 'center', gap: 0.5 }}>
                      <Sparkles size={12} className="animate-pulse" /> Analisando Sergipe...
                   </Typography>
                </Box>
@@ -175,7 +175,7 @@ function MobileGuia() {
                 sx={{ 
                   bgcolor: '#F8FAFC', border: '1px solid rgba(0,0,0,0.02)', 
                   fontWeight: 750, fontSize: '0.75rem', color: '#64748B',
-                  '&:active': { bgcolor: 'rgba(230,126,34,0.1)', color: '#E67E22' }
+                  '&:active': { bgcolor: 'rgba(237, 33, 0, 0.1)', color: '#ED2100' }
                 }} 
               />
             ))}

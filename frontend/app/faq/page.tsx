@@ -62,13 +62,13 @@ function WebFAQ() {
       </div>
 
       {/* CTA */}
-      <section className="max-w-3xl mx-auto bg-orange-600 rounded-[2.5rem] p-12 text-white text-center space-y-6 relative overflow-hidden">
+      <section className="max-w-3xl mx-auto bg-primary rounded-[2.5rem] p-12 text-primary-foreground text-center space-y-6 relative overflow-hidden">
         <div className="absolute -right-10 -top-10 w-40 h-40 bg-white/10 rounded-full blur-3xl" />
         <div className="relative z-10">
           <h2 className="text-3xl font-black uppercase italic tracking-tighter">Não encontrou sua resposta?</h2>
-          <p className="text-orange-200 font-medium">Pergunte ao nosso Guia IA ou entre em contato.</p>
+          <p className="opacity-80 font-medium">Pergunte ao nosso Guia IA ou entre em contato.</p>
           <div className="flex gap-4 justify-center mt-6">
-            <Button onClick={() => router.push('/guide')} className="bg-white text-orange-600 hover:bg-orange-50 font-black h-14 px-8 rounded-2xl shadow-xl">
+            <Button onClick={() => router.push('/guide')} className="bg-white text-primary hover:bg-gray-50 font-black h-14 px-8 rounded-2xl shadow-xl">
               FALAR COM IA <Bot size={18} className="ml-2" />
             </Button>
             <Button onClick={() => router.push('/contact')} variant="outline" className="border-white/30 text-white hover:bg-white/10 font-black h-14 px-8 rounded-2xl">
@@ -133,7 +133,7 @@ function MobileFAQ() {
             <p className="text-[10px] font-bold text-primary-foreground/80 uppercase tracking-widest">Pergunte ao nosso Guia IA.</p>
           </div>
           <div className="space-y-3">
-            <Button onClick={() => router.push('/guide')} className="w-full bg-white text-primary hover:bg-orange-50 font-black h-14 rounded-2xl shadow-xl">FALAR COM IA</Button>
+            <Button onClick={() => router.push('/guide')} className="w-full bg-white text-primary hover:bg-gray-50 font-black h-14 rounded-2xl shadow-xl">FALAR COM IA</Button>
             <Button onClick={() => router.push('/contact')} variant="outline" className="w-full border-white/30 text-white hover:bg-white/10 font-black h-14 rounded-2xl">CONTATO</Button>
           </div>
         </div>

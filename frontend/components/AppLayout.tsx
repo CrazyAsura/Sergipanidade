@@ -35,6 +35,7 @@ import {
   Share2, ExternalLink, User, Settings, ChevronRight
 } from 'lucide-react';
 import { ThemeToggle } from './ThemeToggle';
+import NotificationsModal from './NotificationsModal';
 
 const publicLinks = [
   { label: 'Início', href: '/', icon: Home },
@@ -72,8 +73,17 @@ function Footer() {
             Descubra as riquezas naturais, históricas e culturais do estado de Sergipe com a nossa guia inteligente.
           </p>
           <div className="flex gap-4">
-             {['facebook', 'instagram', 'twitter', 'youtube'].map(s => (
-               <div key={s} className="h-9 w-9 rounded-xl bg-gray-50 dark:bg-slate-800 flex items-center justify-center text-gray-400 dark:text-slate-500 hover:text-orange-500 hover:bg-orange-50 transition-all cursor-pointer border border-gray-100 dark:border-slate-800">
+             {[
+               { id: 'facebook', icon: Share2, label: 'Facebook' },
+               { id: 'instagram', icon: Share2, label: 'Instagram' },
+               { id: 'twitter', icon: Share2, label: 'Twitter' },
+               { id: 'youtube', icon: Share2, label: 'YouTube' }
+             ].map(s => (
+               <div 
+                 key={s.id} 
+                 onClick={() => alert(`Conectando ao ${s.label}...`)}
+                 className="h-9 w-9 rounded-xl bg-gray-50 dark:bg-slate-800 flex items-center justify-center text-gray-400 dark:text-slate-500 hover:text-primary hover:bg-primary/5 transition-all cursor-pointer border border-gray-100 dark:border-slate-800"
+               >
                  <Share2 size={16} />
                </div>
              ))}
@@ -84,7 +94,7 @@ function Footer() {
           <h4 className="font-black text-gray-900 dark:text-white mb-6 uppercase text-xs tracking-widest">Navegação</h4>
           <ul className="space-y-4">
             {publicLinks.map(l => (
-              <li key={l.href}><Link href={l.href} className="text-sm font-bold text-gray-500 dark:text-slate-400 hover:text-orange-500 transition-colors">{l.label}</Link></li>
+              <li key={l.href}><Link href={l.href} className="text-sm font-bold text-gray-500 dark:text-slate-400 hover:text-primary transition-colors">{l.label}</Link></li>
             ))}
           </ul>
         </div>
@@ -93,7 +103,7 @@ function Footer() {
           <h4 className="font-black text-gray-900 dark:text-white mb-6 uppercase text-xs tracking-widest">Plataforma</h4>
           <ul className="space-y-4">
             {appLinks.slice(0, 4).map(l => (
-              <li key={l.href}><Link href={l.href} className="text-sm font-bold text-gray-500 dark:text-slate-400 hover:text-orange-500 transition-colors">{l.label}</Link></li>
+              <li key={l.href}><Link href={l.href} className="text-sm font-bold text-gray-500 dark:text-slate-400 hover:text-primary transition-colors">{l.label}</Link></li>
             ))}
           </ul>
         </div>
@@ -102,11 +112,17 @@ function Footer() {
           <h4 className="font-black text-gray-900 dark:text-white mb-6 uppercase text-xs tracking-widest">Contato</h4>
           <p className="text-sm text-gray-500 dark:text-slate-400 font-bold mb-2">contato@sergipanidade.com.br</p>
           <p className="text-sm text-gray-500 dark:text-slate-400 font-bold">(79) 99999-9999</p>
-          <div className="mt-8 p-4 bg-orange-50 dark:bg-orange-950/20 rounded-2xl border border-orange-100 dark:border-orange-900/30">
-            <p className="text-[10px] font-black text-orange-600 dark:text-orange-400 uppercase tracking-widest mb-1">Newsletter</p>
+          <div className="mt-8 p-4 bg-primary/5 dark:bg-primary/10 rounded-2xl border border-primary/10 dark:border-primary/20">
+            <p className="text-[10px] font-black text-primary uppercase tracking-widest mb-1">Newsletter</p>
             <div className="flex gap-2">
-              <input type="text" placeholder="Seu email" className="bg-white dark:bg-slate-900 text-[10px] rounded-lg px-3 py-2 w-full border-none outline-none focus:ring-1 focus:ring-orange-200" />
-              <Button size="icon" className="h-8 w-8 bg-orange-600 hover:bg-orange-700 shrink-0"><ChevronRight size={14} /></Button>
+              <input type="text" placeholder="Seu email" className="bg-white dark:bg-slate-900 text-[10px] rounded-lg px-3 py-2 w-full border-none outline-none focus:ring-1 focus:ring-primary/30" />
+              <Button 
+                size="icon" 
+                className="h-8 w-8 bg-primary hover:bg-primary/90 shrink-0"
+                onClick={() => alert('Obrigado por assinar nossa newsletter!')}
+              >
+                <ChevronRight size={14} />
+              </Button>
             </div>
           </div>
         </div>
@@ -115,8 +131,8 @@ function Footer() {
       <div className="max-w-7xl mx-auto px-6 pt-8 border-t border-border flex flex-col md:flex-row justify-between items-center gap-4">
         <p className="text-xs font-bold text-muted-foreground">© 2024 Sergipanidade Turismo. Todos os direitos reservados.</p>
         <div className="flex gap-6">
-           <a href="#" className="text-xs font-bold text-muted-foreground hover:text-foreground transition-colors">Termos de Uso</a>
-           <a href="#" className="text-xs font-bold text-muted-foreground hover:text-foreground transition-colors">Privacidade</a>
+           <Link href="/faq" className="text-xs font-bold text-muted-foreground hover:text-foreground transition-colors">Termos de Uso</Link>
+           <Link href="/faq" className="text-xs font-bold text-muted-foreground hover:text-foreground transition-colors">Privacidade</Link>
         </div>
       </div>
     </footer>
@@ -131,6 +147,7 @@ function WebLayout({ children }: LayoutProps) {
   const router = useRouter();
   const dispatch = useDispatch();
   const { isAuthenticated, user } = useSelector((s: RootState) => s.auth);
+  const [isNotificationsOpen, setIsNotificationsOpen] = useState(false);
   const isAuthPage = authPages.includes(pathname);
   const isPrivatePath = appLinks.some(link => pathname.startsWith(link.href)) || pathname === '/favorites';
 
@@ -152,12 +169,12 @@ function WebLayout({ children }: LayoutProps) {
 
   if (isAuthPage) {
     return (
-      <div className="min-h-screen bg-linear-to-br from-gray-50 to-orange-50/30">
+      <div className="min-h-screen bg-linear-to-br from-gray-50 to-primary/5">
         <header className="sticky top-0 z-50 bg-white/70 backdrop-blur-lg border-b border-gray-100/50">
           <div className="max-w-6xl mx-auto px-6 h-14 flex items-center">
             <Link href="/" className="flex items-center gap-2">
-              <Compass className="h-6 w-6 text-orange-500" />
-              <span className="text-lg font-black bg-linear-to-r from-orange-500 to-amber-500 bg-clip-text text-transparent uppercase">Sergipanidade</span>
+              <Compass className="h-6 w-6 text-primary" />
+              <span className="text-lg font-black bg-linear-to-r from-primary to-accent bg-clip-text text-transparent uppercase">Sergipanidade</span>
             </Link>
           </div>
         </header>
@@ -172,14 +189,14 @@ function WebLayout({ children }: LayoutProps) {
         <div className="max-w-7xl mx-auto px-4 md:px-8 h-20 flex items-center justify-between gap-4">
           <div className="flex items-center gap-10">
             <Link href={isAuthenticated ? "/locations" : "/"} className="flex items-center gap-2 group transition-transform duration-300 hover:scale-105">
-              <div className="aspect-square rounded-2xl bg-linear-to-br from-orange-500 to-amber-500 flex items-center justify-center text-white shadow-lg shadow-orange-200/50 dark:shadow-none group-hover:rotate-12 transition-transform h-10 w-10">
-                <Compass className="h-6 w-6 text-white" />
+              <div className="aspect-square rounded-2xl bg-linear-to-br from-primary to-accent flex items-center justify-center text-primary-foreground shadow-lg shadow-primary/20 dark:shadow-none group-hover:rotate-12 transition-transform h-10 w-10">
+                <Compass className="h-6 w-6 text-primary-foreground" />
               </div>
               <div className="flex flex-col -gap-1">
-                <span className="text-xl font-black tracking-tighter bg-linear-to-r from-orange-600 via-amber-600 to-orange-500 bg-clip-text text-transparent leading-none uppercase">
+                <span className="text-xl font-black tracking-tighter bg-linear-to-r from-primary via-accent to-primary bg-clip-text text-transparent leading-none uppercase">
                   SERGIPANIDADE
                 </span>
-                <span className="text-[10px] font-bold text-orange-400 dark:text-orange-500/80 tracking-[0.2em] uppercase">Turismo & Cultura</span>
+                <span className="text-[10px] font-bold text-accent tracking-[0.2em] uppercase">Turismo & Cultura</span>
               </div>
             </Link>
             <div className="ml-2">
@@ -196,8 +213,8 @@ function WebLayout({ children }: LayoutProps) {
                     href={l.href}
                     className={`relative px-4 py-2 rounded-xl text-sm font-bold transition-all duration-300 flex items-center gap-2 overflow-hidden
                       ${active 
-                        ? 'bg-white dark:bg-slate-800 text-orange-600 dark:text-orange-500 shadow-sm ring-1 ring-gray-100 dark:ring-slate-700' 
-                        : 'text-gray-500 dark:text-slate-400 hover:text-gray-900 dark:hover:text-slate-200 hover:bg-gray-100/50 dark:hover:bg-slate-800/50'}`}
+                        ? 'bg-white dark:bg-slate-800 text-primary shadow-sm ring-1 ring-gray-100 dark:ring-slate-700' 
+                        : 'text-gray-500 dark:text-slate-400 hover:text-foreground dark:hover:text-slate-200 hover:bg-gray-100/50 dark:hover:bg-slate-800/50'}`}
                   >
                     <Icon className={`h-4 w-4 transition-transform duration-300 ${active ? 'scale-110' : 'group-hover:scale-110'}`} />
                     {l.label}
@@ -210,8 +227,14 @@ function WebLayout({ children }: LayoutProps) {
           <div className="flex items-center gap-3">
             {isAuthenticated && (
               <div className="hidden md:flex items-center gap-1">
-                <Button variant="ghost" size="icon" className="text-gray-400 dark:text-slate-400 hover:text-orange-500 hover:bg-orange-50 dark:hover:bg-orange-950/30 rounded-xl transition-colors">
+                <Button 
+                  variant="ghost" 
+                  size="icon" 
+                  onClick={() => setIsNotificationsOpen(true)}
+                  className="text-gray-400 dark:text-slate-400 hover:text-primary hover:bg-primary/5 dark:hover:bg-primary/10 rounded-xl transition-colors relative"
+                >
                   <Bell className="h-5 w-5" />
+                  <span className="absolute top-2.5 right-2.5 h-2 w-2 bg-primary rounded-full border-2 border-white dark:border-slate-900" />
                 </Button>
               </div>
             )}
@@ -220,24 +243,27 @@ function WebLayout({ children }: LayoutProps) {
 
             {isAuthenticated ? (
               <DropdownMenu>
-                <DropdownMenuTrigger>
-                  <button className="flex items-center gap-3 pl-1 pr-3 py-1 bg-white dark:bg-slate-900 border border-gray-100 dark:border-slate-800 rounded-2xl hover:shadow-md transition-all group overflow-hidden outline-none">
-                    <div className="relative">
-                      <ShadAvatar className="h-9 w-9 border-2 border-white dark:border-slate-800 ring-2 ring-orange-100 dark:ring-orange-900/30 group-hover:ring-orange-200 transition-all">
-                        <AvatarImage src={user?.avatar || ''} />
-                        <AvatarFallback className="bg-linear-to-br from-orange-400 to-amber-500 text-white font-black text-xs uppercase">
-                          {user?.name?.charAt(0) || 'U'}
-                        </AvatarFallback>
-                      </ShadAvatar>
-                      <div className="absolute -bottom-0.5 -right-0.5 h-3 w-3 bg-green-500 border-2 border-white dark:border-slate-800 rounded-full" />
-                    </div>
-                    <div className="hidden sm:flex flex-col items-start leading-none">
-                      <span className="text-sm font-bold text-gray-800 dark:text-slate-200">{user?.name?.split(' ')[0]}</span>
-                      <span className="text-[10px] font-semibold text-gray-400 dark:text-slate-500">Perfil</span>
-                    </div>
-                  </button>
+                <DropdownMenuTrigger
+                  nativeButton={false}
+                  render={
+                    <div className="flex items-center gap-3 pl-1 pr-3 py-1 bg-white dark:bg-slate-900 border border-gray-100 dark:border-slate-800 rounded-2xl hover:shadow-md transition-all group overflow-hidden outline-none cursor-pointer" />
+                  }
+                >
+                  <div className="relative">
+                    <ShadAvatar className="h-9 w-9 border-2 border-white dark:border-slate-800 ring-2 ring-primary/10 group-hover:ring-primary/20 transition-all">
+                      <AvatarImage src={user?.avatar || ''} />
+                      <AvatarFallback className="bg-linear-to-br from-primary to-accent text-primary-foreground font-black text-xs uppercase">
+                        {user?.name?.charAt(0) || 'U'}
+                      </AvatarFallback>
+                    </ShadAvatar>
+                    <div className="absolute -bottom-0.5 -right-0.5 h-3 w-3 bg-green-500 border-2 border-white dark:border-slate-800 rounded-full" />
+                  </div>
+                  <div className="hidden sm:flex flex-col items-start leading-none">
+                    <span className="text-sm font-bold text-gray-800 dark:text-slate-200">{user?.name?.split(' ')[0]}</span>
+                    <span className="text-[10px] font-semibold text-gray-400 dark:text-slate-500">Perfil</span>
+                  </div>
                 </DropdownMenuTrigger>
-                <DropdownMenuContent align="end" className="w-56 p-2 rounded-2xl border-orange-50 dark:border-slate-800 shadow-xl bg-white dark:bg-slate-900">
+                <DropdownMenuContent align="end" className="w-56 p-2 rounded-2xl border-primary/10 dark:border-slate-800 shadow-xl bg-white dark:bg-slate-900">
                   <DropdownMenuGroup>
                     <DropdownMenuLabel className="px-3 py-2">
                       <p className="text-sm font-black text-gray-900 dark:text-slate-100 leading-tight">{user?.name}</p>
@@ -246,10 +272,10 @@ function WebLayout({ children }: LayoutProps) {
                   </DropdownMenuGroup>
                   <DropdownMenuSeparator className="bg-gray-50 dark:bg-slate-800" />
                   <DropdownMenuGroup>
-                    <DropdownMenuItem onClick={() => router.push('/auth/profile')} className="rounded-xl px-3 py-2.5 cursor-pointer text-gray-700 dark:text-slate-300 font-bold focus:bg-orange-50 dark:focus:bg-slate-800 focus:text-orange-600 transition-colors flex items-center">
+                    <DropdownMenuItem onClick={() => router.push('/auth/profile')} className="rounded-xl px-3 py-2.5 cursor-pointer text-foreground dark:text-slate-300 font-bold focus:bg-primary/5 dark:focus:bg-primary/10 focus:text-primary transition-colors flex items-center">
                       <User className="mr-3 h-4.5 w-4.5 opacity-70" /> Meu Perfil
                     </DropdownMenuItem>
-                    <DropdownMenuItem onClick={() => router.push('/auth/settings')} className="rounded-xl px-3 py-2.5 cursor-pointer text-gray-700 dark:text-slate-300 font-bold focus:bg-orange-50 dark:focus:bg-slate-800 focus:text-orange-600 transition-colors flex items-center">
+                    <DropdownMenuItem onClick={() => router.push('/auth/settings')} className="rounded-xl px-3 py-2.5 cursor-pointer text-foreground dark:text-slate-300 font-bold focus:bg-primary/5 dark:focus:bg-primary/10 focus:text-primary transition-colors flex items-center">
                       <Settings className="mr-3 h-4.5 w-4.5 opacity-70" /> Configurações
                     </DropdownMenuItem>
                   </DropdownMenuGroup>
@@ -264,7 +290,7 @@ function WebLayout({ children }: LayoutProps) {
             ) : (
               <Button 
                 onClick={() => router.push('/auth/login')} 
-                className="bg-orange-500 hover:bg-orange-600 text-white font-black rounded-2xl px-6 py-2 transition-all active:scale-95"
+                className="bg-primary hover:bg-primary/90 text-primary-foreground font-black rounded-2xl px-6 py-2 transition-all active:scale-95"
               >
                 ENTRAR
               </Button>
@@ -272,10 +298,12 @@ function WebLayout({ children }: LayoutProps) {
             
             <div className="lg:hidden">
               <Sheet>
-                <SheetTrigger>
-                  <Button variant="ghost" size="icon" className="bg-gray-50 dark:bg-slate-800 rounded-xl">
-                    <Menu className="h-6 w-6" />
-                  </Button>
+                <SheetTrigger
+                  render={
+                    <Button variant="ghost" size="icon" className="bg-gray-50 dark:bg-slate-800 rounded-xl" />
+                  }
+                >
+                  <Menu className="h-6 w-6" />
                 </SheetTrigger>
                 <SheetContent side="right" className="w-72">
                   <div className="flex flex-col gap-2 mt-8">
@@ -283,14 +311,14 @@ function WebLayout({ children }: LayoutProps) {
                       const Icon = l.icon;
                       const active = pathname === l.href;
                       return (
-                        <Link key={l.href} href={l.href} className={`flex items-center gap-3 px-4 py-3 rounded-xl text-sm font-bold transition-all ${active ? 'bg-orange-500 text-white' : 'text-gray-600 dark:text-slate-400 hover:bg-orange-50 dark:hover:bg-slate-800'}`}>
+                        <Link key={l.href} href={l.href} className={`flex items-center gap-3 px-4 py-3 rounded-xl text-sm font-bold transition-all ${active ? 'bg-primary text-primary-foreground' : 'text-foreground/70 dark:text-slate-400 hover:bg-primary/10 dark:hover:bg-slate-800'}`}>
                           <Icon size={18} />
                           {l.label}
                         </Link>
                       );
                     })}
                     {!isAuthenticated && (
-                       <Button onClick={() => router.push('/auth/login')} className="mt-4 w-full bg-orange-600 text-white font-black rounded-xl h-12">ENTRAR AGORA</Button>
+                       <Button onClick={() => router.push('/auth/login')} className="mt-4 w-full bg-primary text-primary-foreground font-black rounded-xl h-12">ENTRAR AGORA</Button>
                     )}
                   </div>
                 </SheetContent>
@@ -302,6 +330,10 @@ function WebLayout({ children }: LayoutProps) {
       <main className="flex-1 max-w-7xl mx-auto w-full px-4 md:px-8 py-10">
         {children}
       </main>
+      <NotificationsModal 
+        isOpen={isNotificationsOpen} 
+        onClose={() => setIsNotificationsOpen(false)} 
+      />
       {!isAuthenticated && <Footer />}
     </div>
   );
@@ -315,6 +347,7 @@ function MobileLayout({ children }: LayoutProps) {
   const router = useRouter();
   const dispatch = useDispatch();
   const { isAuthenticated, user } = useSelector((s: RootState) => s.auth);
+  const [isNotificationsOpen, setIsNotificationsOpen] = useState(false);
   const isPrivatePath = appLinks.some(link => pathname.startsWith(link.href)) || pathname === '/favorites';
   const isAuthPage = authPages.includes(pathname);
 
@@ -371,19 +404,32 @@ function MobileLayout({ children }: LayoutProps) {
         </div>
 
         <div className="flex items-center gap-3">
+          {isAuthenticated && (
+            <IconButton 
+              size="small" 
+              onClick={() => setIsNotificationsOpen(true)}
+              sx={{ color: 'text.secondary' }}
+            >
+              <Bell size={20} />
+            </IconButton>
+          )}
           <ThemeToggle />
           {isAuthenticated ? (
              <DropdownMenu>
-                <DropdownMenuTrigger className="outline-none">
-                  <div className="h-8 w-8 rounded-full border-2 border-primary ring-2 ring-primary/20 overflow-hidden">
-                    {user?.avatar ? (
-                      <img src={user.avatar} alt={user.name} className="h-full w-full object-cover" />
-                    ) : (
-                      <div className="h-full w-full bg-primary flex items-center justify-center text-primary-foreground text-xs font-black">
-                        {user?.name?.charAt(0)}
-                      </div>
-                    )}
-                  </div>
+                <DropdownMenuTrigger
+                  nativeButton={false} 
+                  className="outline-none"
+                  render={
+                    <div className="h-8 w-8 rounded-full border-2 border-primary ring-2 ring-primary/20 overflow-hidden cursor-pointer" />
+                  }
+                >
+                  {user?.avatar ? (
+                    <img src={user.avatar} alt={user.name} className="h-full w-full object-cover" />
+                  ) : (
+                    <div className="h-full w-full bg-primary flex items-center justify-center text-primary-foreground text-xs font-black">
+                      {user?.name?.charAt(0)}
+                    </div>
+                  )}
                 </DropdownMenuTrigger>
                  <DropdownMenuContent align="end" className="w-56 p-2 rounded-2xl bg-popover text-popover-foreground shadow-2xl border-border">
                     <DropdownMenuItem onClick={() => router.push('/auth/profile')} className="rounded-xl px-4 py-3 font-bold focus:bg-accent">Perfil</DropdownMenuItem>
@@ -429,6 +475,10 @@ function MobileLayout({ children }: LayoutProps) {
           })}
         </nav>
       )}
+      <NotificationsModal 
+        isOpen={isNotificationsOpen} 
+        onClose={() => setIsNotificationsOpen(false)} 
+      />
     </div>
   );
 }

@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useMemo, useCallback } from 'react';
+import { useState, useMemo, useCallback, useEffect } from 'react';
 import { useIsMobile } from '@/hooks/useIsMobile';
 import { locations, Location, transformLocationsByCategory } from '@/lib/mockData';
 import { useDispatch, useSelector } from 'react-redux';
@@ -13,11 +13,13 @@ import { Badge } from '@/components/ui/badge';
 import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
 import { Box, Typography, Paper, TextField, InputAdornment, IconButton, Chip, Stack, CardMedia, Card as MuiCard, CardContent as MuiCardContent, Fab, Divider, useTheme } from '@mui/material';
-import { GoogleMap, useJsApiLoader, Marker, InfoWindow, Autocomplete } from '@react-google-maps/api';
+import { GoogleMap, useJsApiLoader, Marker, InfoWindow, Autocomplete, Polyline } from '@react-google-maps/api';
+import { useSearchParams } from 'next/navigation';
 
 const GOOGLE_MAPS_API_KEY = "AIzaSyCR5ufBKKAVWYAovmT9-TG9F7gg66cgXDg";
 const mapContainerStyle = { width: '100%', height: '100%' };
 const center = { lat: -10.9472, lng: -37.0731 }; // Aracaju center
+const libraries: ("places" | "drawing" | "geometry" | "localContext" | "visualization" | "routes")[] = ['places', 'routes'];
 
 const categories = [
   { label: 'Tudo', type: 'Tudo', icon: MapPin },
@@ -27,10 +29,14 @@ const categories = [
   { label: 'Histórico', type: 'historic', icon: Shield },
 ];
 
-function LocationCard({ sel, onClose, isMobile }: { sel: Location, onClose: () => void, isMobile: boolean }) {
+function LocationCard({ sel, onClose, isMobile, onNavigate }: { sel: Location, onClose: () => void, isMobile: boolean, onNavigate: (loc: Location) => void }) {
   const dispatch = useDispatch();
   const favs = useSelector((s: RootState) => s.favorites.items || []);
   const isFav = favs.includes(sel.id);
+  
+  const handleNavigate = () => {
+    window.open(`https://www.google.com/maps/dir/?api=1&destination=${sel.lat},${sel.lng}&travelmode=driving`, '_blank');
+  };
 
   return (
     <motion.div 
@@ -57,12 +63,12 @@ function LocationCard({ sel, onClose, isMobile }: { sel: Location, onClose: () =
                 <p className="text-xs font-bold text-gray-400 dark:text-slate-500 uppercase tracking-tighter">{sel.city}</p>
               </div>
               <IconButton onClick={() => dispatch(toggleFavorite(sel.id))}>
-                <Heart className={`h-6 w-6 ${isFav ? 'fill-orange-500 text-orange-500' : 'text-gray-300 dark:text-slate-700'}`} />
+                <Heart className={`h-6 w-6 ${isFav ? 'fill-primary text-primary' : 'text-gray-300 dark:text-slate-700'}`} />
               </IconButton>
             </div>
 
             <div className="flex gap-2 items-center">
-              <Badge className="bg-orange-50 text-orange-600 border-orange-200">ABERTO</Badge>
+              <Badge className="bg-primary/10 text-primary border-primary/20">ABERTO</Badge>
               <div className="flex items-center gap-1 text-xs font-bold text-gray-400">
                 <Navigation size={12} /> {sel.distance}
               </div>
@@ -72,20 +78,27 @@ function LocationCard({ sel, onClose, isMobile }: { sel: Location, onClose: () =
 
             {sel.menu && (
               <div className="mt-3 space-y-2">
-                <div className="flex items-center gap-2 text-xs font-black text-orange-600 uppercase">
+                <div className="flex items-center gap-2 text-xs font-black text-primary uppercase">
                   <Utensils size={14} /> Cardápio / Produtos
                 </div>
                 <div className="flex gap-3 overflow-x-auto pb-2 scrollbar-hide">
                   {sel.menu.map((item, idx) => (
                     <div key={idx} className="shrink-0 w-24 space-y-1">
-                      <img src={item.image} alt={item.name} className="w-24 h-16 object-cover rounded-lg shadow-sm border border-orange-50 dark:border-slate-800" />
+                      <img src={item.image} alt={item.name} className="w-24 h-16 object-cover rounded-lg shadow-sm border border-primary/10 dark:border-slate-800" />
                       <p className="text-[10px] font-black text-gray-800 dark:text-slate-200 leading-tight truncate">{item.name}</p>
-                      <p className="text-[10px] font-bold text-orange-500">{item.price}</p>
+                      <p className="text-[10px] font-bold text-primary">{item.price}</p>
                     </div>
                   ))}
                 </div>
               </div>
             )}
+
+            <Button 
+              onClick={() => onNavigate(sel)}
+              className="mt-3 w-full bg-primary hover:bg-primary/90 text-primary-foreground font-black rounded-xl h-10 shadow-lg shadow-primary/20 flex items-center justify-center gap-2"
+            >
+              <Navigation size={16} /> NAVEGAR AGORA
+            </Button>
           </CardContent>
         </div>
       </Card>
@@ -100,12 +113,106 @@ function MapInterface({ isMobile }: { isMobile: boolean }) {
   const { isLoaded } = useJsApiLoader({
     id: 'google-map-script',
     googleMapsApiKey: GOOGLE_MAPS_API_KEY,
-    libraries: ['places']
+    libraries
   });
 
   const [map, setMap] = useState<google.maps.Map | null>(null);
   const [sel, setSel] = useState<Location | null>(null);
   const [category, setCategory] = useState('Tudo');
+  
+  const [routePolylines, setRoutePolylines] = useState<google.maps.Polyline[]>([]);
+  const [routeMarkers, setRouteMarkers] = useState<any[]>([]);
+  const [routeInfo, setRouteInfo] = useState<{ distance: string, duration: string, steps: any[] } | null>(null);
+  const [isNavigating, setIsNavigating] = useState(false);
+  const searchParams = useSearchParams();
+  const navigateId = searchParams.get('navigate');
+
+  const clearRoute = () => {
+    routePolylines.forEach(p => p.setMap(null));
+    routeMarkers.forEach(m => m.setMap(null));
+    setRoutePolylines([]);
+    setRouteMarkers([]);
+    setRouteInfo(null);
+    setIsNavigating(false);
+  };
+
+  const handleStartNavigation = (loc: Location) => {
+    setIsNavigating(true);
+  };
+
+  useEffect(() => {
+    if (navigateId && isLoaded) {
+      const loc = locations.find(l => l.id === navigateId);
+      if (loc) {
+        setSel(loc);
+        handleStartNavigation(loc);
+      }
+    }
+  }, [navigateId, isLoaded]);
+
+  useEffect(() => {
+    const computeNewRoute = async () => {
+      if (!isNavigating || !sel || !isLoaded || !map) return;
+
+      try {
+        // @ts-ignore - Using the new Routes library
+        const { Route } = await google.maps.importLibrary("routes");
+        
+        // Official format per Google migration guide
+        const request = {
+          origin: `${center.lat},${center.lng}`,
+          destination: `${sel.lat},${sel.lng}`,
+          travelMode: 'DRIVING',
+          fields: ['path'],  // Request fields needed to draw polylines
+        };
+
+        // @ts-ignore
+        const { routes } = await Route.computeRoutes(request);
+        
+        if (routes && routes.length > 0) {
+          const route = routes[0];
+
+          // Use built-in createPolylines() from the Route class
+          const polylines = route.createPolylines();
+          polylines.forEach((polyline: google.maps.Polyline) => {
+            polyline.setOptions({
+              strokeColor: '#ED2100',
+              strokeOpacity: 0.85,
+              strokeWeight: 5,
+            });
+            polyline.setMap(map);
+          });
+          setRoutePolylines(polylines);
+
+          // Create waypoint markers
+          try {
+            const markers = await route.createWaypointAdvancedMarkers();
+            markers.forEach((marker: any) => marker.setMap(map));
+            setRouteMarkers(markers);
+          } catch {
+            // Advanced markers may require a mapId; skip if unavailable
+          }
+
+          // Extract route info for the overlay panel
+          setRouteInfo({
+            distance: route.distanceMeters ? `${(route.distanceMeters / 1000).toFixed(1)} km` : sel.distance || '---',
+            duration: route.duration ? `${Math.round(parseInt(route.duration) / 60)} min` : sel.time || '---',
+            steps: route.legs?.[0]?.steps || []
+          });
+        }
+      } catch (error) {
+        console.error("Error computing route with new API:", error);
+        // Fallback: show basic route info from mock data
+        setRouteInfo({
+          distance: sel.distance || '---',
+          duration: sel.time || '---',
+          steps: sel.directions?.map((d, i) => ({ instruction: d, index: i })) || []
+        });
+      }
+    };
+
+    computeNewRoute();
+  }, [isNavigating, sel, isLoaded, map]);
 
   const filteredLocations = useMemo(() => transformLocationsByCategory(locations, category), [category]);
 
@@ -170,7 +277,7 @@ function MapInterface({ isMobile }: { isMobile: boolean }) {
               }
             }}
             InputProps={{
-              startAdornment: <InputAdornment position="start"><Search size={18} color="#E67E22" /></InputAdornment>
+              startAdornment: <InputAdornment position="start"><Search size={18} color="#ED2100" /></InputAdornment>
             }}
           />
         </Autocomplete>
@@ -184,8 +291,8 @@ function MapInterface({ isMobile }: { isMobile: boolean }) {
             onClick={() => setCategory(c.type)}
             className={`flex items-center gap-2 px-4 py-2.5 rounded-2xl text-sm font-black transition-all whitespace-nowrap shadow-lg
               ${category === c.type 
-                ? 'bg-orange-500 text-white translate-y-[-2px]' 
-                : 'bg-white/90 dark:bg-slate-800/90 text-gray-600 dark:text-slate-300 backdrop-blur-md hover:bg-orange-50 dark:hover:bg-slate-700'}`}
+                ? 'bg-primary text-primary-foreground translate-y-[-2px]' 
+                : 'bg-white/90 dark:bg-slate-800/90 text-gray-600 dark:text-slate-300 backdrop-blur-md hover:bg-primary/5 dark:hover:bg-slate-700'}`}
           >
             <c.icon size={16} />
             {c.label}
@@ -208,7 +315,7 @@ function MapInterface({ isMobile }: { isMobile: boolean }) {
           size="small" 
           color="warning" 
           onClick={() => handleCall('192')}
-          sx={{ boxShadow: '0 8px 16px rgba(255, 152, 0, 0.4)', bgcolor: '#E67E22', '&:hover': { bgcolor: '#D35400' } }}
+          sx={{ boxShadow: '0 8px 16px rgba(237, 33, 0, 0.4)', bgcolor: '#ED2100', '&:hover': { bgcolor: '#C41B00' } }}
           title="Ambulância (192)"
         >
           <Ambulance size={20} />
@@ -226,22 +333,98 @@ function MapInterface({ isMobile }: { isMobile: boolean }) {
           styles: mapStyles
         }}
       >
-        {filteredLocations.map((loc) => (
+        {!isNavigating && filteredLocations.map((loc) => (
           <Marker
             key={loc.id}
             position={{ lat: loc.lat, lng: loc.lng }}
             onClick={() => setSel(loc)}
             icon={{
-              url: 'https://cdn-icons-png.flaticon.com/512/854/854866.png', // Custom marker
+              url: 'https://cdn-icons-png.flaticon.com/512/854/854866.png',
               scaledSize: new google.maps.Size(40, 40)
             }}
           />
         ))}
+
+        {isNavigating && routePath.length > 0 && (
+          <>
+            <Polyline
+              path={routePath}
+              options={{
+                strokeColor: '#ED2100',
+                strokeOpacity: 0.8,
+                strokeWeight: 6,
+                icons: [{
+                  icon: { path: google.maps.SymbolPath.FORWARD_CLOSED_ARROW },
+                  offset: '100%'
+                }]
+              }}
+            />
+            <Marker position={center} label="S" />
+            {sel && <Marker position={{ lat: sel.lat, lng: sel.lng }} label="D" />}
+          </>
+        )}
       </GoogleMap>
+
+      {/* Navigation Overlay */}
+      <AnimatePresence>
+        {isNavigating && routeInfo && (
+          <motion.div 
+            initial={{ x: -400 }} 
+            animate={{ x: 0 }} 
+            exit={{ x: -400 }}
+            className={`absolute ${isMobile ? 'bottom-0 left-0 right-0' : 'top-4 left-4 w-96'} z-50 bg-white dark:bg-slate-900 shadow-2xl ${!isMobile && 'rounded-3xl'} overflow-hidden border border-primary/10`}
+          >
+            <div className="bg-primary p-6 text-white">
+              <Stack direction="row" alignItems="center" justifyContent="space-between">
+                <div className="flex items-center gap-3">
+                   <div className="h-10 w-10 bg-white/20 rounded-xl flex items-center justify-center">
+                     <Navigation size={22} className="animate-pulse" />
+                   </div>
+                   <div>
+                     <p className="text-[10px] font-black uppercase tracking-widest opacity-80">Navegando para</p>
+                     <h4 className="text-xl font-black uppercase italic tracking-tighter leading-none">{sel?.name}</h4>
+                   </div>
+                 </div>
+                <IconButton onClick={() => { setIsNavigating(false); setRouteInfo(null); setRoutePath([]); }} sx={{ color: 'white' }}>
+                  <X size={20} />
+                </IconButton>
+              </Stack>
+            </div>
+            
+            <div className="max-h-80 overflow-y-auto p-4 space-y-4 bg-gray-50/50 dark:bg-slate-900/50">
+               {routeInfo.steps.map((step, i) => (
+                 <div key={i} className="flex gap-4 items-start p-3 bg-white dark:bg-slate-800 rounded-2xl shadow-sm border border-black/5 dark:border-white/5">
+                    <div className="h-8 w-8 bg-gray-100 dark:bg-slate-700 rounded-lg flex items-center justify-center text-primary font-black text-xs shrink-0">{i + 1}</div>
+                    <div className="space-y-1">
+                      <div className="text-sm font-bold text-gray-800 dark:text-slate-200">Seguir em frente</div>
+                      <div className="flex gap-3 text-[10px] font-black text-gray-400 uppercase tracking-widest">
+                         <span>Passo {i + 1}</span>
+                      </div>
+                    </div>
+                 </div>
+               ))}
+            </div>
+
+            <div className="p-4 bg-white dark:bg-slate-900 border-t border-black/5 dark:border-white/5">
+               <Stack direction="row" spacing={2}>
+                 <div className="flex-1 p-3 bg-primary/5 rounded-2xl text-center">
+                   <p className="text-[9px] font-black text-primary uppercase">Chegada em</p>
+                   <p className="text-lg font-black text-gray-900 dark:text-white uppercase italic tracking-tighter">{routeInfo.duration}</p>
+                 </div>
+                 <div className="flex-1 p-3 bg-primary/5 rounded-2xl text-center">
+                   <p className="text-[9px] font-black text-primary uppercase">Distância</p>
+                   <p className="text-lg font-black text-gray-900 dark:text-white uppercase italic tracking-tighter">{routeInfo.distance}</p>
+                 </div>
+               </Stack>
+               <Button onClick={() => { setIsNavigating(false); setRouteInfo(null); setRoutePath([]); }} className="w-full mt-4 h-12 bg-gray-100 dark:bg-slate-800 text-gray-500 font-black rounded-xl hover:bg-red-50 hover:text-red-500 transition-all uppercase tracking-widest text-[10px]">Encerrar Viagem</Button>
+            </div>
+          </motion.div>
+        )}
+      </AnimatePresence>
 
       {/* Selection Card */}
       <AnimatePresence>
-        {sel && <LocationCard sel={sel} onClose={() => setSel(null)} isMobile={isMobile} />}
+        {sel && <LocationCard sel={sel} onClose={() => setSel(null)} isMobile={isMobile} onNavigate={handleStartNavigation} />}
       </AnimatePresence>
     </div>
   );
@@ -251,9 +434,9 @@ function WebMapa() {
   return (
     <div className="h-[calc(100vh-200px)] flex flex-col gap-4">
       <div className="flex items-center justify-between shrink-0">
-        <h1 className="text-4xl font-black text-gray-900 dark:text-white">Explorar <span className="text-orange-500 font-black">Mapa</span></h1>
+        <h1 className="text-4xl font-black text-gray-900 dark:text-white">Explorar <span className="text-primary font-black">Mapa</span></h1>
       </div>
-      <div className="flex-1 relative rounded-[40px] overflow-hidden border-2 border-orange-50 dark:border-slate-800 shadow-2xl">
+      <div className="flex-1 relative rounded-[40px] overflow-hidden border-2 border-primary/20 dark:border-slate-800 shadow-2xl">
         <MapInterface isMobile={false} />
       </div>
     </div>

@@ -7,7 +7,7 @@ export const getTheme = (mode: 'light' | 'dark') => {
     palette: {
       mode,
       primary: {
-        main: '#E67E22', // Sergipanidade Orange
+        main: '#ED2100', // Sergipanidade Red
         contrastText: '#fff',
       },
       secondary: {
@@ -28,7 +28,7 @@ export const getTheme = (mode: 'light' | 'dark') => {
       h1: {
         fontWeight: 700,
         fontSize: '1.5rem',
-        color: '#E67E22',
+        color: '#ED2100',
       },
       h2: {
         fontWeight: 600,

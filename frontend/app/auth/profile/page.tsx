@@ -60,7 +60,7 @@ export default function ProfilePage() {
     <Box sx={{ py: 4, maxWidth: 650, mx: 'auto', px: 2 }}>
       <Stack direction="row" alignItems="center" justifyContent="space-between" sx={{ mb: 4 }}>
         <Typography variant="h4" sx={{ color: 'text.primary', fontWeight: 900 }}>
-          Meu <span style={{ color: '#E67E22' }}>Perfil</span>
+          Meu <span style={{ color: '#ED2100' }}>Perfil</span>
         </Typography>
         <Button 
           variant="contained" 
@@ -70,9 +70,9 @@ export default function ProfilePage() {
             borderRadius: 4, 
             fontWeight: 800, 
             textTransform: 'none',
-            bgcolor: '#E67E22',
-            '&:hover': { bgcolor: '#D35400' },
-            boxShadow: '0 8px 20px rgba(230,126,34,0.3)'
+            bgcolor: '#ED2100',
+            '&:hover': { bgcolor: '#C41B00' },
+            boxShadow: '0 8px 20px rgba(237, 33, 0, 0.3)'
           }}
         >
           Editar Tudo
@@ -89,7 +89,7 @@ export default function ProfilePage() {
         }}>
           <Box sx={{ 
             position: 'absolute', top: 0, left: 0, width: '100%', height: 100, 
-            background: 'linear-gradient(135deg, #E67E22 0%, #F39C12 100%)',
+            background: 'linear-gradient(135deg, #ED2100 0%, #FF5C00 100%)',
             opacity: 0.1
           }} />
           
@@ -103,8 +103,8 @@ export default function ProfilePage() {
                 size="small" 
                 sx={{ 
                   position: 'absolute', bottom: 4, right: 4, 
-                  bgcolor: '#E67E22', color: 'white',
-                  '&:hover': { bgcolor: '#D35400' },
+                  bgcolor: '#ED2100', color: 'white',
+                  '&:hover': { bgcolor: '#C41B00' },
                   boxShadow: '0 4px 12px rgba(0,0,0,0.2)'
                 }}
               >
@@ -122,7 +122,7 @@ export default function ProfilePage() {
               { label: 'Mural', value: '52' }
             ].map((stat) => (
               <Box key={stat.label} sx={{ flex: 1, textAlign: 'center' }}>
-                <Typography variant="h6" sx={{ fontWeight: 900, color: '#E67E22' }}>{stat.value}</Typography>
+                <Typography variant="h6" sx={{ fontWeight: 900, color: '#ED2100' }}>{stat.value}</Typography>
                 <Typography variant="caption" sx={{ fontWeight: 800, color: 'text.secondary', textTransform: 'uppercase', letterSpacing: 1 }}>{stat.label}</Typography>
               </Box>
             ))}
@@ -136,7 +136,7 @@ export default function ProfilePage() {
         <Paper elevation={0} sx={{ p: 3, borderRadius: 6, border: '1px solid', borderColor: 'divider', mb: 4, bgcolor: 'background.paper' }}>
           <Stack spacing={3}>
             <Box sx={{ display: 'flex', gap: 2 }}>
-              <Box sx={{ p: 1.5, bgcolor: 'orange.50', color: '#E67E22', borderRadius: 3, display: 'flex', alignItems: 'center' }}>
+              <Box sx={{ p: 1.5, bgcolor: 'rgba(237, 33, 0, 0.1)', color: '#ED2100', borderRadius: 3, display: 'flex', alignItems: 'center' }}>
                 <Mail size={20} />
               </Box>
               <Box>
@@ -146,7 +146,7 @@ export default function ProfilePage() {
             </Box>
 
             <Box sx={{ display: 'flex', gap: 2 }}>
-              <Box sx={{ p: 1.5, bgcolor: 'orange.50', color: '#E67E22', borderRadius: 3, display: 'flex', alignItems: 'center' }}>
+              <Box sx={{ p: 1.5, bgcolor: 'rgba(237, 33, 0, 0.1)', color: '#ED2100', borderRadius: 3, display: 'flex', alignItems: 'center' }}>
                 <MapPin size={20} />
               </Box>
               <Box>
@@ -156,7 +156,7 @@ export default function ProfilePage() {
             </Box>
 
             <Box sx={{ display: 'flex', gap: 2 }}>
-              <Box sx={{ p: 1.5, bgcolor: 'orange.50', color: '#E67E22', borderRadius: 3, display: 'flex', alignItems: 'center' }}>
+              <Box sx={{ p: 1.5, bgcolor: 'rgba(237, 33, 0, 0.1)', color: '#ED2100', borderRadius: 3, display: 'flex', alignItems: 'center' }}>
                 <Calendar size={20} />
               </Box>
               <Box>
@@ -187,7 +187,7 @@ export default function ProfilePage() {
                     onClick={() => item.route && router.push(item.route)}
                     sx={{ py: 2, px: 3, '&:hover': { bgcolor: 'action.hover' } }}
                   >
-                    <ListItemIcon sx={{ minWidth: 44, color: '#E67E22' }}>{item.icon}</ListItemIcon>
+                    <ListItemIcon sx={{ minWidth: 44, color: '#ED2100' }}>{item.icon}</ListItemIcon>
                     <ListItemText primary={item.text} primaryTypographyProps={{ fontWeight: 700, color: 'text.primary' }} />
                     <ChevronRight size={18} opacity={0.3} />
                   </ListItemButton>

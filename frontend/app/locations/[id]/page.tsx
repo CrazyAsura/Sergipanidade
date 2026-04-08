@@ -24,6 +24,10 @@ function WebDetail() {
   const favs = useSelector((s: RootState) => s.favorites.items || []);
   if (!loc) return <p className="text-center py-20 text-muted-foreground">Local não encontrado.</p>;
   const isFav = favs.includes(id as string);
+  
+  const handleNavigate = () => {
+    router.push(`/map?navigate=${id}`);
+  };
 
   return (
     <div className="max-w-4xl mx-auto space-y-8 animate-in fade-in duration-500 pb-20">
@@ -66,7 +70,7 @@ function WebDetail() {
               ))}
             </div>
           </div>
-          <Button className="w-full h-16 rounded-[2rem] bg-primary hover:bg-primary/90 text-primary-foreground font-black text-lg shadow-xl shadow-primary/20 active:scale-95 transition-all uppercase tracking-tight">
+          <Button onClick={handleNavigate} className="w-full h-16 rounded-[2rem] bg-primary hover:bg-primary/90 text-primary-foreground font-black text-lg shadow-xl shadow-primary/20 active:scale-95 transition-all uppercase tracking-tight">
             <Compass className="mr-3 h-6 w-6" /> INICIAR NAVEGAÇÃO
           </Button>
         </div>
@@ -90,6 +94,10 @@ function MobileDetail() {
   );
 
   const isFav = favs.includes(id as string);
+
+  const handleNavigate = () => {
+    router.push(`/map?navigate=${id}`);
+  };
 
   return (
     <div className="pb-20 -mx-4 -mt-10 min-h-screen bg-background">
@@ -171,7 +179,7 @@ function MobileDetail() {
            </div>
         </div>
 
-        <Button className="w-full h-16 bg-primary text-primary-foreground font-black text-lg rounded-[2rem] shadow-2xl shadow-primary/30 active:scale-95 transition-all uppercase tracking-tight">
+        <Button onClick={handleNavigate} className="w-full h-16 bg-primary text-primary-foreground font-black text-lg rounded-[2rem] shadow-2xl shadow-primary/30 active:scale-95 transition-all uppercase tracking-tight">
           <Compass className="mr-3 h-6 w-6" /> Iniciar Viagem
         </Button>
       </div>

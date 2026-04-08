@@ -71,10 +71,10 @@ function WebLogin() {
               <label className="flex items-center gap-2 text-sm text-gray-500">
                 <input type="checkbox" className="rounded" /> Lembrar-me
               </label>
-              <Link href="/auth/reset-password" className="text-sm text-orange-500 font-bold hover:underline">Esqueceu?</Link>
+              <Link href="/auth/reset-password" className="text-sm text-primary font-bold hover:underline">Esqueceu?</Link>
             </div>
           </div>
-          <Button onClick={handleLogin} className="w-full h-12 rounded-xl bg-orange-500 hover:bg-orange-600 text-white font-bold text-base">
+          <Button onClick={handleLogin} className="w-full h-12 rounded-xl bg-primary hover:bg-primary/90 text-white font-bold text-base">
             ENTRAR
           </Button>
 
@@ -89,7 +89,7 @@ function WebLogin() {
           </div>
 
           <p className="text-center text-sm text-gray-400 pt-4">
-            Não tem conta? <Link href="/auth/register" className="text-orange-500 font-bold hover:underline">Cadastre-se</Link>
+            Não tem conta? <Link href="/auth/register" className="text-primary font-bold hover:underline">Cadastre-se</Link>
           </p>
         </CardContent>
       </Card>
@@ -120,10 +120,10 @@ function MobileLogin() {
             sx={{ '& .MuiOutlinedInput-root': { borderRadius: 3 } }} />
           <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', mt: 1 }}>
             <FormControlLabel control={<Checkbox size="small" />} label={<Typography variant="caption" color="text.secondary">Lembrar</Typography>} />
-            <Link href="/auth/reset-password" style={{ textDecoration: 'none' }}><Typography variant="caption" sx={{ color: '#E67E22', fontWeight: 700 }}>Esqueceu?</Typography></Link>
+            <Link href="/auth/reset-password" style={{ textDecoration: 'none' }}><Typography variant="caption" sx={{ color: '#ED2100', fontWeight: 700 }}>Esqueceu?</Typography></Link>
           </Box>
         </Box>
-        <MuiButton fullWidth variant="contained" onClick={handleLogin} sx={{ py: 1.75, borderRadius: 3, fontWeight: 800, bgcolor: '#E67E22', '&:hover': { bgcolor: '#D35400' } }}>ENTRAR</MuiButton>
+        <MuiButton fullWidth variant="contained" onClick={handleLogin} sx={{ py: 1.75, borderRadius: 3, fontWeight: 800, bgcolor: '#ED2100', '&:hover': { bgcolor: '#C41B00' } }}>ENTRAR</MuiButton>
       </Stack>
 
       <Box sx={{ my: 5, position: 'relative' }}>
@@ -137,7 +137,7 @@ function MobileLogin() {
       </Stack>
 
       <Typography variant="body2" sx={{ textAlign: 'center', mt: 5, color: '#999' }}>
-        Não tem conta? <Link href="/auth/register" style={{ textDecoration: 'none', color: '#E67E22', fontWeight: 800 }}>Cadastre-se</Link>
+        Não tem conta? <Link href="/auth/register" style={{ textDecoration: 'none', color: '#ED2100', fontWeight: 800 }}>Cadastre-se</Link>
       </Typography>
     </Box>
   );
