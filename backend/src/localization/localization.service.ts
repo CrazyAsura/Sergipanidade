@@ -1,26 +1,36 @@
 import { Injectable } from '@nestjs/common';
+import { InjectRepository } from '@nestjs/typeorm';
+import { Repository } from 'typeorm';
+import { Localization } from './entities/localization.entity';
 import { CreateLocalizationDto } from './dto/create-localization.dto';
 import { UpdateLocalizationDto } from './dto/update-localization.dto';
 
 @Injectable()
 export class LocalizationService {
-  create(createLocalizationDto: CreateLocalizationDto) {
-    return 'This action adds a new localization';
+  constructor(
+    @InjectRepository(Localization)
+    private readonly localizationRepository: Repository<Localization>,
+  ) {}
+
+  async create(createLocalizationDto: CreateLocalizationDto): Promise<Localization> {
+    const localization = this.localizationRepository.create(createLocalizationDto);
+    return await this.localizationRepository.save(localization);
   }
 
-  findAll() {
-    return `This action returns all localization`;
+  async findAll(): Promise<Localization[]> {
+    return await this.localizationRepository.find();
   }
 
-  findOne(id: number) {
-    return `This action returns a #${id} localization`;
+  async findOne(id: string): Promise<Localization | null> {
+    return await this.localizationRepository.findOne({ where: { id } });
   }
 
-  update(id: number, updateLocalizationDto: UpdateLocalizationDto) {
-    return `This action updates a #${id} localization`;
+  async update(id: string, updateLocalizationDto: UpdateLocalizationDto): Promise<Localization | null> {
+    await this.localizationRepository.update(id, updateLocalizationDto);
+    return this.findOne(id);
   }
 
-  remove(id: number) {
-    return `This action removes a #${id} localization`;
+  async remove(id: string): Promise<void> {
+    await this.localizationRepository.delete(id);
   }
 }

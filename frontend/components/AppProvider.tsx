@@ -8,6 +8,16 @@ import CssBaseline from '@mui/material/CssBaseline';
 import { ThemeProvider as NextThemesProvider, useTheme } from 'next-themes';
 import { store, persistor } from '@/lib/store';
 import { getTheme } from '@/lib/theme';
+import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
+
+const queryClient = new QueryClient({
+  defaultOptions: {
+    queries: {
+      staleTime: 1000 * 60 * 5, // 5 minutes
+      retry: 1,
+    },
+  },
+});
 
 interface AppProviderProps {
   children: ReactNode;
@@ -44,14 +54,16 @@ function MuiThemeWrapper({ children }: { children: ReactNode }) {
 
 export function AppProvider({ children }: AppProviderProps) {
   return (
-    <NextThemesProvider attribute="class" defaultTheme="light" enableSystem={false}>
-      <Provider store={store}>
-        <PersistGate loading={null} persistor={persistor}>
-          <MuiThemeWrapper>
-            {children}
-          </MuiThemeWrapper>
-        </PersistGate>
-      </Provider>
-    </NextThemesProvider>
+    <QueryClientProvider client={queryClient}>
+      <NextThemesProvider attribute="class" defaultTheme="light" enableSystem={false}>
+        <Provider store={store}>
+          <PersistGate loading={null} persistor={persistor}>
+            <MuiThemeWrapper>
+              {children}
+            </MuiThemeWrapper>
+          </PersistGate>
+        </Provider>
+      </NextThemesProvider>
+    </QueryClientProvider>
   );
 }

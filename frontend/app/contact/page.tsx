@@ -3,7 +3,7 @@
 import { useState } from 'react';
 import { useIsMobile } from '@/hooks/useIsMobile';
 import { useRouter } from 'next/navigation';
-import { motion } from 'framer-motion';
+import { motion, Variants } from 'framer-motion';
 import { Mail, Phone, Clock, Send, Globe, MapPin, CheckCircle2, Camera, MessageCircle, Share2, ArrowRight } from 'lucide-react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
@@ -26,14 +26,25 @@ const socials = [
   { icon: Globe, label: 'Website', url: '#' },
 ];
 
-const fadeUp = {
+const fadeUp: Variants = {
   hidden: { opacity: 0, y: 40 },
-  visible: { opacity: 1, y: 0, transition: { duration: 0.7, ease: 'easeOut' } },
+  visible: { 
+    opacity: 1, 
+    y: 0, 
+    transition: { 
+      duration: 0.7, 
+      ease: 'easeOut' 
+    } 
+  },
 };
 
-const stagger = {
+const stagger: Variants = {
   hidden: {},
-  visible: { transition: { staggerChildren: 0.08 } },
+  visible: { 
+    transition: { 
+      staggerChildren: 0.08 
+    } 
+  },
 };
 
 function WebContato() {

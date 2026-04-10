@@ -2,7 +2,7 @@
 
 import { useIsMobile } from '@/hooks/useIsMobile';
 import { useRouter } from 'next/navigation';
-import { motion } from 'framer-motion';
+import { motion, Variants } from 'framer-motion';
 import { Bot, Map, Share2, Navigation, ArrowRight, Compass, Heart, Camera, ShieldCheck, Star, Sparkles } from 'lucide-react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
@@ -17,14 +17,25 @@ const servicos = [
   { icon: ShieldCheck, title: 'Dicas de Segurança', desc: 'Informações verificadas por especialistas sobre segurança, emergências e contatos úteis.', link: '/faq', cta: 'LER DICAS', color: 'text-amber-600', bg: 'bg-amber-50 dark:bg-amber-950/30', ring: 'ring-amber-100 dark:ring-amber-900/30' },
 ];
 
-const fadeUp = {
+const fadeUp: Variants = {
   hidden: { opacity: 0, y: 40 },
-  visible: { opacity: 1, y: 0, transition: { duration: 0.7, ease: 'easeOut' } },
+  visible: { 
+    opacity: 1, 
+    y: 0, 
+    transition: { 
+      duration: 0.7, 
+      ease: 'easeOut' 
+    } 
+  },
 };
 
-const stagger = {
+const stagger: Variants = {
   hidden: {},
-  visible: { transition: { staggerChildren: 0.08 } },
+  visible: { 
+    transition: { 
+      staggerChildren: 0.08 
+    } 
+  },
 };
 
 function WebServicos() {

@@ -3,7 +3,7 @@
 import { useState, useEffect } from 'react';
 import { useIsMobile } from '@/hooks/useIsMobile';
 import { useRouter } from 'next/navigation';
-import { motion, AnimatePresence } from 'framer-motion';
+import { motion, AnimatePresence, Variants } from 'framer-motion';
 
 // Icons
 import { Sun, ChevronRight, Info, ShieldCheck, MapPin, TrendingUp, Bot, Sparkles, Navigation, ChevronLeft, Map as MapIcon, Globe, Compass, Users, Heart } from 'lucide-react';
@@ -72,9 +72,9 @@ function HeroCarousel() {
     }
   };
 
-  const itemVariants = {
+  const itemVariants: Variants = {
     hidden: { opacity: 0, y: 30, filter: 'blur(10px)' },
-    visible: { opacity: 1, y: 0, filter: 'blur(0px)', transition: { duration: 0.8, ease: "easeOut" } }
+    visible: { opacity: 1, y: 0, filter: 'blur(0px)', transition: { duration: 0.8, ease: 'easeOut' } }
   };
 
   return (
@@ -166,9 +166,9 @@ function HeroCarousel() {
 function SummarySection() {
   const router = useRouter();
   
-  const scrollVariants = {
+  const scrollVariants: Variants = {
     hidden: { opacity: 0, y: 50 },
-    visible: { opacity: 1, y: 0, transition: { duration: 0.8, ease: "easeOut" } }
+    visible: { opacity: 1, y: 0, transition: { duration: 0.8, ease: 'easeOut' } }
   };
 
   return (

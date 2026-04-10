@@ -2,7 +2,7 @@
 
 import { useIsMobile } from '@/hooks/useIsMobile';
 import { useRouter } from 'next/navigation';
-import { motion } from 'framer-motion';
+import { motion, Variants } from 'framer-motion';
 import { Map, Heart, Users, Compass, Globe, ShieldCheck, Bot, Star, ArrowRight, Sparkles } from 'lucide-react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
@@ -28,14 +28,25 @@ const team = [
   { name: 'Comunidade', role: 'Feito por pessoas', avatar: '❤️' },
 ];
 
-const fadeUp = {
+const fadeUp: Variants = {
   hidden: { opacity: 0, y: 40 },
-  visible: { opacity: 1, y: 0, transition: { duration: 0.7, ease: 'easeOut' } },
+  visible: { 
+    opacity: 1, 
+    y: 0, 
+    transition: { 
+      duration: 0.7, 
+      ease: 'easeOut' 
+    } 
+  },
 };
 
-const stagger = {
+const stagger: Variants = {
   hidden: {},
-  visible: { transition: { staggerChildren: 0.1 } },
+  visible: { 
+    transition: { 
+      staggerChildren: 0.1 
+    } 
+  },
 };
 
 function WebSobre() {

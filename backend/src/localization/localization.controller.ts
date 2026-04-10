@@ -19,16 +19,16 @@ export class LocalizationController {
 
   @Get(':id')
   findOne(@Param('id') id: string) {
-    return this.localizationService.findOne(+id);
+    return this.localizationService.findOne(id);
   }
 
   @Patch(':id')
   update(@Param('id') id: string, @Body() updateLocalizationDto: UpdateLocalizationDto) {
-    return this.localizationService.update(+id, updateLocalizationDto);
+    return this.localizationService.update(id, updateLocalizationDto);
   }
 
   @Delete(':id')
   remove(@Param('id') id: string) {
-    return this.localizationService.remove(+id);
+    return this.localizationService.remove(id);
   }
 }

@@ -3,7 +3,7 @@
 import { useState } from 'react';
 import { useIsMobile } from '@/hooks/useIsMobile';
 import { useRouter } from 'next/navigation';
-import { motion } from 'framer-motion';
+import { motion, Variants } from 'framer-motion';
 import { HelpCircle, MapPin, CreditCard, ShieldCheck, Info, Bot, Globe, Utensils, Compass, Sun, ArrowRight } from 'lucide-react';
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from '@/components/ui/accordion';
 import { Button } from '@/components/ui/button';
@@ -21,14 +21,25 @@ const faqs = [
   { icon: Compass, q: 'Como funciona o mapa interativo?', a: 'Nosso mapa usa Google Maps com geolocalização em tempo real. Mostra restaurantes, praias, museus e pontos históricos. Você pode filtrar por categoria e ver detalhes como cardápio e avaliações.' },
 ];
 
-const fadeUp = {
+const fadeUp: Variants = {
   hidden: { opacity: 0, y: 40 },
-  visible: { opacity: 1, y: 0, transition: { duration: 0.7, ease: 'easeOut' } },
+  visible: { 
+    opacity: 1, 
+    y: 0, 
+    transition: { 
+      duration: 0.7, 
+      ease: 'easeOut' 
+    } 
+  },
 };
 
-const stagger = {
+const stagger: Variants = {
   hidden: {},
-  visible: { transition: { staggerChildren: 0.06 } },
+  visible: { 
+    transition: { 
+      staggerChildren: 0.06 
+    } 
+  },
 };
 
 function WebFAQ() {
